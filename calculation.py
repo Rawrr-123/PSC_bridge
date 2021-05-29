@@ -1,0 +1,27 @@
+from matplotlib import pyplot as plt
+
+from ild import find_bm
+from load import ll_70R
+
+span = 35
+at = 10
+first_wheel_at = 0
+il0 = {'first_wheel_at': [], 'BM': []}
+
+for i in range(span + int(ll_70R.wheel_length) + 1):
+    bm = 0
+    for j in ll_70R.loadpair:
+        a, load = j
+        pos = -a + first_wheel_at
+        bm = bm + find_bm(span, pos, at) * load
+    il0['first_wheel_at'].append(first_wheel_at)
+    il0['BM'].append(bm)
+    first_wheel_at += 1
+
+print(il0)
+plt.plot(il0["first_wheel_at"], il0["BM"])
+plt.title(f'ILD of BM at {at}m when load 70R is traversing along the span of {span}m')
+plt.xlabel('First wheel at')
+plt.ylabel('BM')
+plt.plot()
+plt.show()
