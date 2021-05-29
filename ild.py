@@ -66,14 +66,3 @@ def il(span, at, of='bm', detail=25):
             inf_line['x'].append(span / detail * i)
             inf_line['y'].append(sf)
     return inf_line
-
-
-# plotting ild of bm
-
-# ild = il(of='bm', at=10, span=30, detail=500)
-# plt.plot(ild['x'], ild['y'])
-# plt.axhline(y=max(ild["y"]), color='grey', lw=0.5, label=f'max = {max(ild["y"])}')
-# plt.axhline(y=min(ild["y"]), color='grey', lw=0.5, label=f'min = {round(min(ild["y"]), 2)}')
-# plt.legend()
-# plt.tight_layout()
-# plt.show()
