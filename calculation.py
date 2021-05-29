@@ -6,9 +6,10 @@ from load import ll_70R
 span = 35
 at = 10
 first_wheel_at = 0
+step = 1
 il0 = {'first_wheel_at': [], 'BM': []}
 
-for i in range(span + int(ll_70R.wheel_length) + 1):
+for i in range(int((span + ll_70R.wheel_length) / step) + 1):
     bm = 0
     for j in ll_70R.loadpair:
         a, load = j
@@ -16,7 +17,7 @@ for i in range(span + int(ll_70R.wheel_length) + 1):
         bm = bm + find_bm(span, pos, at) * load
     il0['first_wheel_at'].append(first_wheel_at)
     il0['BM'].append(bm)
-    first_wheel_at += 1
+    first_wheel_at += step
 
 print(il0)
 plt.plot(il0["first_wheel_at"], il0["BM"])
