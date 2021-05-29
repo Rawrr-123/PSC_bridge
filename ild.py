@@ -5,17 +5,17 @@ plt.style.use('seaborn')
 
 def find_bm(s, u, b):
     """
-    returns bending moment at x=b due to unit load at x=u on a span of length s
+    returns bending moment at x=b due to unit Load at x=u on a span of length s
             Parameters:
                         s = span length
-                        u = position of unit load (from left end)
+                        u = position of unit Load (from left end)
                         b = location at which bending moment is required (from left end)
             Returns:
                         bm = bending moment
     """
     if u < 0 or u > s:
         bm = 0
-    elif 0 <= u < s:
+    elif 0 <= u < b:
         bm = u / s * (s - b)
     else:
         bm = (s - u) / s * b
@@ -25,10 +25,10 @@ def find_bm(s, u, b):
 
 def find_sf(s, u, b):
     """
-    returns shear force at x=b due to unit load at x=u on a span of length s
+    returns shear force at x=b due to unit Load at x=u on a span of length s
             Parameters:
                         s = span length
-                        u = position of unit load (from left end)
+                        u = position of unit Load (from left end)
                         b = location at which shear force is required (from left end)
             Returns:
                         sf = shear force
@@ -68,12 +68,12 @@ def il(span, at, of='bm', detail=25):
     return inf_line
 
 
-# plotting ild of sf
+# plotting ild of bm
 
-ild = il(of='sf', at=20, span=50, detail=500)
-plt.plot(ild['x'], ild['y'])
-plt.axhline(y=max(ild["y"]), color='grey', lw=0.5, label=f'max = {max(ild["y"])}')
-plt.axhline(y=min(ild["y"]), color='grey', lw=0.5, label=f'min = {round(min(ild["y"]), 2)}')
-plt.legend()
-plt.tight_layout()
-plt.show()
+# ild = il(of='bm', at=10, span=30, detail=500)
+# plt.plot(ild['x'], ild['y'])
+# plt.axhline(y=max(ild["y"]), color='grey', lw=0.5, label=f'max = {max(ild["y"])}')
+# plt.axhline(y=min(ild["y"]), color='grey', lw=0.5, label=f'min = {round(min(ild["y"]), 2)}')
+# plt.legend()
+# plt.tight_layout()
+# plt.show()
