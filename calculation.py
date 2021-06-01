@@ -3,8 +3,8 @@ from matplotlib import pyplot as plt
 from ild import find_bm
 from load import ll_70R
 
-span = 35
-at = 10
+span = 50
+at = 25
 first_wheel_at = 0
 step = 1
 il0 = {'first_wheel_at': [], 'BM': []}
