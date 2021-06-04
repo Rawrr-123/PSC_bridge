@@ -1,6 +1,8 @@
 import csv
-import matplotlib.pyplot as plt
 import math
+import matplotlib.pyplot as plt
+
+plt.style.use('seaborn')
 
 dist = []
 rl = []
@@ -69,18 +71,23 @@ while datum >= min_rl:
     datum -= 0.1
 
 designQ = 516  # input design discharge
+p = 0
+q = 0
 for index, q in enumerate(discharge):
     if designQ > q:
-        p1 = (stage[index - 1], discharge[index - 1])
-        p2 = (stage[index], q)
+        p = (stage[index - 1], discharge[index - 1])
+        q = (stage[index], q)
         break
-st = interpolate_x(p1, p2, designQ)
+st = interpolate_x(p, q, designQ)
 
-# plt.plot(discharge, stage)
-plt.plot(dist, rl)
+plt.figure(figsize=(9, 6))
+plt.plot(discharge, stage)
+plt.xlabel('Discharge (Cumec)')
+plt.ylabel('Stage (m)')
+plt.title('Rating Curve\n')
+# plt.plot(dist, rl)
 plt.axhline(y=st, linewidth=0.5)
-# plt.axvline(x=designQ, linewidth=0.5)
-# plt.text(designQ, st-0.15, f'design Q = {designQ}\nstage = {st}')
+plt.axvline(x=designQ, linewidth=0.5)
+plt.text(designQ, st - 0.15, f' design Q = {designQ}\n stage = {st}')
 plt.tight_layout()
-plt.show()
-
+plt.savefig('outputs/rating_curve.png')
