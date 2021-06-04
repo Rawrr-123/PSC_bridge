@@ -1,3 +1,4 @@
+import csv
 def find_bm(s, u, b):
     if u < 0 or u > s:
         bm = 0
@@ -66,3 +67,4 @@ for i in range(len(loads)):
 print(f'Max Bending moments \n {maxBMs}')
 print(f'Max positive Shear Forces \n {maxSFs_plus}')
 print(f'Max negative Shear Forces \n {maxSFs_minus}')
+
