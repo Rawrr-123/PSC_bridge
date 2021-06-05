@@ -80,6 +80,6 @@ for i in range(len(loads)):
 
 iterables = [A, B]
 index = pd.MultiIndex.from_product(iterables)
-df = pd.DataFrame(C, index=index, columns=[f'{span / 8 * i}' for i in range(9)])
+df = pd.DataFrame(C, index=index, columns=[span / 8 * i for i in range(9)])
 # print(df.loc['ClassA', 'MaxSF-'])   ## you can navigate using loc, iloc
 df.to_excel('outputs/loads.xlsx')
