@@ -1,8 +1,20 @@
 import matplotlib.pyplot as plt
+plt.style.use('seaborn')
 
 
-def impact(loading, span, material='RCC', vehicle='wheeled'):
-    if loading == 'class A' or loading == 'class B':
+def impact(loading, span, material='RCC'):
+    """
+
+    Args:
+        loading (str): options => 'classA', 'classAA', '70R', '70RT'
+        span (float): span length in metres
+        material (str): options => 'RCC' (default), 'steel'
+
+    Returns:
+        impact factor value (float)
+
+    """
+    if loading == 'classA' or loading == 'class B':
         if material == 'RCC':
             if span <= 3:
                 return 0.5
@@ -17,41 +29,61 @@ def impact(loading, span, material='RCC', vehicle='wheeled'):
                 return 9 / (13.5 + span)
             else:
                 return 0.154
-    if loading == 'class AA' or loading == '70R':
+    if loading == 'classAA' or loading == '70R' or loading == '70RT':
         if span < 9:
-            if vehicle == 'tracked':
-                return .25 + ((.1 - .25) / (9 - 5)) * (span - 5)
-            elif vehicle == 'wheeled':
+            if loading == '70RT':
+                if span <= 5:
+                    return 0.25
+                else:
+                    return .25 + ((.1 - .25) / (9 - 5)) * (span - 5)
+            else:
                 return .25
         else:
             if material == 'RCC':
-                if vehicle == 'tracked':
+                if loading == '70RT':
                     if span <= 40:
                         return 0.1
                     else:
-                        return impact('class A', span, 'RCC')
-                if vehicle == 'wheeled':
+                        return impact('classA', span, 'RCC')
+                else:
                     if span < 12:
                         return 0.25
                     else:
-                        return impact('class A', span, 'RCC')
+                        return impact('classA', span, 'RCC')
             if material == 'steel':
-                if vehicle == 'tracked':
+                if loading == '70RT':
                     return 0.1
-                if vehicle == 'wheeled':
+                else:
                     if span < 23:
                         return 0.25
                     else:
-                        return impact('class A', span, 'steel')
+                        return impact('classA', span, 'steel')
 
 
-x = [i for i in range(int(50 / 0.5))]
-ll_A = [impact('class A', i * 0.5) for i in range(int(50 / 0.5))]
-ll_70R = [impact('70R', i * 0.5) for i in range(int(50 / 0.5))]
-ll_70RT = [impact('70R', i * 0.5, vehicle='tracked') for i in range(int(50 / 0.5))]
-plt.plot(x, ll_A, label="class A")
-plt.plot(x, ll_70R, label="70R")
-plt.plot(x, ll_70RT, label="70RT")
+x = [i*0.5 for i in range(int(50 / 0.5))]
+ll_A_RCC = [impact('classA', i * 0.5) for i in range(int(50 / 0.5))]
+ll_70R_RCC = [impact('70R', i * 0.5) for i in range(int(50 / 0.5))]
+ll_70RT_RCC = [impact('70RT', i * 0.5) for i in range(int(50 / 0.5))]
+
+# ll_A_steel = [impact('classA', i * 0.5, 'steel') for i in range(int(50 / 0.5))]
+# ll_70R_steel = [impact('70R', i * 0.5, 'steel') for i in range(int(50 / 0.5))]
+# ll_70RT_steel = [impact('70RT', i * 0.5, 'steel') for i in range(int(50 / 0.5))]
+
+plt.figure(figsize=(9, 6))
+
+plt.plot(x, ll_A_RCC, label="class A RCC")
+plt.plot(x, ll_70R_RCC, label="70R RCC")
+plt.plot(x, ll_70RT_RCC, label="70RT RCC")
+
+# plt.plot(x, ll_A_steel, label="class A steel")
+# plt.plot(x, ll_70R_steel, label="70R steel")
+# plt.plot(x, ll_70RT_steel, label="70RT steel")
+
+plt.xlabel('Span m')
+plt.ylabel('IF')
+plt.title('Impact factor')
 plt.legend()
-plt.show()  # uncomment to display the plot or navigate to outputs folder for impact_factor.png
+
+plt.tight_layout()
+# plt.show()  # uncomment to display the plot or navigate to outputs folder for impact_factor.png
 plt.savefig('outputs/impact_factor.png')
