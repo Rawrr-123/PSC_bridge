@@ -7,7 +7,7 @@ plt.ioff()
 
 dist = []
 rl = []
-with open('cross.csv') as csv_file:
+with open('data/cross.csv') as csv_file:
     #
     csv_reader = csv.reader(csv_file, delimiter=',')
     line_count = 0
@@ -76,10 +76,14 @@ p = 0
 q = 0
 for index, q in enumerate(discharge):
     if designQ > q:
-        p = (stage[index - 1], discharge[index - 1])
-        q = (stage[index], q)
+        p1 = (stage[index - 1], discharge[index - 1])
+        q1 = (stage[index], q)
+        pb = (linearWW[index - 1], discharge[index - 1])
+        qb = (linearWW[index], q)
         break
-st = interpolate_x(p, q, designQ)
+
+st = interpolate_x(p1, q1, designQ)
+lww = interpolate_x(pb, qb, designQ)
 
 
 plt.rcParams['figure.figsize'] = (9, 6)
@@ -99,11 +103,10 @@ ax2.plot(dist, rl)
 ax2.set_xlabel('x (Cumec)')
 ax2.set_ylabel('RL (m)')
 ax2.set_title('Cross Section\n')
-ax2.axhline(y=st, linewidth=0.5)
+ax2.axhline(y=st, linewidth=0.5, label=f'Design Flood Level @ {round(st, 4)}m', color='grey')
 # ax2.axvline(x=designQ, linewidth=0.5)
-ax2.text(50, st, f' Design flood level = {st}')
-
-
+ax2.text(-40, st, f' Linear Waterway Width {round(lww, 4)}m\n', horizontalalignment='center')
+plt.legend()
 plt.tight_layout()
 
 fig1.savefig('outputs/rating_curve.png')
