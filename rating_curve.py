@@ -3,6 +3,7 @@ import math
 import matplotlib.pyplot as plt
 
 plt.style.use('seaborn')
+plt.ioff()
 
 dist = []
 rl = []
@@ -80,14 +81,30 @@ for index, q in enumerate(discharge):
         break
 st = interpolate_x(p, q, designQ)
 
-plt.figure(figsize=(9, 6))
-plt.plot(discharge, stage)
-plt.xlabel('Discharge (Cumec)')
-plt.ylabel('Stage (m)')
-plt.title('Rating Curve\n')
-# plt.plot(dist, rl)
-plt.axhline(y=st, linewidth=0.5)
-plt.axvline(x=designQ, linewidth=0.5)
-plt.text(designQ, st - 0.15, f' design Q = {designQ}\n stage = {st}')
+
+plt.rcParams['figure.figsize'] = (9, 6)
+
+fig1, ax1 = plt.subplots()
+fig2, ax2 = plt.subplots()
+
+ax1.plot(discharge, stage)
+ax1.set_xlabel('Discharge (Cumec)')
+ax1.set_ylabel('Stage (m)')
+ax1.set_title('Rating Curve\n')
+ax1.axhline(y=st, linewidth=0.5)
+ax1.axvline(x=designQ, linewidth=0.5)
+ax1.text(designQ, st - 0.15, f' design Q = {designQ}\n stage = {st}')
+
+ax2.plot(dist, rl)
+ax2.set_xlabel('x (Cumec)')
+ax2.set_ylabel('RL (m)')
+ax2.set_title('Cross Section\n')
+ax2.axhline(y=st, linewidth=0.5)
+# ax2.axvline(x=designQ, linewidth=0.5)
+ax2.text(50, st, f' Design flood level = {st}')
+
+
 plt.tight_layout()
-plt.savefig('outputs/rating_curve.png')
+
+fig1.savefig('outputs/rating_curve.png')
+fig2.savefig('outputs/cross_section.png')
