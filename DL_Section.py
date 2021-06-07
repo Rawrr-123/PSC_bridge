@@ -15,7 +15,7 @@ center=[]
 centroid=[]
 
 
-with open('data/Sect.csv', encoding='utf-8-sig') as csv_file:
+with open('sect.csv',encoding='utf-8-sig') as csv_file:
     csv_reader = csv.reader(csv_file, delimiter=',')
     line_count = 0
     for row in csv_reader:
@@ -88,7 +88,7 @@ for i in range(len(obj)):
         centroid.append([(pos[i][0] + a.Center[0]), (pos[i][1] + a.Center[1])])
 axes = [(A_x/A_sum),(A_y/A_sum)]
 # print(A_sum)
-print (axes)
+# print (axes)
 I_x=0
 I_y=0
 for i in range(len(obj)):
@@ -96,7 +96,8 @@ for i in range(len(obj)):
     h_y= abs((centroid[i][1] - axes[1]))
     I_x=area[i]*h_x**2 + I_x
     I_y = area[i] * h_y ** 2 + I_y
-print ("The principal moment of inertia of section about centroidal (x,y) axes:",axes," is ",[I_x,I_y])
+# print ("The principal moment of inertia of section about centroidal (x,y) axes:",axes," is ",[I_x,I_y])
 
 Dead_Loads=A_sum*25
-print("Dead load per m length is:",Dead_Loads)
+# print("Dead load per m length is:",Dead_Loads)
+

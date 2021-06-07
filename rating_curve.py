@@ -72,8 +72,10 @@ while datum >= min_rl:
     datum -= 0.1
 
 designQ = 516  # input design discharge
-p = 0
-q = 0
+p1 = 0
+q1 = 0
+pb = 0
+qb = 0
 for index, q in enumerate(discharge):
     if designQ > q:
         p1 = (stage[index - 1], discharge[index - 1])
