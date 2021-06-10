@@ -1,3 +1,5 @@
+import Eccentricity1 as ec1
+
 def lane_number(CW_width):
     if 13.1<CW_width<=16.6:
         return 4
@@ -30,7 +32,7 @@ def ll_combinations(lane_no):
             comb.append(elem)
     return comb
 while True:
-    cw_width = 6
+    cw_width = ec1.cw/1000
     # float(input("Enter the Carriageway width: "))
     if cw_width>=4.25:
         break

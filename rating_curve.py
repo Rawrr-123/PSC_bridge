@@ -85,7 +85,6 @@ for index, q in enumerate(discharge):
 st = interpolate_x(p1, q1, designQ)
 lww = interpolate_x(pb, qb, designQ)
 
-
 plt.rcParams['figure.figsize'] = (9, 6)
 
 fig1, ax1 = plt.subplots()
