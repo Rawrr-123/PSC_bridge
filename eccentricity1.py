@@ -37,11 +37,14 @@ kerb_len=dls.length[10]
 left_pos=dls.pos[10][0]
 right_pos=dls.pos[13][0]
 
-"""Distance of centroidal axis from leftmost edge"""
-cl=dls.axes[0]-left_pos
-
 """Carriageway width"""
-# cw=right_pos-(left_pos+kerb_len)
+# cw=right_pos-left_pos-kerb_len
+
+
+"""Distance of centroidal axis from leftmost edge"""
+cl=(dls.axes[0]-left_pos+kerb_len)
+
+
 cw=15
 dist=[]
 e=[]
@@ -71,12 +74,12 @@ for i in range(len(perco)):
         lod=load(perco[i][j])
         if j==0:
             if lod.name=="Class A":
-                laspos=(kerb_len+lod.lefclr)
+                laspos=(lod.lefclr)
             else:
                 laspos=(7250-3500)
 
         elif j==(len(perco[i])-1) and (lod.name=="70R Wheeled" or lod.name=="70R Tracked"):
-            laspos=(cw+kerb_len-lod.lefclr)
+            laspos=(cw-lod.lefclr)
         else:
             if lod.name=="Class A":
                 laspos+=lod.gs
@@ -86,8 +89,7 @@ for i in range(len(perco)):
     a1=perco[i].count('a')
     a2=perco[i].count('b')
     a3=perco[i].count('c')
-    e.append(e1/(1000*(a1*114+a2*700+a3*700)))
-
+    e.append((e1/(1000*(a1*114+a2*700+a3*700)))
 print(e)
 
 
