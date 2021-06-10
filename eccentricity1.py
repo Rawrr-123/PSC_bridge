@@ -89,7 +89,3 @@ for i in range(len(perco)):
     e.append(e1/(1000*(a1*114+a2*700+a3*700)))
 
 print(e)
-
-
-
-
