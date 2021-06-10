@@ -14,7 +14,7 @@ class load:
             self.ws = 1800
             self.lefclr = 150+self.ws/2
             self.g = 1200
-            self.gs=self.g+self.ws/2
+            self.gs=self.g+self.ws
             self.q=114
         elif self.j=="b":
             self.name = "70R Wheeled"
@@ -70,16 +70,19 @@ for i in range(len(perco)):
     for j in range(len(perco[i])):
         lod=load(perco[i][j])
         if j==0:
-            e1 += (kerb_len + lod.lefclr) * lod.q
             if lod.name=="Class A":
-                laspos=(kerb_len+lod.lefclr+lod.ws/2+lod.g)
+                laspos=(kerb_len+lod.lefclr)
             else:
-                laspos=7250
+                laspos=(7250-3500)
+
         elif j==(len(perco[i])-1) and (lod.name=="70R Wheeled" or lod.name=="70R Tracked"):
-            e1+=(cw+kerb_len-lod.lefclr)*lod.q
+            laspos=(cw+kerb_len-lod.lefclr)
         else:
-            laspos+=lod.gs/2
-            e1 += (laspos) * lod.q
+            if lod.name=="Class A":
+                laspos+=lod.gs
+            else:
+                laspos+=7000
+        e1 += (laspos) * lod.q
     a1=perco[i].count('a')
     a2=perco[i].count('b')
     a3=perco[i].count('c')
