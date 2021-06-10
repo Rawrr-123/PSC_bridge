@@ -11,22 +11,22 @@ class load:
 
         if self.j=="a":
             self.name="Class A"
-            self.ws = 1800
+            self.ws = 1900
             self.lefclr = 150+self.ws/2
             self.g = 1200
             self.gs=self.g+self.ws
             self.q=114
         elif self.j=="b":
             self.name = "70R Wheeled"
-            self.ws = 2600
-            self.lefclr = 1200 + self.ws / 2
-            self.gs=7000/2
+            self.ws = 7000
+            self.lefclr = 1200 + 2600/2
+            self.gs=self.ws
             self.q = 700
         elif self.j=="c":
             self.name = "70R Tracked"
-            self.ws = 2060
-            self.lefclr = 1200 + self.ws / 2
-            self.gs=7000/2
+            self.ws = 7000
+            self.lefclr = 1200 + 2060/2
+            self.gs=self.ws
             self.q = 700
 
 
@@ -42,14 +42,14 @@ right_pos=dls.pos[13][0]
 
 
 """Distance of centroidal axis from leftmost edge"""
-cl=(dls.axes[0]-left_pos+kerb_len)
-
+# cl=(dls.axes[0]-left_pos+kerb_len)
+cl=7500
 
 cw=15
 dist=[]
 e=[]
 
-
+print(e)
 combination = comb(width=15)
 perco=[]
 
@@ -73,25 +73,22 @@ for i in range(len(perco)):
     for j in range(len(perco[i])):
         lod=load(perco[i][j])
         if j==0:
+            e1 += (lod.lefclr) * lod.q
             if lod.name=="Class A":
-                laspos=(lod.lefclr)
+                laspos = (lod.lefclr+lod.ws/2+lod.g)
             else:
-                laspos=(7250-3500)
-
-        elif j==(len(perco[i])-1) and (lod.name=="70R Wheeled" or lod.name=="70R Tracked"):
-            laspos=(cw-lod.lefclr)
+                laspos=(7250)
         else:
-            if lod.name=="Class A":
-                laspos+=lod.gs
-            else:
-                laspos+=7000
-        e1 += (laspos) * lod.q
-    a1=perco[i].count('a')
-    a2=perco[i].count('b')
-    a3=perco[i].count('c')
-    e.append((e1/(1000*(a1*114+a2*700+a3*700)))
+            e1 += (laspos+lod.ws/2) * lod.q
+            laspos+=lod.gs
+    if len(perco[i]) == 1 and lod.name == "Class A":
+        e1 += (laspos + lod.ws / 2 + (cw - (laspos + lod.ws / 2)) / 2) * (cw - (laspos + lod.ws / 2)) * 0.5
+    a1=perco[i].count('a')*114
+    a2=perco[i].count('b')*700
+    a3=perco[i].count('c')*700
+    if len(perco)==1:
+        e.append(cl/1000-(e1 / (1000 * (a1 + a2 + a3+500))))
+    else:
+        e.append(cl/1000-(e1/(1000*(a1+a2+a3))))
+
 print(e)
-
-
-
-
