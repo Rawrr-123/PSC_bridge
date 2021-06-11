@@ -97,7 +97,15 @@ for i in range(len(obj)):
     I_x=area[i]*h_x**2 + I_x
     I_y = area[i] * h_y ** 2 + I_y
 # print ("The principal moment of inertia of section about centroidal (x,y) axes:",axes," is ",[I_x,I_y])
+dead=A_sum/1000000*25
+# print(dead)
+dl_moment=[]
+for i in range(len(obj)):
+    dl_moment.append((area[i]/1000000)*25*(abs(centroid[i][0]-axes[0])/1000))
+print(sum(dl_moment))
 
-Dead_Loads=A_sum*25
+
+
+
 # print("Dead load per m length is:",Dead_Loads)
 
