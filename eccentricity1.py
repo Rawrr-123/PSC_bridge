@@ -1,7 +1,6 @@
 import pandas as pd
 from comb import comb
 from itertools import permutations
-import DL_Section as dls
 import csv
 
 
@@ -33,13 +32,15 @@ class load:
             self.gs=self.ws
             self.q = 700
 
+df=pd.read_csv('data/DL.csv',delimiter=',').T
+dfl=df.values.tolist()
+kerb_len=dfl[10][2]
 
-kerb_len=dls.length[10]
-"""Length of Kerb"""
-
-"""Position of edges of kerb"""
-left_pos=dls.pos[10][0]
-right_pos=dls.pos[13][0]
+# """Length of Kerb"""
+#
+# """Position of edges of kerb"""
+left_pos=dfl[10][4]
+right_pos=dfl[13][4]
 
 """Carriageway width"""
 # cw=right_pos-left_pos-kerb_len

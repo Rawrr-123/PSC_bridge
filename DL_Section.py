@@ -1,4 +1,5 @@
 import csv
+import pandas as pd
 #Positions are calculated from bottom left grid space of shape
 
 A_sum=0
@@ -98,7 +99,34 @@ for i in range(len(obj)):
     I_y = area[i] * h_y ** 2 + I_y
 # print ("The principal moment of inertia of section about centroidal (x,y) axes:",axes," is ",[I_x,I_y])
 
-Dead_Loads=A_sum*25
+dead=A_sum/1000000*25
+# print(dead)
+dl_moment=[]
+for i in range(len(obj)):
+    dl_moment.append((area[i]/1000000)*25*(abs(centroid[i][0]-axes[0])/1000))
+print(sum(dl_moment))
+CentroidalX,CentroidalY=map(list,zip(*centroid))
+MOIX,MOIY=map(list,zip(*moi))
+posx,posy=map(list,zip(*pos))
+df=pd.DataFrame({
+    'Shape':obj,
+    'Length':length,
+    'Height':height,
+    'Grid X':posx,
+    'Grid Y':posy,
+    'Area':area,
+    'Centroidal X':CentroidalX,
+    'Centroidal Y':CentroidalY,
+    'I-X':MOIX,
+    'I-Y':MOIY,
+
+
+}).T
+df2=pd.DataFrame({
+    'Bridge Centroid':axes,
+    'Centroidal MOI':list((I_x,I_y))}).T
+pd.concat([df,df2],axis=0).to_csv('data/DL.csv')
+
 # print("Dead load per m length is:",Dead_Loads)
 
 
