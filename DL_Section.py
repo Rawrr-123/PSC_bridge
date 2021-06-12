@@ -99,12 +99,13 @@ for i in range(len(obj)):
     I_y = area[i] * h_y ** 2 + I_y
 # print ("The principal moment of inertia of section about centroidal (x,y) axes:",axes," is ",[I_x,I_y])
 
-dead=A_sum/1000000*25
+dead=A_sum*25
 # print(dead)
 dl_moment=[]
+larm=[]
 for i in range(len(obj)):
-    dl_moment.append((area[i]/1000000)*25*(abs(centroid[i][0]-axes[0])/1000))
-print(sum(dl_moment))
+    dl_moment.append((area[i])*25*(abs(centroid[i][0]-axes[0])))
+    larm.append(abs(centroid[i][0]-axes[0]))
 CentroidalX,CentroidalY=map(list,zip(*centroid))
 MOIX,MOIY=map(list,zip(*moi))
 posx,posy=map(list,zip(*pos))
@@ -119,12 +120,16 @@ df=pd.DataFrame({
     'Centroidal Y':CentroidalY,
     'I-X':MOIX,
     'I-Y':MOIY,
+    'Dead Loads':[a*25 for a in area],
+    'Lever Arm':larm,
+    'Dead Load Moments':dl_moment
 
 
 }).T
 df2=pd.DataFrame({
     'Bridge Centroid':axes,
-    'Centroidal MOI':list((I_x,I_y))}).T
+    'Centroidal MOI':list((I_x,I_y)),
+    'Sum of Dead Load Moment':sum(dl_moment)}).T
 pd.concat([df,df2],axis=0).to_csv('data/DL.csv')
 
 # print("Dead load per m length is:",Dead_Loads)
