@@ -15,11 +15,49 @@ def vehicle(character):
         return ll_70RT
 
 
-class Arrangement:
+class Carriageway:
+    def __init__(self, width):
+        self.width = width
+
+    def combinations(self):
+        raw = comb(width=self.width)
+        obj = []
+        for _i in raw:
+            obj.append(Combination(_i[0], _i[1], _i[2], self.width))
+        return obj
+
+
+class Combination(Carriageway):
+    def __init__(self, nclass_a, nclass70_rw, nclass70_rt, width):
+        super().__init__(width)
+        self.classA = nclass_a
+        self.class70Rw = nclass70_rw
+        self.class70Rt = nclass70_rt
+
+    def arrangements(self):
+        obj = []
+        veh = []  # all vehicles <'a'><'b'><'c'> as indices for <classA><70RW><70RT>
+        index = bytes('a', 'utf-8')
+        for i in [self.classA, self.class70Rw, self.class70Rt]:
+            for j in range(i):
+                veh.append(chr(index[0]))
+            index = bytes(chr(index[0] + 1), 'utf-8')
+        perm = permutations(veh)
+        p = list(set(perm))
+        for _i in p:
+            obj.append(Arrangement(_i, self.width))
+        return obj
+
+    def __str__(self):
+        return f'{self.classA}, {self.class70Rw}, {self.class70Rt}'
+
+
+class Arrangement(Carriageway):
     center = []
     load = []
 
-    def __init__(self, veh, width=None):
+    def __init__(self, veh, width):
+        super().__init__(width)
         self.veh = veh
         self.width = width
         cursor = 0
@@ -66,59 +104,16 @@ class Arrangement:
         ax.set_ylim(-0.02, 0.1)
 
         ticks = []
-        index = 0
-        for _i in Arrangement.center:
-            left_wheel = _i - vehicle(self.veh[index]).width / 2
-            right_wheel = _i + vehicle(self.veh[index]).width / 2
+        for _index, _i in enumerate(Arrangement.center):
+            left_wheel = _i - vehicle(self.veh[_index]).width / 2
+            right_wheel = _i + vehicle(self.veh[_index]).width / 2
             ticks.extend([left_wheel, _i, right_wheel])
             ax.arrow(_i, 0.03, 0, -0.030, length_includes_head=True, head_width=100, head_length=0.005)
             ax.hlines(y=0, xmax=right_wheel, xmin=left_wheel)
-            ax.text(_i, -0.01, f'{vehicle(self.veh[index]).name}', ha='center')
-            index += 1
+            ax.text(_i, -0.01, f'{vehicle(self.veh[_index]).name}', ha='center')
         ax.set_xticks(ticks)
         ax.set_xticklabels(ticks, rotation=45, fontsize=7)
         ax.set_xlabel('Distance from left abutment in metres')
         ax.set_yticks([])
 
         return ax
-
-
-class Combination:
-    def __init__(self, nclass_a, nclass70_rw, nclass70_rt):
-        self.classA = nclass_a
-        self.class70Rw = nclass70_rw
-        self.class70Rt = nclass70_rt
-
-    def arrangements(self):
-        obj = []
-        veh = []  # all vehicles <'a'><'b'><'c'> as indices for <classA><70RW><70RT>
-        index = bytes('a', 'utf-8')
-        for i in [self.classA, self.class70Rw, self.class70Rt]:
-            for j in range(i):
-                veh.append(chr(index[0]))
-            index = bytes(chr(index[0] + 1), 'utf-8')
-        perm = permutations(veh)
-        p = list(set(perm))
-        for _i in p:
-            obj.append(Arrangement(_i))
-        return obj
-
-    def __str__(self):
-        return f'{self.classA}, {self.class70Rw}, {self.class70Rt}'
-
-
-class Carriageway:
-    def __init__(self, width):
-        self.width = width
-
-    def combinations(self):
-        raw = comb(width=self.width)
-        obj = []
-        for _i in raw:
-            obj.append(Combination(_i[0], _i[1], _i[2]))
-        return obj
-
-
-arrangement1 = Arrangement(['a', 'b', 'b'], 16600)
-plot = arrangement1.plot_signal()
-print(arrangement1.eccentricity())
