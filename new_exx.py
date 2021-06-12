@@ -1,9 +1,9 @@
-from itertools import permutations
-
-from matplotlib import pyplot as plt
-
 from comb import comb
 from load import ll_A, ll_70R, ll_70RT
+
+from itertools import permutations
+from matplotlib import pyplot as plt
+import numpy as np
 
 
 def vehicle(character):
@@ -17,19 +17,11 @@ def vehicle(character):
 
 class Arrangement:
     center = []
+    load = []
 
     def __init__(self, veh, width=None):
         self.veh = veh
         self.width = width
-
-    def __str__(self):
-        _string = '('
-        for _i in self.veh:
-            _string += f'{_i}'
-        _string += ')'
-        return _string
-
-    def eccentricity(self):
         cursor = 0
         if self.veh[0] == 'a':
             cursor += 150 + ll_A.width
@@ -38,6 +30,7 @@ class Arrangement:
             cursor += max(1200 + vehicle(self.veh[0]).width, 7250)
             Arrangement.center.append(1200 + (vehicle(self.veh[0]).width / 2))
         right_wheel = Arrangement.center[0] + (vehicle(self.veh[0]).width / 2)
+        Arrangement.load.append(vehicle(self.veh[0]).weight)
         index = 1
         for _i in self.veh[1:]:
             gap = max(cursor - right_wheel, 1200)
@@ -49,8 +42,22 @@ class Arrangement:
                 Arrangement.center.append(right_wheel + gap + vehicle(_i).width / 2)
                 cursor = Arrangement.center[index] + max(vehicle(_i).width, 3500)
             right_wheel = Arrangement.center[index] + vehicle(_i).width / 2
+            Arrangement.load.append(vehicle(self.veh[index]).weight)
             index += 1
-        return Arrangement.center
+
+    def __str__(self):
+        _string = '('
+        for _i in self.veh:
+            _string += f'{_i}'
+        _string += ')'
+        return _string
+
+    def eccentricity(self):
+
+        arr_dist_from_center = np.array(Arrangement.center) - self.width / 2
+        arr_load = np.array(Arrangement.load)
+        eccentricity = (arr_dist_from_center * arr_load).sum() / arr_load.sum()
+        return eccentricity
 
     def plot_signal(self):
         f, ax = plt.subplots(figsize=(7, 3))
@@ -59,7 +66,6 @@ class Arrangement:
         ax.set_ylim(-0.02, 0.1)
 
         ticks = []
-        # ax.tick_params(axis="y", [1,2,3,4])
         index = 0
         for _i in Arrangement.center:
             left_wheel = _i - vehicle(self.veh[index]).width / 2
@@ -113,11 +119,6 @@ class Carriageway:
         return obj
 
 
-# carr = Carriageway(width=14)
-# for i in carr.combinations():
-#     print(i)
-#     for j in i.arrangements():
-#         print(j)
-
-Arrangement(['a', 'c', 'c']).eccentricity()
-plot = Arrangement(['a', 'c', 'c']).plot_signal()
+arrangement1 = Arrangement(['a', 'b', 'b'], 16600)
+plot = arrangement1.plot_signal()
+print(arrangement1.eccentricity())
