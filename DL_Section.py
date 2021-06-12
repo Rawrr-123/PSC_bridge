@@ -101,3 +101,5 @@ for i in range(len(obj)):
 Dead_Loads=A_sum*25
 # print("Dead load per m length is:",Dead_Loads)
 
+
+
