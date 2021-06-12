@@ -53,35 +53,14 @@ class Combination(Carriageway):
 
 
 class Arrangement(Carriageway):
-    center = []
-    load = []
+    position = []
+    weight = []
+    get_position_index = 0
 
     def __init__(self, veh, width):
         super().__init__(width)
         self.veh = veh
         self.width = width
-        cursor = 0
-        if self.veh[0] == 'a':
-            cursor += 150 + ll_A.width
-            Arrangement.center.append(cursor - ll_A.width / 2)
-        else:
-            cursor += max(1200 + vehicle(self.veh[0]).width, 7250)
-            Arrangement.center.append(1200 + (vehicle(self.veh[0]).width / 2))
-        right_wheel = Arrangement.center[0] + (vehicle(self.veh[0]).width / 2)
-        Arrangement.load.append(vehicle(self.veh[0]).weight)
-        index = 1
-        for _i in self.veh[1:]:
-            gap = max(cursor - right_wheel, 1200)
-            if _i == 'a':
-                Arrangement.center.append(right_wheel + gap + ll_A.width / 2)
-                cursor = Arrangement.center[index - 1] - ll_A.width / 2
-            else:
-                gap = max(cursor - right_wheel, 3500 - vehicle(_i).width / 2, 1200)
-                Arrangement.center.append(right_wheel + gap + vehicle(_i).width / 2)
-                cursor = Arrangement.center[index] + max(vehicle(_i).width, 3500)
-            right_wheel = Arrangement.center[index] + vehicle(_i).width / 2
-            Arrangement.load.append(vehicle(self.veh[index]).weight)
-            index += 1
 
     def __str__(self):
         _string = '('
@@ -90,10 +69,41 @@ class Arrangement(Carriageway):
         _string += ')'
         return _string
 
+    def get_position(self):
+        cursor = 0
+        center = []
+        load = []
+        if self.veh[0] == 'a':
+            cursor += 0.150 + ll_A.width
+            center.append(cursor - ll_A.width / 2)
+        else:
+            cursor += max(1.200 + vehicle(self.veh[0]).width, 7.250)
+            center.append(1.200 + (vehicle(self.veh[0]).width / 2))
+        right_wheel = center[0] + (vehicle(self.veh[0]).width / 2)
+        load.append(vehicle(self.veh[0]).weight)
+        index = 1
+        for _i in self.veh[1:]:
+            gap = max(cursor - right_wheel, 1.200)
+            if _i == 'a':
+                center.append(right_wheel + gap + ll_A.width / 2)
+                cursor = center[index - 1] - ll_A.width / 2
+            else:
+                gap = max(cursor - right_wheel, 3.500 - vehicle(_i).width / 2, 1.200)
+                center.append(right_wheel + gap + vehicle(_i).width / 2)
+                cursor = center[index] + max(vehicle(_i).width, 3.500)
+            right_wheel = center[index] + vehicle(_i).width / 2
+            load.append(vehicle(self.veh[index]).weight)
+            index += 1
+        Arrangement.position = center
+        Arrangement.weight = load
+        Arrangement.get_position_index = 1
+
     def eccentricity(self):
 
-        arr_dist_from_center = np.array(Arrangement.center) - self.width / 2
-        arr_load = np.array(Arrangement.load)
+        # if Arrangement.get_position_index == 0:
+        Arrangement.get_position(self)
+        arr_dist_from_center = np.array(Arrangement.position) - self.width / 2
+        arr_load = np.array(Arrangement.weight)
         eccentricity = (arr_dist_from_center * arr_load).sum() / arr_load.sum()
         return eccentricity
 
@@ -101,19 +111,21 @@ class Arrangement(Carriageway):
         f, ax = plt.subplots(figsize=(7, 3))
         plt.subplots_adjust(bottom=0.25)
         ax.plot()
+        ax.set_xlim(-0.1, self.width)
         ax.set_ylim(-0.02, 0.1)
-
+        ax.hlines(y=0, xmax=self.width, xmin=0, lw=0.5)
         ticks = []
-        for _index, _i in enumerate(Arrangement.center):
-            left_wheel = _i - vehicle(self.veh[_index]).width / 2
-            right_wheel = _i + vehicle(self.veh[_index]).width / 2
-            ticks.extend([left_wheel, _i, right_wheel])
-            ax.arrow(_i, 0.03, 0, -0.030, length_includes_head=True, head_width=100, head_length=0.005)
+        for _index, _i in enumerate(self.veh):
+            left_wheel = Arrangement.position[_index] - vehicle(self.veh[_index]).width / 2
+            right_wheel = Arrangement.position[_index] + vehicle(self.veh[_index]).width / 2
+            ticks.extend([round(left_wheel, 2), round(Arrangement.position[_index], 2), round(right_wheel, 2)])
+            ax.arrow(Arrangement.position[_index], 0.01, 0, -0.010, length_includes_head=True, head_width=0.1, head_length=0.005)
             ax.hlines(y=0, xmax=right_wheel, xmin=left_wheel)
-            ax.text(_i, -0.01, f'{vehicle(self.veh[_index]).name}', ha='center')
+            ax.text(Arrangement.position[_index], -0.01, f'{vehicle(self.veh[_index]).name}', ha='center')
+            ax.text(Arrangement.position[_index], 0.015, f'{Arrangement.weight[_index]}', ha='center')
+
         ax.set_xticks(ticks)
         ax.set_xticklabels(ticks, rotation=45, fontsize=7)
         ax.set_xlabel('Distance from left abutment in metres')
         ax.set_yticks([])
-
         return ax
