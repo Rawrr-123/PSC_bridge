@@ -14,21 +14,21 @@ class load:
 
         if self.j=="a":
             self.name="Class A"
-            self.ws = 1900
-            self.lefclr = 150+self.ws/2
-            self.g = 1200
+            self.ws = 1.9
+            self.lefclr = 0.150+self.ws/2
+            self.g = 1.2
             self.gs=self.g+self.ws
             self.q=114
         elif self.j=="b":
             self.name = "70R Wheeled"
-            self.ws = 7000
-            self.lefclr = 1200 + 2600/2
+            self.ws = 7
+            self.lefclr = 1.2 + 2.6/2
             self.gs=self.ws
             self.q = 700
         elif self.j=="c":
             self.name = "70R Tracked"
-            self.ws = 7000
-            self.lefclr = 1200 + 2060/2
+            self.ws = 7
+            self.lefclr = 1.2 + 2.06/2
             self.gs=self.ws
             self.q = 700
 
@@ -48,7 +48,7 @@ right_pos=dfl[13][4]
 
 """Distance of centroidal axis from leftmost edge"""
 # cl=(dls.axes[0]-left_pos+kerb_len)
-cl=7500
+cl=7.5
 
 cw=15
 dist=[]
@@ -57,7 +57,7 @@ cla=[]
 cl70rw=[]
 cl70rt=[]
 # print(e)
-combination = comb(width=15)
+combination = comb(width=cw)
 perco=[]
 
 for i in range(len(combination)):
@@ -84,7 +84,7 @@ for i in range(len(perco)):
             if lod.name=="Class A":
                 laspos = (lod.lefclr+lod.ws/2+lod.g)
             else:
-                laspos=(7250)
+                laspos=(7.25)
         else:
             e1 += (laspos+lod.ws/2) * lod.q
             laspos+=lod.gs
@@ -97,9 +97,9 @@ for i in range(len(perco)):
     a3=perco[i].count('c')
     cl70rt.append(a3)
     if len(perco)==1:
-        e.append(cl/1000-(e1 / (1000 * (a1*114 + a2*700 + a3*700+500))))
+        e.append(cl-(e1 / (a1*114 + a2*700 + a3*700+500)))
     else:
-        e.append(cl/1000-(e1/(1000*(a1*114+a2*700+a3*700))))
+        e.append(cl-(e1/(a1*114+a2*700+a3*700)))
 
 df=pd.DataFrame({
     'Class A':cla,
