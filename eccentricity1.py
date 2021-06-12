@@ -1,6 +1,9 @@
+import pandas as pd
 from comb import comb
 from itertools import permutations
-import DL_Section as dls
+import csv
+
+
 # breadth = (2.3, 2.79, 2.90)
 # load = (554, 700, 700)
 
@@ -29,13 +32,15 @@ class load:
             self.gs=self.ws
             self.q = 700
 
+df=pd.read_csv('data/DL.csv',delimiter=',').T
+dfl=df.values.tolist()
+kerb_len=dfl[10][2]
 
-kerb_len=dls.length[10]
-"""Length of Kerb"""
-
-"""Position of edges of kerb"""
-left_pos=dls.pos[10][0]
-right_pos=dls.pos[13][0]
+# """Length of Kerb"""
+#
+# """Position of edges of kerb"""
+left_pos=dfl[10][4]
+right_pos=dfl[13][4]
 
 """Carriageway width"""
 # cw=right_pos-left_pos-kerb_len
@@ -48,8 +53,10 @@ cl=7500
 cw=15
 dist=[]
 e=[]
-
-print(e)
+cla=[]
+cl70rw=[]
+cl70rt=[]
+# print(e)
 combination = comb(width=15)
 perco=[]
 
@@ -65,7 +72,7 @@ for i in range(len(combination)):
     p=list(set(perm))
     for i in range(len(p)):
         perco.append(p[i])
-print(perco)
+# print(perco)
 
 for i in range(len(perco)):
     e1=0
@@ -83,13 +90,21 @@ for i in range(len(perco)):
             laspos+=lod.gs
     if len(perco[i]) == 1 and lod.name == "Class A":
         e1 += (laspos + lod.ws / 2 + (cw - (laspos + lod.ws / 2)) / 2) * (cw - (laspos + lod.ws / 2)) * 0.5
-    a1=perco[i].count('a')*114
-    a2=perco[i].count('b')*700
-    a3=perco[i].count('c')*700
+    a1=perco[i].count('a')
+    cla.append(a1)
+    a2=perco[i].count('b')
+    cl70rw.append(a2)
+    a3=perco[i].count('c')
+    cl70rt.append(a3)
     if len(perco)==1:
-        e.append(cl/1000-(e1 / (1000 * (a1 + a2 + a3+500))))
+        e.append(cl/1000-(e1 / (1000 * (a1*114 + a2*700 + a3*700+500))))
     else:
-        e.append(cl/1000-(e1/(1000*(a1+a2+a3))))
+        e.append(cl/1000-(e1/(1000*(a1*114+a2*700+a3*700))))
 
-print(e)
+df=pd.DataFrame({
+    'Class A':cla,
+    '70R Wheeled':cl70rw,
+    '70R Tracked':cl70rt,
+    'Eccentricity':e }).T
+df.to_csv('data/eccentricity.csv',index_label="Load Combinations")
 
