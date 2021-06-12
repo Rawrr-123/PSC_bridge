@@ -1,6 +1,6 @@
 class Load:
 
-    def __init__(self, pos, wheel_load):
+    def __init__(self, pos, wheel_load, width):
         """
 
         Args:
@@ -9,6 +9,7 @@ class Load:
         """
         self.pos = pos
         self.wheel_load = wheel_load
+        self.width = width
 
     @property
     def wheel_length(self):
@@ -28,6 +29,7 @@ class Load:
         """
         return round(sum(self.pos), 2)
 
+
     @property
     def loadpair(self):
         """
@@ -41,8 +43,8 @@ class Load:
         return zip(wheel_pos, self.wheel_load)
 
 
-ll_70R = Load([0.61, 3.960, 1.520, 2.130, 1.370, 3.050, 1.370, 0.91], [80, 120, 120, 170, 170, 170, 170])
-ll_70RT = Load([0.0, 0.653, 0.653, 0.653, 0.652, 0.653, 0.653, 0.653, 0.0], [50, 100, 100, 100, 100, 100, 100, 50])
-ll_A = Load([0.6, 1.1, 3.2, 1.2, 4.3, 3, 3, 3, 0.6], [27, 27, 114, 114, 68, 68, 68, 68, 27, 27])
+ll_70R = Load([0.61, 3.960, 1.520, 2.130, 1.370, 3.050, 1.370, 0.91], [80, 120, 120, 170, 170, 170, 170], 2790)
+ll_70RT = Load([0.0, 0.653, 0.653, 0.653, 0.652, 0.653, 0.653, 0.653, 0.0], [50, 100, 100, 100, 100, 100, 100, 50], 2900)
+ll_A = Load([0.6, 1.1, 3.2, 1.2, 4.3, 3, 3, 3, 0.6], [27, 27, 114, 114, 68, 68, 68, 68, 27, 27], 2300)
 
 list(ll_70R.loadpair)
