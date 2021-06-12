@@ -92,3 +92,4 @@ for i in range(len(perco)):
         e.append(cl/1000-(e1/(1000*(a1+a2+a3))))
 
 print(e)
+
