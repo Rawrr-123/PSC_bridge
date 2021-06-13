@@ -108,6 +108,7 @@ class Arrangement(Carriageway):
         return eccentricity
 
     def plot_signal(self):
+        Arrangement.get_position(self)
         f, ax = plt.subplots(figsize=(7, 3))
         plt.subplots_adjust(bottom=0.25)
         ax.plot()
