@@ -56,11 +56,16 @@ class Arrangement(Carriageway):
     position = []
     weight = []
     get_position_index = 0
+    last_wheel = 0
 
     def __init__(self, veh, width):
         super().__init__(width)
         self.veh = veh
         self.width = width
+        self.position = []
+        self.weight = []
+        self.get_position_index = 0
+        self.last_wheel = 0
 
     def __str__(self):
         _string = '('
@@ -73,6 +78,9 @@ class Arrangement(Carriageway):
         cursor = 0
         center = []
         load = []
+
+        g = 0.4 + (self.width - 5.3) if 5.3 <= self.width <= 6.1 else 1.2  # for ClassA and general
+
         if self.veh[0] == 'a':
             cursor += 0.150 + ll_A.width
             center.append(cursor - ll_A.width / 2)
@@ -83,7 +91,7 @@ class Arrangement(Carriageway):
         load.append(vehicle(self.veh[0]).weight)
         index = 1
         for _i in self.veh[1:]:
-            gap = max(cursor - right_wheel, 1.200)
+            gap = max(cursor - right_wheel, g)
             if _i == 'a':
                 center.append(right_wheel + gap + ll_A.width / 2)
                 cursor = center[index - 1] - ll_A.width / 2
@@ -94,39 +102,62 @@ class Arrangement(Carriageway):
             right_wheel = center[index] + vehicle(_i).width / 2
             load.append(vehicle(self.veh[index]).weight)
             index += 1
-        Arrangement.position = center
-        Arrangement.weight = load
-        Arrangement.get_position_index = 1
+        self.position = center
+        self.weight = load
+        self.get_position_index = 1
+        self.last_wheel = right_wheel
+
+    def check_exceedance(self):
+        gap_last = 0.15 if self.veh[-1] == 'a' else 1.2
+        if self.last_wheel + gap_last > self.width:
+            return 0
+        else:
+            return 1
+
+    def check_from_right(self):
+        if self.veh[-1] == 'b' or self.veh[-1] == 'c':
+            no_permission_zone = 7.25
+        else:
+            no_permission_zone = 0
+
+        if self.position[-2] + vehicle(self.veh[-2]).width / 2 > self.width - no_permission_zone:
+            return 0
+        else:
+            return 1
 
     def eccentricity(self):
 
-        # if Arrangement.get_position_index == 0:
-        Arrangement.get_position(self)
-        arr_dist_from_center = np.array(Arrangement.position) - self.width / 2
-        arr_load = np.array(Arrangement.weight)
-        eccentricity = (arr_dist_from_center * arr_load).sum() / arr_load.sum()
-        return eccentricity
+        if Arrangement.get_position_index == 0:
+            Arrangement.get_position(self)
+        if Arrangement.check_exceedance(self) * Arrangement.check_from_right(self) == 1:
+            arr_dist_from_center = np.array(self.position) - self.width / 2
+            arr_load = np.array(self.weight)
+            eccentricity = (arr_dist_from_center * arr_load).sum() / arr_load.sum()
+            return eccentricity
 
     def plot_signal(self):
-        Arrangement.get_position(self)
-        f, ax = plt.subplots(figsize=(7, 3))
-        plt.subplots_adjust(bottom=0.25)
-        ax.plot()
-        ax.set_xlim(-0.1, self.width)
-        ax.set_ylim(-0.02, 0.1)
-        ax.hlines(y=0, xmax=self.width, xmin=0, lw=0.5)
-        ticks = []
-        for _index, _i in enumerate(self.veh):
-            left_wheel = Arrangement.position[_index] - vehicle(self.veh[_index]).width / 2
-            right_wheel = Arrangement.position[_index] + vehicle(self.veh[_index]).width / 2
-            ticks.extend([round(left_wheel, 2), round(Arrangement.position[_index], 2), round(right_wheel, 2)])
-            ax.arrow(Arrangement.position[_index], 0.01, 0, -0.010, length_includes_head=True, head_width=0.1, head_length=0.005)
-            ax.hlines(y=0, xmax=right_wheel, xmin=left_wheel)
-            ax.text(Arrangement.position[_index], -0.01, f'{vehicle(self.veh[_index]).name}', ha='center')
-            ax.text(Arrangement.position[_index], 0.015, f'{Arrangement.weight[_index]}', ha='center')
-        ticks.append(self.width)
-        ax.set_xticks(ticks)
-        ax.set_xticklabels(ticks, rotation=45, fontsize=7)
-        ax.set_xlabel('Distance from left abutment in metres')
-        ax.set_yticks([])
-        return ax
+        if Arrangement.get_position_index == 0:
+            Arrangement.get_position(self)
+        if Arrangement.check_exceedance(self) * Arrangement.check_from_right(self) == 1:
+            f, ax = plt.subplots(figsize=(7, 3))
+            plt.subplots_adjust(bottom=0.25)
+            ax.plot()
+            ax.set_xlim(-0.1, self.width)
+            ax.set_ylim(-0.02, 0.1)
+            ax.hlines(y=0, xmax=self.width, xmin=0, lw=0.5)
+            ticks = []
+            for _index, _i in enumerate(self.veh):
+                left_wheel = self.position[_index] - vehicle(self.veh[_index]).width / 2
+                right_wheel = self.position[_index] + vehicle(self.veh[_index]).width / 2
+                ticks.extend([round(left_wheel, 2), round(self.position[_index], 2), round(right_wheel, 2)])
+                ax.arrow(self.position[_index], 0.01, 0, -0.010, length_includes_head=True, head_width=0.1,
+                         head_length=0.005)
+                ax.hlines(y=0, xmax=right_wheel, xmin=left_wheel)
+                ax.text(self.position[_index], -0.01, f'{vehicle(self.veh[_index]).name}', ha='center')
+                ax.text(self.position[_index], 0.015, f'{self.weight[_index]}', ha='center')
+            ticks.append(self.width)
+            ax.set_xticks(ticks)
+            ax.set_xticklabels(ticks, rotation=45, fontsize=7)
+            ax.set_xlabel('Distance from left abutment in metres')
+            ax.set_yticks([])
+            return ax

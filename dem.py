@@ -1,7 +1,7 @@
 from matplotlib import pyplot as plt
 
-from carriageway import Arrangement, Combination, Carriageway
-carr = Carriageway(9.7)
+from carriageway import Carriageway
+carr = Carriageway(width=15)
 comb = carr.combinations()
 for j in comb:
     print(j)
@@ -10,8 +10,9 @@ for j in comb:
     for i in arr:
         print(i)
         ax = i.plot_signal()
-        plots.append(ax)
-        print(i.eccentricity())
+        if ax is not None:
+            plots.append(ax)
+            print(i.eccentricity())
     for i in plots:
         i.plot()
         plt.show()

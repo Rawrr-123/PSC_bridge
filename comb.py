@@ -9,7 +9,7 @@ def lane_number(CW_width):
 
     if 14.5 <= CW_width < 16.6:
         return 4
-    elif 9.7 <= CW_width < 13.1:
+    elif 9.6 <= CW_width < 13.1:
         return 3
     elif 5.3 <= CW_width < 9.6:
         return 2
