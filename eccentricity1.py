@@ -18,7 +18,7 @@ class load:
             self.lefclr = 0.150+self.ws/2
             self.g = 1.2
             self.gs=self.g+self.ws
-            self.q=114
+            self.q=608
         elif self.j=="b":
             self.name = "70R Wheeled"
             self.ws = 7
@@ -108,3 +108,4 @@ df=pd.DataFrame({
     'Eccentricity':e }).T
 df.to_csv('data/eccentricity.csv',index_label="Load Combinations")
 
+print(df)

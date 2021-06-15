@@ -3,7 +3,7 @@ from matplotlib import pyplot as plt
 from carriageway import Carriageway, Combination, Arrangement
 import pandas as pd
 
-carriageway = Carriageway(width=10)
+carriageway = Carriageway(width=15)
 combinations = carriageway.combinations()
 list_combinations = []
 list_max_e = []
