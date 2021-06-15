@@ -3,7 +3,7 @@ from matplotlib import pyplot as plt
 from carriageway import Carriageway, Combination, Arrangement
 import pandas as pd
 
-carriageway = Carriageway(width=10)
+carriageway = Carriageway(width=15)
 combinations = carriageway.combinations()
 list_combinations = []
 list_max_e = []
@@ -25,7 +25,7 @@ for i in combinations:
 
 df = pd.DataFrame(list_combinations, columns=['ClassA', 'Class70Rw', 'Class70Rt'], index=[f'comb{i+1}' for i in range(len(list_combinations))])
 df['MaxEccentricity'] = list_max_e
-print(df)
+df.to_excel('outputs/max_e.xlsx')
 
 # for i in list_plot:
 #     i.plot()

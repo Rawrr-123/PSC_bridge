@@ -6,13 +6,14 @@ def lane_number(CW_width):
         CW_width: carriageway width in meters
 
     """
-    if 13.1 < CW_width < 16.6:
+
+    if 14.5 <= CW_width < 16.6:
         return 4
-    elif 9.6 < CW_width < 13.1:
+    elif 9.7 <= CW_width < 13.1:
         return 3
-    elif 5.3 < CW_width < 9.6:
+    elif 5.3 <= CW_width < 9.6:
         return 2
-    elif 4.25 < CW_width < 5.3:
+    elif 4.25 <= CW_width < 5.3:
         return 1
     else:
         return 0

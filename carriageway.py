@@ -124,7 +124,7 @@ class Arrangement(Carriageway):
             ax.hlines(y=0, xmax=right_wheel, xmin=left_wheel)
             ax.text(Arrangement.position[_index], -0.01, f'{vehicle(self.veh[_index]).name}', ha='center')
             ax.text(Arrangement.position[_index], 0.015, f'{Arrangement.weight[_index]}', ha='center')
-
+        ticks.append(self.width)
         ax.set_xticks(ticks)
         ax.set_xticklabels(ticks, rotation=45, fontsize=7)
         ax.set_xlabel('Distance from left abutment in metres')
