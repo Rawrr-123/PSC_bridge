@@ -115,6 +115,8 @@ class Arrangement(Carriageway):
         self.last_wheel = right_wheel
 
     def check_exceedance(self):
+        if self.get_position_index == 0:
+            Arrangement.get_position(self)
         gap_last = 0.15 if self.veh[-1] == 'a' else 1.2
         if self.last_wheel + gap_last > self.width:
             return 0
@@ -122,6 +124,8 @@ class Arrangement(Carriageway):
             return 1
 
     def check_from_right(self):
+        if self.get_position_index == 0:
+            Arrangement.get_position(self)
         if len(self.veh) >= 2:
             if self.veh[-1] == 'b' or self.veh[-1] == 'c':
                 no_permission_zone = 7.25
@@ -139,36 +143,34 @@ class Arrangement(Carriageway):
 
         if self.get_position_index == 0:
             Arrangement.get_position(self)
-        if Arrangement.check_exceedance(self) * Arrangement.check_from_right(self) == 1:
-            arr_dist_from_center = np.array(self.position) - self.width / 2
-            arr_load = np.array(self.veh_weight)
-            eccentricity = (arr_dist_from_center * arr_load).sum() / arr_load.sum()
-            return eccentricity
+        arr_dist_from_center = np.array(self.position) - self.width / 2
+        arr_load = np.array(self.veh_weight)
+        eccentricity = (arr_dist_from_center * arr_load).sum() / arr_load.sum()
+        return eccentricity
 
     def plot_signal(self):
         if self.get_position_index == 0:
             Arrangement.get_position(self)
-        if Arrangement.check_exceedance(self) * Arrangement.check_from_right(self) == 1:
-            f, ax = plt.subplots(figsize=(7, 3))
-            plt.subplots_adjust(bottom=0.25)
-            ax.plot()
-            ax.set_xlim(-0.1, self.width)
-            ax.set_ylim(-0.02, 0.1)
-            ax.hlines(y=0, xmax=self.width, xmin=0, lw=0.5)
-            ticks = []
-            for _index, _i in enumerate(self.veh):
-                ticks.append(self.width)
-                left_wheel = self.position[_index] - self.veh_width[_index] / 2
-                right_wheel = self.position[_index] + self.veh_width[_index] / 2
-                ticks.extend([round(left_wheel, 2), round(self.position[_index], 2), round(right_wheel, 2)])
-                ax.arrow(self.position[_index], 0.01, 0, -0.010, length_includes_head=True, head_width=0.1,
-                         head_length=0.005)
-                ax.hlines(y=0, xmax=right_wheel, xmin=left_wheel)
-                ax.text(self.position[_index], -0.01, f'{self.veh_name[_index]}', ha='center')
-                ax.text(self.position[_index], 0.015, f'{self.veh_weight[_index]}', ha='center')
+        f, ax = plt.subplots(figsize=(7, 3))
+        plt.subplots_adjust(bottom=0.25)
+        ax.plot()
+        ax.set_xlim(-0.1, self.width)
+        ax.set_ylim(-0.02, 0.1)
+        ax.hlines(y=0, xmax=self.width, xmin=0, lw=0.5)
+        ticks = []
+        for _index, _i in enumerate(self.veh):
             ticks.append(self.width)
-            ax.set_xticks(ticks)
-            ax.set_xticklabels(ticks, rotation=45, fontsize=7)
-            ax.set_xlabel('Distance from left kerb in metres')
-            ax.set_yticks([])
-            return ax
+            left_wheel = self.position[_index] - self.veh_width[_index] / 2
+            right_wheel = self.position[_index] + self.veh_width[_index] / 2
+            ticks.extend([round(left_wheel, 2), round(self.position[_index], 2), round(right_wheel, 2)])
+            ax.arrow(self.position[_index], 0.01, 0, -0.010, length_includes_head=True, head_width=0.1,
+                     head_length=0.005)
+            ax.hlines(y=0, xmax=right_wheel, xmin=left_wheel)
+            ax.text(self.position[_index], -0.01, f'{self.veh_name[_index]}', ha='center')
+            ax.text(self.position[_index], 0.015, f'{self.veh_weight[_index]}', ha='center')
+        ticks.append(self.width)
+        ax.set_xticks(ticks)
+        ax.set_xticklabels(ticks, rotation=45, fontsize=7)
+        ax.set_xlabel('Distance from left kerb in metres')
+        ax.set_yticks([])
+        return ax
