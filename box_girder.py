@@ -1,5 +1,6 @@
 import pandas as pd
 
+sections=[]
 
 def find_bm(s, u, b):
     if u < 0 or u > s:
@@ -40,6 +41,8 @@ for i in range(len(loads)):
     maxSF_minus = []
     for j in range(9):
         at = span / 8 * j
+        if at not in sections:
+            sections.append(at)
         first_wheel_at = 0
         step = 0.1
 
@@ -82,4 +85,5 @@ iterables = [A, B]
 index = pd.MultiIndex.from_product(iterables)
 df = pd.DataFrame(C, index=index, columns=[span / 8 * i for i in range(9)])
 # print(df.loc['ClassA', 'MaxSF-'])   ## you can navigate using loc, iloc
-df.to_excel('outputs/loads.xlsx')
+# df.to_excel('outputs/loads.xlsx')
+

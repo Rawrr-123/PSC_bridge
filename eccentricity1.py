@@ -18,17 +18,17 @@ class load:
             self.lefclr = 0.150+self.ws/2
             self.g = 1.2
             self.gs=self.g+self.ws
-            self.q=608
+            self.q=114
         elif self.j=="b":
             self.name = "70R Wheeled"
             self.ws = 7
-            self.lefclr = 1.2 + 2.6/2
+            self.lefclr = 1.2 + 2.79/2
             self.gs=self.ws
-            self.q = 1000
+            self.q = 700
         elif self.j=="c":
             self.name = "70R Tracked"
             self.ws = 7
-            self.lefclr = 1.2 + 2.06/2
+            self.lefclr = 1.2 + 2.9/2
             self.gs=self.ws
             self.q = 700
 
@@ -48,9 +48,9 @@ right_pos=dfl[13][4]
 
 """Distance of centroidal axis from leftmost edge"""
 # cl=(dls.axes[0]-left_pos+kerb_len)
-cl=7.5
+cl=3
 
-cw=15
+cw=6
 dist=[]
 e=[]
 cla=[]

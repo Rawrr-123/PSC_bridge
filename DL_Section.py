@@ -1,5 +1,6 @@
 import csv
 import pandas as pd
+from box_girder import sections as sc
 #Positions are calculated from bottom left grid space of shape
 
 A_sum=0
@@ -99,13 +100,33 @@ for i in range(len(obj)):
     I_y = area[i] * h_y ** 2 + I_y
 # print ("The principal moment of inertia of section about centroidal (x,y) axes:",axes," is ",[I_x,I_y])
 
-dead=A_sum*25
+PDL_load=A_sum*25
+PDL_seperate=[a*25 for a in area]
 # print(dead)
-dl_moment=[]
-larm=[]
-for i in range(len(obj)):
-    dl_moment.append((area[i])*25*(abs(centroid[i][0]-axes[0])))
-    larm.append(abs(centroid[i][0]-axes[0]))
+# dl_moment=[]
+ODL_load=(length[10]+length[13])*0.3*25+4
+cw=(pos[13][0]-pos[10][0]+length[10])
+Surfl_load=cw*0.1*22
+
+
+span=50
+
+
+if span<=50:
+    supl=(500)/100
+elif (span>7.5 and span<=30):
+    supl = ((500 - (40 * span - 300) / 9) / 100)
+elif (span>30):
+     supl=((500-260)+(4800/span))*(16.5-max(length[10],length[13]))/1500
+
+pdld = supl*(length[10]+length[13])
+
+
+# larm=[]
+# for i in range(len(obj)):
+#     dl_moment.append((area[i])*25*(abs(centroid[i][0]-axes[0])))
+#     larm.append(abs(centroid[i][0]-axes[0]))
+
 CentroidalX,CentroidalY=map(list,zip(*centroid))
 MOIX,MOIY=map(list,zip(*moi))
 posx,posy=map(list,zip(*pos))
@@ -120,18 +141,37 @@ df=pd.DataFrame({
     'Centroidal Y':CentroidalY,
     'I-X':MOIX,
     'I-Y':MOIY,
-    'Dead Loads':[a*25 for a in area],
-    'Lever Arm':larm,
-    'Dead Load Moments':dl_moment
+    'Dead Loads':PDL_seperate,
+    # 'Lever Arm':larm,
+    # 'Dead Load Moments':dl_moment
 
 
 }).T
+PDL=[]
+ODL=[]
+SufDL=[]
+PedL=[]
+
+for i in range(len(sc)):
+    alls=(sc[i]*span/2)-(sc[i]**2/2)
+    PDL.append(alls*PDL_load)
+    ODL.append(alls*ODL_load)
+    SufDL.append(alls*Surfl_load)
+    PedL.append(alls*pdld)
+
 df2=pd.DataFrame({
     'Bridge Centroid':axes,
     'Centroidal MOI':list((I_x,I_y)),
-    'Sum of Dead Load Moment':sum(dl_moment)}).T
-pd.concat([df,df2],axis=0).to_csv('data/DL.csv')
+    # 'Sum of Dead Load Moment':sum(dl_moment
+                 }).T
 
+df3=pd.DataFrame({'Section at':sc, 'Dead Load':PDL,'Other Loads':ODL,'Surface Loads':SufDL,
+                  'Pedestrian Load':PedL
+
+
+},index=sc)
+pd.concat([df,df2],axis=0).to_csv('data/DL.csv')
+df3.to_csv('outputs/Moments.csv',index_label="Section at")
 # print("Dead load per m length is:",Dead_Loads)
 
 
