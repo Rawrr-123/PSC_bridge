@@ -111,12 +111,12 @@ cw = (pos[13][0] - pos[10][0] + length[10])
 Surfl_load = cw * 0.1 * 22
 
 span = 50
-
+supl = 0
 if span <= 50:
-    supl = (500) / 100
-elif (span > 7.5 and span <= 30):
+    supl = 500 / 100
+elif 7.5 < span <= 30:
     supl = ((500 - (40 * span - 300) / 9) / 100)
-elif (span > 30):
+elif span > 30:
     supl = ((500 - 260) + (4800 / span)) * (16.5 - max(length[10], length[13])) / 1500
 
 pdld = supl * (length[10] + length[13])
@@ -167,6 +167,6 @@ df3 = pd.DataFrame({'Section at': sc, 'Dead Load': PDL, 'Other Loads': ODL, 'Sur
                     'Pedestrian Load': PedL
 
                     }, index=sc)
-pd.concat([df, df2], axis=0).to_csv('data/DL.csv')
+pd.concat([df, df2], axis=0).to_csv('outputs/DL.csv')
 df3.to_csv('outputs/Moments.csv', index_label="Section at")
 # print("Dead load per m length is:",Dead_Loads)
