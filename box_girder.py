@@ -34,12 +34,15 @@ span = 50
 maxBMs = []
 maxSFs_plus = []
 maxSFs_minus = []
+sections = []
 for i in range(len(loads)):
     maxBM = []
     maxSF_plus = []
     maxSF_minus = []
     for j in range(9):
         at = span / 8 * j
+        if at not in sections:
+            sections.append(at)
         first_wheel_at = 0
         step = 0.1
 
