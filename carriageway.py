@@ -34,6 +34,9 @@ class Combination(Carriageway):
         self.class70Rw = nclass70_rw
         self.class70Rt = nclass70_rt
 
+    def get_value(self):
+        return [self.classA, self.class70Rw, self.class70Rt]
+
     def arrangements(self):
         obj = []
         veh = []  # all vehicles <'a'><'b'><'c'> as indices for <classA><70RW><70RT>
@@ -77,6 +80,9 @@ class Arrangement(Carriageway):
             _string += f'{_i}'
         _string += ')'
         return _string
+
+    def get_value(self):
+        return [self.veh]
 
     def get_position(self):
         cursor = 0

@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 plt.style.use('seaborn')
-
+plt.interactive(0)
 
 def impact(loading, span, material='RCC'):
     """
@@ -14,7 +14,7 @@ def impact(loading, span, material='RCC'):
         impact factor value (float)
 
     """
-    if loading == 'classA' or loading == 'class B':
+    if loading == 'Class A' or loading == 'Class B':
         if material == 'RCC':
             if span <= 3:
                 return 0.5
@@ -29,9 +29,9 @@ def impact(loading, span, material='RCC'):
                 return 9 / (13.5 + span)
             else:
                 return 0.154
-    if loading == 'classAA' or loading == '70R' or loading == '70RT':
+    if loading == 'Class AA' or loading == 'Class 70RW' or loading == 'Class 70RT':
         if span < 9:
-            if loading == '70RT':
+            if loading == 'Class 70RT':
                 if span <= 5:
                     return 0.25
                 else:
@@ -40,30 +40,30 @@ def impact(loading, span, material='RCC'):
                 return .25
         else:
             if material == 'RCC':
-                if loading == '70RT':
+                if loading == 'Class 70RT':
                     if span <= 40:
                         return 0.1
                     else:
-                        return impact('classA', span, 'RCC')
+                        return impact('Class A', span, 'RCC')
                 else:
                     if span < 12:
                         return 0.25
                     else:
-                        return impact('classA', span, 'RCC')
+                        return impact('Class A', span, 'RCC')
             if material == 'steel':
-                if loading == '70RT':
+                if loading == 'Class 70RT':
                     return 0.1
                 else:
                     if span < 23:
                         return 0.25
                     else:
-                        return impact('classA', span, 'steel')
+                        return impact('Class A', span, 'steel')
 
 
 x = [i*0.5 for i in range(int(50 / 0.5))]
-ll_A_RCC = [impact('classA', i * 0.5) for i in range(int(50 / 0.5))]
-ll_70R_RCC = [impact('70R', i * 0.5) for i in range(int(50 / 0.5))]
-ll_70RT_RCC = [impact('70RT', i * 0.5) for i in range(int(50 / 0.5))]
+ll_A_RCC = [impact('ClassA', i * 0.5) for i in range(int(50 / 0.5))]
+ll_70R_RCC = [impact('Class 70RW', i * 0.5) for i in range(int(50 / 0.5))]
+ll_70RT_RCC = [impact('Class 70RT', i * 0.5) for i in range(int(50 / 0.5))]
 
 # ll_A_steel = [impact('classA', i * 0.5, 'steel') for i in range(int(50 / 0.5))]
 # ll_70R_steel = [impact('70R', i * 0.5, 'steel') for i in range(int(50 / 0.5))]
@@ -71,9 +71,9 @@ ll_70RT_RCC = [impact('70RT', i * 0.5) for i in range(int(50 / 0.5))]
 
 plt.figure(figsize=(9, 6))
 
-plt.plot(x, ll_A_RCC, label="class A RCC")
-plt.plot(x, ll_70R_RCC, label="70R RCC")
-plt.plot(x, ll_70RT_RCC, label="70RT RCC")
+plt.plot(x, ll_A_RCC, label="Class A RCC")
+plt.plot(x, ll_70R_RCC, label="Class 70R RCC")
+plt.plot(x, ll_70RT_RCC, label="Class 70RT RCC")
 
 # plt.plot(x, ll_A_steel, label="class A steel")
 # plt.plot(x, ll_70R_steel, label="70R steel")
