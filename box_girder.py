@@ -70,19 +70,38 @@ for i in range(len(loads)):
     maxSFs_plus.append(maxSF_plus)
     maxSFs_minus.append(maxSF_minus)
 
-# print(f'Max Bending moments \n {maxBMs}')
-# print(f'Max positive Shear Forces \n {maxSFs_plus}')
-# print(f'Max negative Shear Forces \n {maxSFs_minus}')
+A = ['MaxBM', 'MaxSF+', 'MaxSF-']
+B = ['ClassA', 'Class70RW', 'Class70RT']
 
-A = ['ClassA', 'Class70RW', 'Class70RT']
-B = ['MaxBM', 'MaxSF+', 'MaxSF-']
-C = []
-for i in range(len(loads)):
-    for j in [maxBMs, maxSFs_plus, maxSFs_minus]:
-        C.append(j[i])
+# A = ['ClassA', 'Class70RW', 'Class70RT']
+# B = ['MaxBM', 'MaxSF+', 'MaxSF-']
 
 iterables = [A, B]
 index = pd.MultiIndex.from_product(iterables)
+
+C = []
+
+for i in [maxBMs, maxSFs_plus, maxSFs_minus]:
+    C.extend(i)
+
+# for i in range(len(loads)):
+#     for j in [maxBMs, maxSFs_plus, maxSFs_minus]:
+#         C.append(j[i])
+
 df = pd.DataFrame(C, index=index, columns=[span / 8 * i for i in range(9)])
-# print(df.loc['ClassA', 'MaxSF-'])   ## you can navigate using loc, iloc
+# print(df.loc[('ClassA', 'MaxSF-')])   ## you can navigate using loc, iloc
+
+new_row = df.loc['MaxSF+'].where(df.loc['MaxSF+'] > abs(df.loc['MaxSF-']), abs(df.loc['MaxSF-']))
+
+new_row.index = pd.MultiIndex.from_product([['MaxSF'], B])
+df = pd.concat([df, new_row])
+
 df.to_excel('outputs/loads.xlsx')
+#
+#
+# df = pd.read_excel('outputs/loads.xlsx', index_col=[0, 1])
+# ###get index names###
+#
+# A = df.index.get_level_values(0).drop_duplicates().to_list()
+# B = df.index.get_level_values(1).drop_duplicates().to_list()
+# print(A, B)
