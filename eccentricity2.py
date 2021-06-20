@@ -1,9 +1,8 @@
 import pandas as pd
-from matplotlib import pyplot as plt
 
 from carriageway import Carriageway
 
-carriageway = Carriageway(width=6)
+carriageway = Carriageway(width=15)
 combinations = carriageway.combinations()
 list_combinations = []
 list_max_e = []

@@ -78,7 +78,7 @@ new_row = df.loc['MaxSF+'].where(df.loc['MaxSF+'] > abs(df.loc['MaxSF-']), abs(d
 new_row.index = pd.MultiIndex.from_product([['MaxSF'], B])
 df = pd.concat([df, new_row])
 
-# df.to_excel('outputs/loads.xlsx')
+df.to_excel('outputs/loads.xlsx')
 
 # df = pd.read_excel('outputs/loads.xlsx', index_col=[0, 1])
 # ###get index names###
