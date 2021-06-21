@@ -1,40 +1,22 @@
 import pandas as pd
 
-sections=[]
-
-def find_bm(s, u, b):
-    if u < 0 or u > s:
-        b = 0
-    elif 0 <= u < b:
-        b = u / s * (s - b)
-    else:
-        b = (s - u) / s * b
-
-    return b
-
-
-def find_sf(s, u, b):
-    if u < 0 or u > s:
-        sh = 0
-    elif 0 <= u < b:
-        sh = -u / s
-    else:
-        sh = (s - u) / s
-    return sh
-
+from carriageway import Carriageway
+from impact_factor import impact
+from load import ll_A, ll_70R, ll_70RT
+from reaction import find_bm, find_sf
 
 # defining load
-
-ll_70R = [(0, 80), (3.96, 120), (5.48, 120), (7.61, 170), (8.98, 170), (12.03, 170), (13.40, 170)]
-ll_70RT = [(0, 50), (0.653, 100), (1.306, 100), (1.959, 100), (2.611, 100), (3.264, 100), (3.917, 100), (4.57, 50)]
-ll_A = [(0, 27), (1.1, 27), (4.3, 114), (5.5, 114), (9.8, 68), (12.8, 68), (15.8, 68), (18.8, 68)]
-
-loads = [ll_A, ll_70R, ll_70RT]
+vehicles = [ll_A, ll_70R, ll_70RT]
+classA_pair, class70R, class70RT = [list(i.loadpair) for i in vehicles]
+loads = [classA_pair, class70R, class70RT]
 
 span = 50
+
+# make an array for maxBM, maxSF at different intervals
 maxBMs = []
 maxSFs_plus = []
 maxSFs_minus = []
+sections = []
 for i in range(len(loads)):
     maxBM = []
     maxSF_plus = []
@@ -49,7 +31,7 @@ for i in range(len(loads)):
         BM = find_bm(span, 0, at)
         SF_plus = find_sf(span, 0, at)
         SF_minus = find_sf(span, 0, at)
-
+        # print(list(loads[i]))
         for k in range(int((span + loads[i][-1][0]) / step) + 2):  # '+2' to make sure the load moves all the way to
             # end until it has no effect
             bm = 0
@@ -70,20 +52,48 @@ for i in range(len(loads)):
     maxSFs_plus.append(maxSF_plus)
     maxSFs_minus.append(maxSF_minus)
 
-# print(f'Max Bending moments \n {maxBMs}')
-# print(f'Max positive Shear Forces \n {maxSFs_plus}')
-# print(f'Max negative Shear Forces \n {maxSFs_minus}')
+A = ['MaxBM', 'MaxSF+', 'MaxSF-']
+B = ['ClassA', 'Class70RW', 'Class70RT']
 
-A = ['ClassA', 'Class70RW', 'Class70RT']
-B = ['MaxBM', 'MaxSF+', 'MaxSF-']
-C = []
-for i in range(len(loads)):
-    for j in [maxBMs, maxSFs_plus, maxSFs_minus]:
-        C.append(j[i])
+# A = ['ClassA', 'Class70RW', 'Class70RT']
+# B = ['MaxBM', 'MaxSF+', 'MaxSF-']
 
 iterables = [A, B]
 index = pd.MultiIndex.from_product(iterables)
-df = pd.DataFrame(C, index=index, columns=[span / 8 * i for i in range(9)])
-# print(df.loc['ClassA', 'MaxSF-'])   ## you can navigate using loc, iloc
-# df.to_excel('outputs/loads.xlsx')
 
+C = []
+
+for i in [maxBMs, maxSFs_plus, maxSFs_minus]:
+    C.extend(i)
+
+# for i in range(len(loads)):
+#     for j in [maxBMs, maxSFs_plus, maxSFs_minus]:
+#         C.append(j[i])
+
+df = pd.DataFrame(C, index=index, columns=[span / 8 * i for i in range(9)])
+# print(df.loc[('ClassA', 'MaxSF-')])   ## you can navigate using loc, iloc
+
+new_row = df.loc['MaxSF+'].where(df.loc['MaxSF+'] > abs(df.loc['MaxSF-']), abs(df.loc['MaxSF-']))
+
+new_row.index = pd.MultiIndex.from_product([['MaxSF'], B])
+df = pd.concat([df, new_row])
+
+df.to_excel('outputs/loads.xlsx')
+
+# df = pd.read_excel('outputs/loads.xlsx', index_col=[0, 1])
+# ###get index names###
+#
+# A = df.index.get_level_values(0).drop_duplicates().to_list()
+# B = df.index.get_level_values(1).drop_duplicates().to_list()
+# print(A, B)
+
+# Impact factor
+IF = [impact(i.name, span) for i in vehicles]
+
+# Combination
+carriageway = Carriageway(width=6)
+combinations = carriageway.combinations()
+combination_val = [i.get_value() for i in combinations]
+
+maxBMs = [(df.loc['MaxBM'][25]*IF).dot(combination_val[i]) for i in range(len(combinations))]
+maxSFs = [(df.loc['MaxSF'][25]*IF).dot(combination_val[i]) for i in range(len(combinations))]

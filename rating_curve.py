@@ -3,7 +3,7 @@ import math
 import matplotlib.pyplot as plt
 
 plt.style.use('seaborn')
-plt.ioff()
+# plt.ioff()
 
 dist = []
 rl = []
@@ -17,14 +17,44 @@ with open('data/cross.csv') as csv_file:
         rl.append(float(row[1]))
 
 
+def transform(ref, coordinates, lim=200):
+    transformed = []
+    for _index, i in enumerate(coordinates):
+        if i[0] < ref - lim/2:
+            transformed.append((i[0], i[1] + 50))
+            if coordinates[_index + 1][0] > ref - lim/2:
+                _y = interpolate_y(i, coordinates[_index + 1], ref - lim / 2)
+                transformed.append((ref - lim / 2 - 0.00000001, _y + 50))
+                transformed.append((ref - lim / 2, _y))
+        elif ref - lim/2 < i[0] < ref + lim/2:
+            transformed.append(i)
+        elif i[0] > ref + lim/2:
+            if coordinates[_index - 1][0] < ref + lim/2:
+                _y = interpolate_y(i, coordinates[_index - 1], ref + lim / 2)
+                transformed.append((ref + lim / 2, _y))
+                transformed.append((ref + lim / 2 + 0.00000001, _y + 50))
+            transformed.append((i[0], i[1] + 50))
+    return transformed
+
+
 def interpolate_x(p1, p2, h):
     return p1[0] + (h - p1[1]) * ((p2[0] - p1[0]) / (p2[1] - p1[1]))
 
 
-min_rl = min(rl)
-pairs = list(zip(dist, rl))  # [(x, rl)]
-datum = 1065
+def interpolate_y(p1, p2, x):
+    return p1[1] + (x - p1[0]) * ((p2[1] - p1[1]) / (p2[0] - p1[0]))
 
+
+original_coordinates = list(zip(dist, rl))  # [(x, rl)]
+
+ref_point = -15
+span_limit = 200
+new_coordinates = transform(ref_point, original_coordinates, lim=200)
+
+# pairs = original_coordinates
+pairs = new_coordinates
+datum = 1065
+min_rl = min(rl)
 stage = []
 discharge = []
 linearWW = []
@@ -87,7 +117,6 @@ for index, q in enumerate(discharge):
 st = interpolate_x(p1, q1, designQ)
 lww = interpolate_x(pb, qb, designQ)
 
-
 plt.rcParams['figure.figsize'] = (9, 6)
 
 fig1, ax1 = plt.subplots()
@@ -101,7 +130,12 @@ ax1.axhline(y=st, linewidth=0.5)
 ax1.axvline(x=designQ, linewidth=0.5)
 ax1.text(designQ, st - 0.15, f' design Q = {designQ}\n stage = {st}')
 
-ax2.plot(dist, rl)
+x = [i[0] for i in pairs]
+y = [i[1] for i in pairs]
+
+ax2.plot(x, y)
+ax2.set_ylim([1062, 1070])
+ax2.set_xlim([ref_point - span_limit / 2 - 10, ref_point + span_limit / 2 + 10])
 ax2.set_xlabel('x (Cumec)')
 ax2.set_ylabel('RL (m)')
 ax2.set_title('Cross Section\n')
@@ -113,3 +147,9 @@ plt.tight_layout()
 
 fig1.savefig('outputs/rating_curve.png')
 fig2.savefig('outputs/cross_section.png')
+
+#
+# x = [i[0] for i in pairs]
+# y = [i[1] for i in pairs]
+# plt.plot(x, y)
+# plt.show()

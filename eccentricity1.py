@@ -32,7 +32,7 @@ class load:
             self.gs=self.ws
             self.q = 700
 
-df=pd.read_csv('data/DL.csv',delimiter=',').T
+df=pd.read_csv('outputs/DL.csv', delimiter=',').T
 dfl=df.values.tolist()
 kerb_len=dfl[10][2]
 
