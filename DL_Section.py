@@ -170,3 +170,5 @@ df3 = pd.DataFrame({'Section at': sc, 'Dead Load': PDL, 'Other Loads': ODL, 'Sur
 pd.concat([df, df2], axis=0).to_csv('outputs/DL.csv')
 df3.to_csv('outputs/Moments.csv', index_label="Section at")
 # print("Dead load per m length is:",Dead_Loads)
+
+print(A_sum)
