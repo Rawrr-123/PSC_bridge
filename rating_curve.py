@@ -5,31 +5,28 @@ import matplotlib.pyplot as plt
 plt.style.use('seaborn')
 # plt.ioff()
 
-dist = []
-rl = []
+original_coordinates = []
 with open('data/cross.csv') as csv_file:
     #
     csv_reader = csv.reader(csv_file, delimiter=',')
     line_count = 0
     for row in csv_reader:
-        # print(row)
-        dist.append(float(row[0]))
-        rl.append(float(row[1]))
+        original_coordinates.append((float(row[0]), float(row[1])))
 
 
 def transform(ref, coordinates, lim=200):
     transformed = []
     for _index, i in enumerate(coordinates):
-        if i[0] < ref - lim/2:
+        if i[0] < ref - lim / 2:
             transformed.append((i[0], i[1] + 50))
-            if coordinates[_index + 1][0] > ref - lim/2:
+            if coordinates[_index + 1][0] > ref - lim / 2:
                 _y = interpolate_y(i, coordinates[_index + 1], ref - lim / 2)
                 transformed.append((ref - lim / 2 - 0.00000001, _y + 50))
                 transformed.append((ref - lim / 2, _y))
-        elif ref - lim/2 < i[0] < ref + lim/2:
+        elif ref - lim / 2 < i[0] < ref + lim / 2:
             transformed.append(i)
-        elif i[0] > ref + lim/2:
-            if coordinates[_index - 1][0] < ref + lim/2:
+        elif i[0] > ref + lim / 2:
+            if coordinates[_index - 1][0] < ref + lim / 2:
                 _y = interpolate_y(i, coordinates[_index - 1], ref + lim / 2)
                 transformed.append((ref + lim / 2, _y))
                 transformed.append((ref + lim / 2 + 0.00000001, _y + 50))
@@ -41,11 +38,9 @@ def interpolate_x(p1, p2, h):
     return p1[0] + (h - p1[1]) * ((p2[0] - p1[0]) / (p2[1] - p1[1]))
 
 
-def interpolate_y(p1, p2, x):
-    return p1[1] + (x - p1[0]) * ((p2[1] - p1[1]) / (p2[0] - p1[0]))
+def interpolate_y(p1, p2, _x):
+    return p1[1] + (_x - p1[0]) * ((p2[1] - p1[1]) / (p2[0] - p1[0]))
 
-
-original_coordinates = list(zip(dist, rl))  # [(x, rl)]
 
 ref_point = -15
 span_limit = 200
@@ -53,8 +48,12 @@ new_coordinates = transform(ref_point, original_coordinates, lim=200)
 
 # pairs = original_coordinates
 pairs = new_coordinates
+
+x = [i[0] for i in pairs]
+y = [i[1] for i in pairs]
+
 datum = 1065
-min_rl = min(rl)
+min_rl = min(y)
 stage = []
 discharge = []
 linearWW = []
@@ -67,8 +66,8 @@ while datum >= min_rl:
         if pair[1] <= datum:
             previous = index - 1 if index - 1 > 0 else 0
             if pairs[previous][1] > datum:
-                x = interpolate_x(pairs[previous], pair, datum)
-                del_x = pair[0] - x
+                _x = interpolate_x(pairs[previous], pair, datum)
+                del_x = pair[0] - _x
                 del_y0 = datum - pair[1]
                 del_y1 = 0
             else:
@@ -82,9 +81,8 @@ while datum >= min_rl:
             breadth += del_x
             # try:
             if pairs[index + 1][1] > datum:
-                x = interpolate_x(pair, pairs[index + 1], datum)
-                # print(pair, pairs[index+1], x, datum)
-                del_x = x - pair[0]
+                _x = interpolate_x(pair, pairs[index + 1], datum)
+                del_x = _x - pair[0]
                 del_y0 = 0
                 del_y1 = datum - pair[1]
                 del_y = del_y0 - del_y1
@@ -129,9 +127,6 @@ ax1.set_title('Rating Curve\n')
 ax1.axhline(y=st, linewidth=0.5)
 ax1.axvline(x=designQ, linewidth=0.5)
 ax1.text(designQ, st - 0.15, f' design Q = {designQ}\n stage = {st}')
-
-x = [i[0] for i in pairs]
-y = [i[1] for i in pairs]
 
 ax2.plot(x, y)
 ax2.set_ylim([1062, 1070])
