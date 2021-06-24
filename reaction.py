@@ -36,10 +36,26 @@ def find_sf(s, u, b):
     if u < 0 or u > s:
         sf = 0
     elif 0 <= u < b:
-        sf = -u / s
+        sf = -find_rb(s, u)
     else:
-        sf = (s - u) / s
+        sf = find_ra(s, u)
     return sf
+
+
+def find_ra(s, u, a=0, b=0):
+    if u < -a or u > s + b:
+        ra = 0
+    else:
+        ra = (s - u) / s
+    return ra
+
+
+def find_rb(s, u, a=0, b=0):
+    if u < -a or u > s + b:
+        rb = 0
+    else:
+        rb = u / s
+    return rb
 
 
 def il(span, at, of='bm', detail=25):
