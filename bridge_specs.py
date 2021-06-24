@@ -1,5 +1,6 @@
 import csv
 import pandas as pd
+import math
 
 
 # Positions are calculated from bottom left grid space of shape
@@ -117,4 +118,10 @@ c_c=1.5
 P_len=9
 P_wide=3
 arr1=pd.read_csv('outputs/Linear_WW.csv').values.tolist()[0]
-clear_height=1068-1062
+df_cross=pd.read_csv('data/new_Cross.csv')
+lowest=min(df_cross.iloc[:,1])
+lww=arr1[2]
+bridge_len=arr1[4]
+HFL_initial=arr1[1]
+HFL=arr1[3]
+clear_height=math.ceil(HFL)+3-math.floor(lowest)
