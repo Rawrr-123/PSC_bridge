@@ -1,8 +1,10 @@
 import pandas as pd
 
 from carriageway import Carriageway
+from bridge_specs import cw
 
-carriageway = Carriageway(width=15)
+
+carriageway = Carriageway(width=cw)
 combinations = carriageway.combinations()
 list_combinations = []
 list_max_e = []

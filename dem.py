@@ -1,5 +1,5 @@
 import pandas as pd
-
+from bridge_specs import span,c_c
 from carriageway import Arrangement
 
 # carr = Carriageway(width=15)
@@ -28,8 +28,8 @@ from load import ll_A, ll_70R, ll_70RT
 vehicles = [ll_A, ll_70R, ll_70RT]
 from reaction import find_rb, find_ra
 
-span = 30
-c_c = 1.5
+
+
 reactions = []
 
 max_sums = []

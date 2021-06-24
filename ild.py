@@ -2,8 +2,9 @@ from matplotlib import pyplot as plt
 
 from reaction import find_bm
 from load import ll_70R
+from bridge_specs import span
 
-span = 50
+
 at = 25
 first_wheel_at = 0
 step = 1
