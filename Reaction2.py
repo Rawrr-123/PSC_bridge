@@ -42,20 +42,28 @@ def find_sf(s, u, b):
     return sf
 
 
-def find_ra(s, u, a=0, b=0):
-    if u < -a or u > s + b:
-        ra = 0
-    else:
-        ra = (s - u) / s
-    return ra
-
-
 def find_rb(s, u, a=0, b=0):
-    if u < -a or u > s + b:
-        rb = 0
+    if u > 0 and u <= (s-b/2):
+        rb = u / (s-b/2)
+    elif u>s-b/2 and u<s:
+        rb=(u-s+b/2)/(s-b/2)
     else:
-        rb = u / s
+        rb=0
+
     return rb
+
+
+def find_ra(s, u, a=0, b=0):
+    if u < s :
+        ra = 0
+    elif u>=s and u<s+b/2:
+        ra = ((s+b/2)-u)/(s-b/2)
+    elif u>s+b/2 and u<=2*s:
+        ra=(2*s-u)/(s-b/2)
+    else:
+        ra=0
+
+    return ra
 
 
 def il(span, at, of='bm', detail=25):

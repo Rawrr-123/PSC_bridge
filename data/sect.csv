@@ -1,14 +1,14 @@
-rectangle,0.6,3.2,3.5,3.5,1,1
-rectangle,0.6,3.2,6.5,3.5,1,2
-rectangle,2.4,0.5,4.1,3.5,1,3
-rectangle,2.4,0.3,4.1,6.4,1,4
-triangle,0.45,0.15,4.1,6.25,3,5
-triangle,0.45,0.15,6.05,6.25,1,6
-triangle,0.45,0.15,4.1,4,2,7
-triangle,0.45,0.15,6.05,4,4,8
-triangle,1.8,0.3,1.7,6.4,1,9
-rectangle,1.8,0.15,1.7,6.55,1,10
-rectangle,0.6,0.3,1.7,6.7,1,11
-triangle,1.8,0.3,7.1,6.4,3,12
-rectangle,1.8,0.15,7.1,6.55,1,13
-rectangle,0.6,0.3,8.3,6.7,1,14
+rectangle,0.6,3.2,3.5,3.5,1,0,Left Column
+rectangle,0.6,3.2,6.5,3.5,1,1,Right Column
+rectangle,2.4,0.5,4.1,3.5,1,2,Bottom Slab
+rectangle,2.4,0.3,4.1,6.4,1,3,Top Slab
+triangle,0.45,0.15,4.1,6.25,3,4,Small Triangular Section
+triangle,0.45,0.15,6.05,6.25,1,5,Small Triangular Section
+triangle,0.45,0.15,4.1,4,2,6,Small Triangular Section
+triangle,0.45,0.15,6.05,4,4,7,Small Triangular Section
+triangle,1.8,0.3,1.7,6.4,1,8,Small Triangular Section
+rectangle,1.8,0.15,1.7,6.55,1,9,Left Rectangular Cantilever
+rectangle,0.6,0.3,1.7,6.7,1,10,Left Kerb 
+triangle,1.8,0.3,7.1,6.4,3,11,Right Small Triangular Section
+rectangle,1.8,0.15,7.1,6.55,1,12,Right Rectangular Cantilever
+rectangle,0.6,0.3,8.3,6.7,1,13,Right Kerb 

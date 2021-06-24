@@ -43,7 +43,7 @@ def interpolate_y(p1, p2, _x):
 
 
 ref_point = -15
-span_limit = 200
+span_limit = 100
 new_coordinates = transform(ref_point, original_coordinates, lim=200)
 
 # pairs = original_coordinates
