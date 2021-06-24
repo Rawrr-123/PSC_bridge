@@ -170,7 +170,10 @@ df3 = pd.DataFrame({'Section at': sc, 'Dead Load': PDL, 'Other Loads': ODL, 'Sur
 pd.concat([df, df2], axis=0).to_csv('outputs/DL.csv')
 df3.to_csv('outputs/Moments.csv', index_label="Section at")
 # print("Dead load per m length is:",Dead_Loads)
-
-df4=pd.DataFrame([PDL_load*span,ODL_load*span,Surfl_load*span,pdld*span],columns=['Loads'],index=['Dead Load','Other Load','Surface Load','Pedestrian load']
+a=[PDL_load*span,PDL_load*span,2*PDL_load*span]
+b=[ODL_load*span,ODL_load*span,2*ODL_load*span]
+c=[Surfl_load*span,Surfl_load*span,2*Surfl_load*span]
+d=[pdld*span,pdld*span,2*pdld*span]
+df4=pd.DataFrame([a,b,c,d],columns=['Left','Right','Sum'],index=['Dead Load','Other Load','Surface Load','Pedestrian load']
 )
 df4.to_csv('outputs/DL_for_Seismic.csv')
