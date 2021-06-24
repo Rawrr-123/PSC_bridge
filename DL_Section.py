@@ -171,4 +171,6 @@ pd.concat([df, df2], axis=0).to_csv('outputs/DL.csv')
 df3.to_csv('outputs/Moments.csv', index_label="Section at")
 # print("Dead load per m length is:",Dead_Loads)
 
-print(A_sum)
+df4=pd.DataFrame([PDL_load*span,ODL_load*span,Surfl_load*span,pdld*span],columns=['Loads'],index=['Dead Load','Other Load','Surface Load','Pedestrian load']
+)
+df4.to_csv('outputs/DL_for_Seismic.csv')
