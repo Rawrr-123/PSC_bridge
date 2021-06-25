@@ -2,7 +2,9 @@ from matplotlib import pyplot as plt
 
 from reaction import find_bm
 from load import ll_70R
-from bridge_specs import span
+from bridge_specs import box
+
+span=box.span
 
 
 at = 25

@@ -1,5 +1,8 @@
 import pandas as pd
-from bridge_specs import span,c_c
+from bridge_specs import box,bearing
+
+span=box.span
+c_c=bearing.c_c
 from carriageway import Arrangement
 
 # carr = Carriageway(width=15)

@@ -1,7 +1,9 @@
 import pandas as pd
 
 from carriageway import Carriageway
-from bridge_specs import cw
+from bridge_specs import box
+
+cw=box.cw
 
 
 carriageway = Carriageway(width=cw)

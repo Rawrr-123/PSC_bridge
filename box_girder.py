@@ -4,7 +4,11 @@ from carriageway import Carriageway
 from impact_factor import impact
 from load import ll_A, ll_70R, ll_70RT
 from reaction import find_bm, find_sf
-from bridge_specs import span,cw
+from bridge_specs import box
+
+#Span and CW
+span=box.span
+cw=box.cw
 
 # defining load
 vehicles = [ll_A, ll_70R, ll_70RT]
