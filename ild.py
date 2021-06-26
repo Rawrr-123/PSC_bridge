@@ -5,13 +5,11 @@ from load import ll_70R
 from bridge_specs import box
 
 span=box.span
-
-
 at = 25
 first_wheel_at = 0
 step = 1
 il0 = {'first_wheel_at': [], 'BM': []}
-sdfsdfsdf
+
 for i in range(int((span + ll_70R.wheel_length) / step) + 1):
     bm = 0
     for j in ll_70R.loadpair:
