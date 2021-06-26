@@ -4,13 +4,17 @@ from carriageway import Carriageway
 from impact_factor import impact
 from load import ll_A, ll_70R, ll_70RT
 from reaction import find_bm, find_sf
+from bridge_specs import box
+
+#Span and CW
+span=box.span
+cw=box.cw
 
 # defining load
 vehicles = [ll_A, ll_70R, ll_70RT]
 classA_pair, class70R, class70RT = [list(i.loadpair) for i in vehicles]
 loads = [classA_pair, class70R, class70RT]
 
-span = 50
 
 # make an array for maxBM, maxSF at different intervals
 maxBMs = []
@@ -91,7 +95,7 @@ df.to_excel('outputs/loads.xlsx')
 IF = [impact(i.name, span) for i in vehicles]
 
 # Combination
-carriageway = Carriageway(width=6)
+carriageway = Carriageway(width=cw)
 combinations = carriageway.combinations()
 combination_val = [i.get_value() for i in combinations]
 
