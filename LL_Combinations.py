@@ -43,4 +43,3 @@ if len(ll_combinations(lane_number(cw_width))) == 1:
 else:
     print(ll_combinations(lane_number(cw_width)))
     llc=ll_combinations(lane_number(cw_width))
-    #heee___Haaw
