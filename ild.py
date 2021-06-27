@@ -4,7 +4,7 @@ from reaction import find_bm
 from load import ll_70R
 from bridge_specs import box
 
-span=box.span
+span = box.span
 at = 25
 first_wheel_at = 0
 step = 1
