@@ -1,5 +1,4 @@
 from bridge_specs import box,bearing
-    # span,cw,l_kerblen,r_kerblen,area_sum,sc
 import pandas as pd
 
 span=box.span
