@@ -22,11 +22,10 @@ df_cross=pd.read_csv('data/new_Cross.csv')
 class box:
     """Bridge Specifics"""
 
-    """Locations of 9 parts of span"""
-    sc=[(j)/8*50 for j in range(9)]
-
-
     span=50
+
+    """Locations of 9 parts of span"""
+    sc=[(j)/8*span for j in range(9)]
 
     """Cross Sectional Area"""
     # area_sum=round(sum(pd.to_numeric(df_bridge.iloc[5,1:])),5)
