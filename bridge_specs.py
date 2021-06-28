@@ -1,12 +1,13 @@
 import pandas as pd
 import math
+import openpyxl
 
 
 
 """Bridge Sepcifications Data"""
-df_bridge=pd.read_csv('outputs/DL.csv')
-# print(df_bridge.iloc[1,11])
-
+df_bridge=pd.read_excel('outputs/section.xlsx')
+print(df_bridge)
+# print(df_bridge)
 """HFL and LWW Data"""
 
 arr1=pd.read_csv('outputs/Linear_WW.csv').values.tolist()[0]
@@ -14,6 +15,7 @@ arr1=pd.read_csv('outputs/Linear_WW.csv').values.tolist()[0]
 
 """Cross Section Data"""
 df_cross=pd.read_csv('data/new_Cross.csv')
+
 
 
 # ---------------------------------------------------------------------------
@@ -27,14 +29,14 @@ class box:
     span=50
 
     """Cross Sectional Area"""
-    area_sum=round(sum(pd.to_numeric(df_bridge.iloc[5,1:])),5)
+    # area_sum=round(sum(pd.to_numeric(df_bridge.iloc[5,1:])),5)
 
     """Kerb Lengths"""
-    l_kerblen=float(df_bridge.iloc[1,11])
-    r_kerblen=float(df_bridge.iloc[1,14])
+    # l_kerblen=float(df_bridge.loc['left kerb',2])
+    # r_kerblen=float(df_bridge.iloc[1,14])
 
     """Carriageway Width"""
-    cw = round(float(df_bridge.iloc[3,14])-float(df_bridge.iloc[3,11])-l_kerblen,5)
+    # cw = round(float(df_bridge.iloc[3,14])-float(df_bridge.iloc[3,11])-l_kerblen,5)
 
     """Bridge Length"""
     bridge_len = arr1[4]
@@ -78,7 +80,7 @@ class pier:
     pcap_len=9
     pcap_wide=3
     pcap_height=1.5
-
+    # pcap_area=
     """Pier Stem"""
     pout_dia=3
     pin_dia=1.5
