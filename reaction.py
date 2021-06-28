@@ -1,7 +1,3 @@
-import matplotlib.pyplot as plt
-
-plt.style.use('seaborn')
-
 
 def find_bm(s, u, b):
     """
