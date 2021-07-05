@@ -64,7 +64,6 @@ ah2=calc_Ah2(area,centroid,axis)
 i_sum=i_composite(moi,ah2)
 
 
-
 df=pd.DataFrame([name,length,height,pos,area,centroid,moi,ah2,i_sum,obj],index=['Name','Length','Height','Position','Area','Centroid','I','Ah2','I+Ah2','Object Type']).T
 df.set_index('Name',inplace=True)
 df2=pd.DataFrame([axis],index=['Centroidal Axis'])
