@@ -78,3 +78,5 @@ def il(span, at, of='bm', detail=25):
             inf_line['x'].append(span / detail * i)
             inf_line['y'].append(sf)
     return inf_line
+
+###
