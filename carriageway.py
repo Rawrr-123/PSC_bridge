@@ -51,6 +51,15 @@ class Combination(Carriageway):
             obj.append(Arrangement(_i, self.width))
         return obj
 
+    def max_e(self):
+        arrangements = self.arrangements()
+        max_e = 0
+        for k in arrangements:
+            if k.check_exceedance() * k.check_from_right() == 1:
+                e = k.eccentricity()
+                max_e = e if abs(e) > abs(max_e) else max_e
+        return max_e
+
     def __str__(self):
         return f'{self.classA}, {self.class70Rw}, {self.class70Rt}'
 
@@ -109,7 +118,7 @@ class Arrangement(Carriageway):
                 cursor = center[index + 1] + max(self.veh_width[index + 1], 3.500)
             right_wheel = center[index + 1] + self.veh_width[index + 1] / 2
 
-        if self.veh == ['a']:
+        if 4.25 < self.width < 5.3 and self.veh == ['a']:
             q = Load('q=5KN/m2', [], [], self.width - right_wheel)
             center.append(right_wheel + q.width / 2)
             self.veh.append('q')
