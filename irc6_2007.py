@@ -1,9 +1,13 @@
 from itertools import permutations
 from matplotlib import pyplot as plt
+import math
 import numpy as np
 
 
 class Load:
+    """
+    refer to cl 204.1
+    """
 
     def __init__(self, name, pos, wheel_load, width):
         """
@@ -314,6 +318,75 @@ class Arrangement(Carriageway):
 
 
 ####################################################################################
+
+def congestion(span):
+    """
+    refer to 204.4
+    Args:
+        span: span length in metres
+
+    Returns:
+        cf: congestion factor
+
+    """
+    if 10 <= span < 30:
+        cf = 1.15
+    elif 30 <= span < 60:
+        cf = 1.15 + (span - 30) / 30 * 0.45
+    elif 60 <= span < 70:
+        cf = 1.60 + (span - 60) / 10 * 0.10
+    else:
+        cf = 1.7
+    return cf
+
+
+##############################################################################
+
+def reductionL(nlane):
+    """
+    Reduction in the longitudinal effect on bridges having more than two traffic lanes due to
+    the low probability that all lanes will be subjected to the characteristic loads simultaneously
+    shall be in accordance with the Table 8 of IRC 6 2007.
+
+    Args:
+        nlane: number of lanes
+
+    Returns:
+        rl: reduction in longitudinal effects
+    """
+    if nlane == 2:
+        rl = 0
+    elif nlane == 3:
+        rl = 0.1
+    else:
+        rl = 0.2
+    return rl
+
+
+###############################################################################
+
+def ped_ll(span, width_footway):
+    """
+    refer to 206.1
+
+    Args:
+        span: effective span length in m
+        width_footway: width of footway in m
+
+    Returns:
+        pedll: footway loading in kg/m.sq
+    """
+    if span <= 7.5:
+        pedll = 500
+    elif 7.5 < span <= 30:
+        pedll = 500 - (40 * span - 300) / 9
+    else:
+        pedll = (500 - 260 + 4800 / span) * (16.5 - width_footway) / 15
+    return pedll
+
+
+#################################################################################
+
 def impact(loading, span, material='RCC'):
     """
     Provision for impact or dynamic action shall be made by an increment of the live load
@@ -374,4 +447,27 @@ def impact(loading, span, material='RCC'):
                     else:
                         return impact('Class A', span, 'steel')
 
-####################################################################################
+
+#################################################################################
+
+def f_watercurrent(vel, theta=0):
+    """
+
+    Args:
+        vel: velocity m/s
+        theta: angle from normal direction of current in degrees
+
+    Returns:
+        p_par, p_nor: pressure intensity in direction parallel and normal to pier/current direction. in kg/m.sq
+    """
+    v_par = math.cos(math.radians(theta))
+    v_nor = math.sin(math.radians(theta))
+
+    # for piers with semi-circular ends
+    k_par = 0.66
+    k_nor = 1.5
+
+    p_par = 52 * k_par * v_par ** 2
+    p_nor = 52 * k_nor * v_nor ** 2
+
+    return p_par, p_nor
