@@ -1,5 +1,5 @@
 import pandas as pd
-from comb import comb
+from irc6_2007 import comb
 from itertools import permutations
 import csv
 

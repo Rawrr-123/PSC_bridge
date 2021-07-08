@@ -1,9 +1,131 @@
-from comb import comb
-from load import ll_A, ll_70R, ll_70RT, Load
-
 from itertools import permutations
 from matplotlib import pyplot as plt
 import numpy as np
+
+
+class Load:
+
+    def __init__(self, name, pos, wheel_load, width):
+        """
+
+        Args:
+            pos (list): successive position of wheels (and finally tail) starting from nose
+            wheel_load (list): load at successive wheels
+        """
+        self.name = name
+        self.pos = pos
+        self.wheel_load = wheel_load
+        self.width = width
+
+    @property
+    def wheel_length(self):
+        """
+
+        Returns:
+
+        """
+        return round(sum(self.pos[1:-1]), 2)
+
+    @property
+    def length(self):
+        """
+
+        Returns: length of the vehicle
+
+        """
+        return round(sum(self.pos), 2)
+
+    @property
+    def weight(self):
+        if self.name == 'Class A':
+            return 114
+        elif self.name == 'Class 70RW' or self.name == 'Class 70RT':
+            return 700
+        else:
+            return 5
+
+    @weight.setter
+    def weight(self, weight):
+        self._weight = weight
+
+    @property
+    def loadpair(self):
+        """
+
+        Returns:zip with load and position w.r.to front wheel at 0
+
+        """
+        wheel_pos = [0]
+        for index, pos in enumerate(self.pos[1:-1]):
+            wheel_pos.append(wheel_pos[index] + pos)
+        return zip(wheel_pos, self.wheel_load)
+
+
+#   some standard loads
+
+ll_70R = Load('Class 70RW', [0.61, 3.960, 1.520, 2.130, 1.370, 3.050, 1.370, 0.91], [80, 120, 120, 170, 170, 170, 170],
+              2.790)
+ll_70RT = Load('Class 70RT', [0.0, 0.653, 0.653, 0.653, 0.652, 0.653, 0.653, 0.653, 0.0],
+               [50, 100, 100, 100, 100, 100, 100, 50], 2.900)
+ll_A = Load('Class A', [0.6, 1.1, 3.2, 1.2, 4.3, 3, 3, 3, 0.6], [27, 27, 114, 114, 68, 68, 68, 68, 27, 27], 2.300)
+
+
+##################################################################################
+
+def lane_number(CW_width):
+    """
+    returns number of lanes for given width.
+    refer to irc6_2000 table 6.
+
+    Args:
+        CW_width: carriageway width in meters
+
+    """
+    if 20.1 <= CW_width < 23.6:
+        return 6
+    elif 16.6 <= CW_width < 20.1:
+        return 5
+    elif 13.1 <= CW_width < 16.6:
+        return 4
+    elif 9.6 <= CW_width < 13.1:
+        return 3
+    elif 5.3 <= CW_width < 9.6:
+        return 2
+    elif 4.25 <= CW_width < 5.3:
+        return 1
+    else:
+        return 0
+
+
+def comb(lane=None, width=None):
+    """
+    takes lane number as default input. you can specify CW width instead of lane by passing 'width = <width>'.
+    For example: comb(width=15) is equivalent to comb(lane_number(15)).
+    refer to table 6 and table 6A.
+
+    Args:
+        lane (int): no. of lanes
+        width (float): carriageway width in metres
+
+    Returns:
+        list of possible combinations, each in format [<no. of ClassA>, <no. of Class70RW>, <no. of Class 70RT>
+
+    """
+
+    if width is not None:
+        lane = lane_number(width)
+    nclassA = lane  # no. of classA veh (remaining)
+    n70 = 0  # no. of class70 veh
+    combination = []
+    while nclassA >= 0:
+        if n70 <= 0:
+            combination.append([nclassA, 0, 0])
+        else:
+            for i in range(n70 + 1):
+                combination.append([nclassA, n70 - i, i])
+        n70 += 1
+        nclassA -= 2
+    return combination
 
 
 def vehicle(character):
@@ -189,3 +311,67 @@ class Arrangement(Carriageway):
         ax.set_xlabel('Distance from left kerb in metres')
         ax.set_yticks([])
         return ax
+
+
+####################################################################################
+def impact(loading, span, material='RCC'):
+    """
+    Provision for impact or dynamic action shall be made by an increment of the live load
+    by an impact allowance expressed as a fraction or a percentage of the applied live load.
+    from irc6 cl.208
+
+    Args:
+        loading (str): options => 'classA', 'classAA', '70R', '70RT'
+        span (float): span length in metres
+        material (str): options => 'RCC' (default), 'steel'
+
+    Returns:
+        impact factor value (float)
+
+    """
+    if loading == 'Class A' or loading == 'Class B':
+        if material == 'RCC':
+            if span <= 3:
+                return 0.5
+            elif 3 < span < 45:
+                return 4.5 / (6 + span)
+            else:
+                return 0.088
+        if material == 'steel':
+            if span <= 3:
+                return 0.545
+            elif 3 < span < 45:
+                return 9 / (13.5 + span)
+            else:
+                return 0.154
+    if loading == 'Class AA' or loading == 'Class 70RW' or loading == 'Class 70RT':
+        if span < 9:
+            if loading == 'Class 70RT':
+                if span <= 5:
+                    return 0.25
+                else:
+                    return .25 + ((.1 - .25) / (9 - 5)) * (span - 5)
+            else:
+                return .25
+        else:
+            if material == 'RCC':
+                if loading == 'Class 70RT':
+                    if span <= 40:
+                        return 0.1
+                    else:
+                        return impact('Class A', span, 'RCC')
+                else:
+                    if span < 12:
+                        return 0.25
+                    else:
+                        return impact('Class A', span, 'RCC')
+            if material == 'steel':
+                if loading == 'Class 70RT':
+                    return 0.1
+                else:
+                    if span < 23:
+                        return 0.25
+                    else:
+                        return impact('Class A', span, 'steel')
+
+####################################################################################

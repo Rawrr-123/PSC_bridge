@@ -1,9 +1,9 @@
 import pandas as pd
-from bridge_specs import box,bearing
+from bridge_specs import box, bearing
 
-span=box.span
-c_c=bearing.c_c
-from carriageway import Arrangement
+span = box.span
+c_c = bearing.c_c
+from irc6_2007 import Arrangement
 
 # carr = Carriageway(width=15)
 # comb = carr.combinations()
@@ -26,12 +26,10 @@ from carriageway import Arrangement
 # print(arr.position, arr.veh_weight, arr.veh_width)
 # ax = arr.plot_signal()
 # print(ax)
-from load import ll_A, ll_70R, ll_70RT
+from irc6_2007 import ll_A, ll_70R, ll_70RT
 
 vehicles = [ll_A, ll_70R, ll_70RT]
 from reaction import find_rb, find_ra
-
-
 
 reactions = []
 
