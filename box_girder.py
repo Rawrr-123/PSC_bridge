@@ -1,20 +1,18 @@
 import pandas as pd
 
-from carriageway import Carriageway
-from impact_factor import impact
-from load import ll_A, ll_70R, ll_70RT
-from reaction import find_bm, find_sf
-from bridge_specs import box
+from irc6_2007 import Carriageway, impact, ll_A, ll_70R, ll_70RT
 
-#Span and CW
-span=box.span
-cw=box.cw
+from reaction import find_bm, find_sf
+# from bridge_specs import box
+
+# Span and CW
+span = 50
+cw = 6
 
 # defining load
 vehicles = [ll_A, ll_70R, ll_70RT]
 classA_pair, class70R, class70RT = [list(i.loadpair) for i in vehicles]
 loads = [classA_pair, class70R, class70RT]
-
 
 # make an array for maxBM, maxSF at different intervals
 maxBMs = []
@@ -81,8 +79,8 @@ new_row = df.loc['MaxSF+'].where(df.loc['MaxSF+'] > abs(df.loc['MaxSF-']), abs(d
 
 new_row.index = pd.MultiIndex.from_product([['MaxSF'], B])
 df = pd.concat([df, new_row])
-
-df.to_excel('outputs/loads.xlsx')
+# print(df)
+# df.to_excel('outputs/loads.xlsx')
 
 # df = pd.read_excel('outputs/loads.xlsx', index_col=[0, 1])
 # ###get index names###
@@ -99,5 +97,5 @@ carriageway = Carriageway(width=cw)
 combinations = carriageway.combinations()
 combination_val = [i.get_value() for i in combinations]
 
-maxBMs = [(df.loc['MaxBM'][25]*IF).dot(combination_val[i]) for i in range(len(combinations))]
-maxSFs = [(df.loc['MaxSF'][25]*IF).dot(combination_val[i]) for i in range(len(combinations))]
+maxBMs = [(df.loc['MaxBM'][25] * IF).dot(combination_val[i]) for i in range(len(combinations))]
+maxSFs = [(df.loc['MaxSF'][25] * IF).dot(combination_val[i]) for i in range(len(combinations))]
