@@ -9,7 +9,7 @@ class Load:
     refer to cl 204.1
     """
 
-    def __init__(self, name, pos, wheel_load, width):
+    def __init__(self, name, pos, wheel_load, width, nose_dist):
         """
 
         Args:
@@ -20,6 +20,7 @@ class Load:
         self.pos = pos
         self.wheel_load = wheel_load
         self.width = width
+        self.nose_dist = nose_dist
 
     @property
     def wheel_length(self):
@@ -40,7 +41,7 @@ class Load:
         return round(sum(self.pos), 2)
 
     @property
-    def weight(self):
+    def max_weight(self):
         if self.name == 'Class A':
             return 114
         elif self.name == 'Class 70RW' or self.name == 'Class 70RT':
@@ -48,8 +49,8 @@ class Load:
         else:
             return 5
 
-    @weight.setter
-    def weight(self, weight):
+    @max_weight.setter
+    def max_weight(self, weight):
         self._weight = weight
 
     @property
@@ -64,14 +65,44 @@ class Load:
             wheel_pos.append(wheel_pos[index] + pos)
         return zip(wheel_pos, self.wheel_load)
 
+    @property
+    def weight(self):
+        return sum(self.wheel_load)
+
+    def reduced(self, to):
+        reduced_load = [x*to for x in self.wheel_load]
+        return Load(f'reduced {self.name}', self.pos, reduced_load, self.width, self.nose_dist)
+
+    def __add__(self, other):
+        name = self.name + ' + ' + other.name
+
+        pos1 = self.pos
+        pos2 = other.pos
+        nose = max(self.nose_dist, other.nose_dist)
+        total_pos = []
+        total_pos.extend(pos1[:-1])
+        total_pos.append(pos1[-1] + nose + pos2[0])
+        total_pos.extend(pos2[1:])
+
+        load1 = self.wheel_load
+        load2 = other.wheel_load
+        total_load = []
+        total_load.extend(load1)
+        total_load.extend(load2)
+
+        width = max(self.width, other.width)
+        return Load(name, total_pos, total_load, width, nose)
+
 
 #   some standard loads
 
-ll_70R = Load('Class 70RW', [0.61, 3.960, 1.520, 2.130, 1.370, 3.050, 1.370, 0.91], [80, 120, 120, 170, 170, 170, 170],
-              2.790)
-ll_70RT = Load('Class 70RT', [0.0, 0.653, 0.653, 0.653, 0.652, 0.653, 0.653, 0.653, 0.0],
-               [50, 100, 100, 100, 100, 100, 100, 50], 2.900)
-ll_A = Load('Class A', [0.6, 1.1, 3.2, 1.2, 4.3, 3, 3, 3, 0.6], [27, 27, 114, 114, 68, 68, 68, 68, 27, 27], 2.300)
+ll_70R = Load(name='Class 70RW', pos=[0.61, 3.960, 1.520, 2.130, 1.370, 3.050, 1.370, 0.91],
+              wheel_load=[80, 120, 120, 170, 170, 170, 170],
+              width=2.790, nose_dist=30)
+ll_70RT = Load(name='Class 70RT', pos=[0.0, 0.653, 0.653, 0.653, 0.652, 0.653, 0.653, 0.653, 0.0],
+               wheel_load=[50, 100, 100, 100, 100, 100, 100, 50], width=2.900, nose_dist=90)
+ll_A = Load(name='Class A', pos=[0.6, 1.1, 3.2, 1.2, 4.3, 3, 3, 3, 0.9], wheel_load=[27, 27, 114, 114, 68, 68, 68, 68],
+            width=2.300, nose_dist=18.5)
 
 
 ##################################################################################
@@ -112,7 +143,7 @@ def comb(lane=None, width=None):
         width (float): carriageway width in metres
 
     Returns:
-        list of possible combinations, each in format [<no. of ClassA>, <no. of Class70RW>, <no. of Class 70RT>
+        list of possible combinations, each in format [no. of ClassA, no. of Class70RW, no. of Class 70RT]
 
     """
 
@@ -204,7 +235,7 @@ class Arrangement(Carriageway):
         self.position = []
         self.veh_name = [vehicle(i).name for i in self.veh]
         self.veh_width = [vehicle(i).width for i in self.veh]
-        self.veh_weight = [vehicle(i).weight for i in self.veh]
+        self.veh_weight = [vehicle(i).max_weight for i in self.veh]
 
         self.get_position_index = 0
         self.last_wheel = 0
@@ -245,7 +276,7 @@ class Arrangement(Carriageway):
             right_wheel = center[index + 1] + self.veh_width[index + 1] / 2
 
         if 4.25 < self.width < 5.3 and self.veh == ['a']:
-            q = Load('q=5KN/m2', [], [], self.width - right_wheel)
+            q = Load('q=5KN/m2', [], [], self.width - right_wheel, 0)
             center.append(right_wheel + q.width / 2)
             self.veh.append('q')
             self.veh_name.append('q=500kg/m2')
@@ -458,16 +489,87 @@ def f_watercurrent(vel, theta=0):
         theta: angle from normal direction of current in degrees
 
     Returns:
-        p_par, p_nor: pressure intensity in direction parallel and normal to pier/current direction. in kg/m.sq
+        p_par, p_nor: pressure intensity in direction parallel and normal to pier/current direction. in kN/m.sq
     """
-    v_par = math.cos(math.radians(theta))
-    v_nor = math.sin(math.radians(theta))
+    v_par = vel * math.cos(math.radians(theta))
+    v_nor = vel * math.sin(math.radians(theta))
 
     # for piers with semi-circular ends
     k_par = 0.66
     k_nor = 1.5
 
-    p_par = 52 * k_par * v_par ** 2
-    p_nor = 52 * k_nor * v_nor ** 2
+    p_par = 52 * k_par * v_par ** 2 / 100
+    p_nor = 52 * k_nor * v_nor ** 2 / 100
 
-    return p_par, p_nor
+    return round(p_par, 3), round(p_nor, 3)
+
+
+################################################################################################
+
+# computation of seismic response
+def zone_factor(zone_no):
+    """
+    zone factor. refer to table 16
+    Args:
+        zone_no: classification of zone
+
+    Returns:
+        zf: zone factor
+    """
+    zf = {1: 0, 2: 0.1, 3: 0.16, 4: 0.24, 5: 0.36}
+    return zf[zone_no]
+
+
+def vib_period(d, f):
+    """
+    The fundamental natural period T (in seconds) of pier/abutment of the bridge along a
+    horizontal direction
+    refer to annex D (cl 219.5)
+
+    Args:
+        d: Appropriate dead load of the superstructure and live load in kN
+
+        f: Horizontal force in kN required to be applied at the centre of mass of superstructure for one mm horizontal
+            deflection at the top of the pier/ abutment for the earthquake in the transverse direction; and the force
+            to be applied at the top of· the bearings for the earthquake in the longitudinal direction.
+
+    Returns:
+        fundamental period of vibration T
+    """
+    return 2 * math.sqrt(d / (1000 * f))
+
+
+def sag(t, soil_type):
+    """
+    Average responses acceleration coefficient for 5 percent damping of load resisting
+    elements depending upon the fundamental period of vibration T as given in Fig. 20 IRC6
+    refer to 219.5.1
+    Args:
+        t: fundamental period of vibration T
+        soil_type: may contain soil type ('hard', 'rock', 'medium', 'mid', 'soft') or
+            nominal variable for soil type ('I', 'II', 'III')
+
+    Returns:
+        Sa/g value
+    """
+    if soil_type.upper() == 'I' or soil_type.upper() == 'ROCK' or soil_type.upper() == 'HARD':
+        if 0.00 <= t <= 0.10:
+            return 1 + 15 * t
+        elif 0.10 <= t <= 0.40:
+            return 2.50
+        elif 0.40 <= t <= 4.00:
+            return 1.00 / t
+    elif soil_type.upper() == 'II' or soil_type.upper() == 'MEDIUM' or soil_type.upper() == 'MID':
+        if 0.00 <= t <= 0.10:
+            return 1 + 15 * t
+        elif 0.10 <= t <= 0.55:
+            return 2.50
+        elif 0.55 <= t <= 4.00:
+            return 1.36 / t
+    elif soil_type.upper() == 'III' or soil_type.upper() == 'SOFT':
+        if 0.00 <= t <= 0.10:
+            return 1 + 15 * t
+        elif 0.10 <= t <= 0.67:
+            return 2.50
+        elif 0.67 <= t <= 4.00:
+            return 1.67 / t
