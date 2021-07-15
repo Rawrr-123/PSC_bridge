@@ -76,3 +76,8 @@ def i_composite(moi,ah2):
     for i in range(len(moi)):
         i_sum.append([moi[i][0]+ah2[i][0],moi[i][1]+ah2[i][1]])
     return i_sum
+
+def stiffness(fck,I,l):
+    fcm = fck + 10
+    E = 22 * (fcm / 12.5) ** 0.3
+    return 3*E*I/l**3

@@ -1,10 +1,55 @@
 import pandas as pd
 from calcs import calc_area,calc_moi,calc_centroid,composite_centroid,calc_Ah2,i_composite
+from bridge_specs import box
 import openpyxl
 
+"""For Box Cross Section"""
 
-length=[0.6,0.6,2.4,2.4,1.8,1.8,0.6,0.6,1.8,1.8,0.45,0.45,0.45,0.45]
-height=[3.2,3.2,0.5,0.3,0.15,0.15,0.3,0.3,0.3,0.3,0.15,0.15,0.15,0.15]
+
+##################################################################################
+
+"""Box Dim Inputs"""
+# pillar_len=0.6
+# pillar_hei=3.2
+# botslab_len=2.4
+# botslab_hei=0.5
+# topslab_len=2.4
+# topslab_hei=0.3
+# rec_cant_length=1.8
+# rec_cant_height=0.15
+# lef_kerb_len=0.6
+# lef_kerb_hei=0.3
+# rig_kerb_len=0.6
+# rig_kerb_hei=0.3
+# tri_cant_len=1.8
+# tri_cant_hei=0.3
+# chamfer_len=0.45
+# chamfer_hei=0.15
+
+
+
+pillar_len=box['pillar_len']
+pillar_hei=box['pillar_hei']
+botslab_len=box['botslab_len']
+botslab_hei=box['botslab_hei']
+topslab_len=box['topslab_len']
+topslab_hei=box['topslab_hei']
+rec_cant_length=box['rec_cant_length']
+rec_cant_height=box['rec_cant_height']
+lef_kerb_len=box['lef_kerb_len']
+lef_kerb_hei=box['lef_kerb_hei']
+rig_kerb_len=box['rig_kerb_len']
+rig_kerb_hei=box['rig_kerb_hei']
+tri_cant_len=box['tri_cant_len']
+tri_cant_hei=box['tri_cant_hei']
+chamfer_len=box['chamfer_len']
+chamfer_hei=box['chamfer_hei']
+
+
+length=[pillar_len,pillar_len,botslab_len,topslab_len,rec_cant_length,rec_cant_length,
+        lef_kerb_len,rig_kerb_len,tri_cant_len,tri_cant_len,chamfer_len,chamfer_len,chamfer_len,chamfer_len]
+height=[pillar_hei,pillar_hei,botslab_hei,topslab_hei,rec_cant_height,rec_cant_height,
+        lef_kerb_hei,rig_kerb_hei,tri_cant_hei,tri_cant_hei,chamfer_hei,chamfer_hei,chamfer_hei,chamfer_hei]
 
 
 """Fixed Data for bridge particulars"""
@@ -64,7 +109,8 @@ ah2=calc_Ah2(area,centroid,axis)
 i_sum=i_composite(moi,ah2)
 
 
-df=pd.DataFrame([name,length,height,pos,area,centroid,moi,ah2,i_sum,obj],index=['Name','Length','Height','Position','Area','Centroid','I','Ah2','I+Ah2','Object Type']).T
+df=pd.DataFrame([name,length,height,pos,area,centroid,moi,ah2,i_sum,obj],
+                index=['Name','Length','Height','Position','Area','Centroid','I','Ah2','I+Ah2','Object Type']).T
 df.set_index('Name',inplace=True)
 df2=pd.DataFrame([axis],index=['Centroidal Axis'])
 
@@ -73,3 +119,11 @@ df2=pd.DataFrame([axis],index=['Centroidal Axis'])
 #
 df.to_excel('outputs/section.xlsx')
 df2.to_excel('outputs/bridge_axis.xlsx')
+
+
+################################################################################################
+
+
+"""For Pier Section"""
+
+

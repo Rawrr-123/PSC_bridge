@@ -1,12 +1,12 @@
 from bridge_specs import box,bearing
 import pandas as pd
 
-span=box.span
-cw=box.cw
-l_kerblen=box.l_kerblen
-r_kerblen=box.r_kerblen
-area_sum=box.area_sum
-sc=box.sc
+span=box['span']
+cw=box['cw']
+l_kerblen=box['lef_kerb_len']
+r_kerblen=box['rig_kerb_len']
+area_sum=box['area_sum']
+sc=box['sc']
 
 
 
