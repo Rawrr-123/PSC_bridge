@@ -573,3 +573,4 @@ def sag(t, soil_type):
             return 2.50
         elif 0.67 <= t <= 4.00:
             return 1.67 / t
+

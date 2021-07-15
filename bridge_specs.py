@@ -34,17 +34,35 @@ box={
     # """Cross Sectional Area"""
     'area_sum':round(sum(pd.to_numeric(df_bridge.loc[:,'Area'])),5),
 
-    # """Kerb Lengths"""
-    'l_kerblen':float(df_bridge.loc['left kerb','Length']),
-    'r_kerblen':float(df_bridge.loc['right kerb','Length']),
+
 
     # """Carriageway Width"""
-    # 'cw': round(float(df_bridge.iloc[3,14][0])-float(df_bridge.iloc[3,11][0])-l_kerblen,5),
-    'cw':6,
 
     # """Bridge Length"""
-    'bridge_len' : arr1[4]
+    'bridge_len' : arr1[4],
+
+    'pillar_len':0.6,
+    'pillar_hei':3.2,
+    'botslab_len':2.4,
+    'botslab_hei':0.5,
+    'topslab_len':2.4,
+    'topslab_hei':0.3,
+    'rec_cant_length':1.8,
+    'rec_cant_height':0.15,
+    'lef_kerb_len':0.6,
+    'lef_kerb_hei':0.3,
+    'rig_kerb_len': 0.6,
+    'rig_kerb_hei': 0.3,
+    'tri_cant_len':1.8,
+    'tri_cant_hei':0.3,
+    'chamfer_len':0.45,
+    'chamfer_hei':0.15
 }
+
+box.update({
+    'cw':2*box['rec_cant_length']+box['topslab_len']-box['lef_kerb_len']-box['rig_kerb_len']
+
+})
 
 # -----------------------------------------------------------------
 
@@ -79,23 +97,34 @@ bearing={
 
 
 pier={
-    """Pier Speicifcs"""
+    # """Pier Speicifcs"""
 
 
 
-    """Pier Cap """
+    # """Pier Cap """
     'pcap_len':9,
     'pcap_wide':3,
     'pcap_height':1.5,
     # pcap_area=
+
+
     # """Pier Stem"""
-#     'pout_dia':3,
-#     'pin_dia':1.5,
-#     'clear_height': math.ceil(water['HFL']) + 3 - math.floor(water['lowest_bed'])-pier['pcap_height'],
-#
-#     # """Lever Arms"""
-#     'l_larm':(pcap_len-bearing.c_c)/2,
-#     'r_larm':(pcap_len+bearing.c_c)/2,
-#     't_larm':pcap_wide/2
+    'pout_dia':3,
+    'pin_dia':1.5,
+
+
+
 }
+
+
+
+pier.update({
+
+    'clear_height': math.ceil(water['HFL']) + 3 - math.floor(water['lowest_bed'])-pier['pcap_height'],
 #
+    # """Lever Arms"""
+    'l_larm':(pier['pcap_len']-bearing['c_c'])/2,
+    'r_larm':(pier['pcap_len']+bearing['c_c'])/2,
+    't_larm':pier['pcap_wide']/2
+
+         })
