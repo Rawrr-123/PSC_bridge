@@ -531,7 +531,7 @@ def vib_period(d, f):
 
         f: Horizontal force in kN required to be applied at the centre of mass of superstructure for one mm horizontal
             deflection at the top of the pier/ abutment for the earthquake in the transverse direction; and the force
-            to be applied at the top of· the bearings for the earthquake in the longitudinal direction.
+            to be applied at the top of· the bearings for the earthquake in the longitudinal direction.ie: stiffness
 
     Returns:
         fundamental period of vibration T
@@ -574,3 +574,28 @@ def sag(t, soil_type):
         elif 0.67 <= t <= 4.00:
             return 1.67 / t
 
+def mult_factor(load,direction):
+    """
+       Multiplication factor for different loads along different directions
+       Refer to IRC-6 219.5.2"""
+    if direction.upper()=="LONG":
+        if load.upper()=="DL":
+            return 1.00
+        elif load.upper() =="LL" :
+            return 0.00
+        elif load.upper() =="PEDL":
+            return 0.00
+    elif direction=="trans":
+        if load.upper()=="DL":
+            return 1.00
+        elif load.upper() == "LL":
+            return 0.20
+        elif load.upper() == "PEDL":
+            return 0.20
+
+
+def RR_factor(direction):
+    if direction.upper()=="LONG" or "VERT":
+        return 3.00
+    elif direction.upper()=="TRANS":
+        return 1.00
