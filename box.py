@@ -1,6 +1,41 @@
 import pandas as pd
 from calcs import calc_area,calc_moi,calc_centroid,composite_centroid,calc_Ah2,i_composite
 from bridge_specs import box
+import tkinter as tk
+
+
+################################################################################
+root = tk.Tk()
+
+canvas1 = tk.Canvas(root, width=1000, height=1000)
+canvas1.pack()
+
+img=tk.PhotoImage(file="Images/Bridge Section.png")
+canvas1.create_image(300,300,image=img)
+
+l1 = tk.Label(root, text='Bridge height')
+canvas1.create_window(100, 100, window=l1)
+e1 = tk.Entry(root)
+canvas1.create_window(200, 100, window=e1)
+e2 = tk.Entry(root)
+canvas1.create_window(200, 140, window=e2)
+
+def entry():
+    print(e1.get())
+    print(e2.get())
+
+button1 = tk.Button(text='Input', command=entry)
+canvas1.create_window(200, 180, window=button1)
+
+root.mainloop()
+
+
+
+
+
+
+##################################################################################
+
 import openpyxl
 
 """For Box Cross Section"""

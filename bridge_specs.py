@@ -16,10 +16,6 @@ arr1=pd.read_csv('outputs/Linear_WW.csv').values.tolist()[0]
 df_cross=pd.read_csv('data/new_Cross.csv')
 
 
-box={'span':50
-
-}
-
 # ---------------------------------------------------------------------------
 box={
     # """Bridge Specifics"""
@@ -105,7 +101,6 @@ pier={
     'pcap_len':9,
     'pcap_wide':3,
     'pcap_height':1.5,
-    # pcap_area=
 
 
     # """Pier Stem"""
