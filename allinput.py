@@ -29,15 +29,15 @@ def tkinput():
     length=[]
     height=[]
 
-    root = tk.Tk()
+    root = tk.Toplevel()
 
     canvas1 = tk.Canvas(root, width=1000, height=500)
     canvas1.pack()
     root.title("Section Input")
 
     img=tk.PhotoImage(file="Images/Section.png")
-    logo=ImageTk.PhotoImage(file="Images\logo.png")
-    root.iconphoto(False,logo)
+    # logo=ImageTk.PhotoImage(file="Images\logo.png")
+    # root.iconphoto(False,logo)
 
     canvas1.create_image(700,250,image=img)
 
@@ -188,8 +188,8 @@ def tkinput():
         length.extend([w1,w2,w3,w4,w10,w13,w11,w14,w9,w12,w5,w6,w7,w8])
         height.extend([l1,l2,l3,l4,l10,l13,l11,l14,l9,l12,l5,l6,l7,l8])
         root.quit()
-    button1 = tk.Button(text='Input', command=entry)
-    canvas1.create_window(225, 475, window=button1)
+    button4 = tk.Button(root,text='Input', command=entry)
+    canvas1.create_window(225, 475, window=button4)
 
     root.mainloop()
     df=pd.DataFrame(length,height).T
