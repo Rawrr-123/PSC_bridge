@@ -61,6 +61,7 @@ for g in range(2):
     stage = []
     discharge = []
     linearWW = []
+    totalarea=0
 
     while datum >= min_rl:
         area = 0
@@ -95,6 +96,7 @@ for g in range(2):
                     breadth += del_x
                 # except:
                 #     continue
+        totalarea+=area
         r = area / perimeter
         s = 0.03957
         q = 1 / 0.035 * area * pow(r, 2 / 3) * pow(s, 1 / 2)
@@ -103,7 +105,7 @@ for g in range(2):
         linearWW.append(breadth)
         datum -= 0.1
 
-    designQ = 516  # input design discharge
+    designQ = 516.89  # input design discharge
     p1 = 0
     q1 = 0
     pb = 0
@@ -156,4 +158,4 @@ plt.tight_layout()
 # plt.plot(x, y)
 # plt.show()
 
-(pd.DataFrame([st,lww,st_new,lww_new],columns=['Values'],index=['HFL','Linear Waterway','HFL after construction','LWW after construction']).T).to_csv('outputs/Linear_WW.csv',encoding='utf-8')
+(pd.DataFrame([st,lww,st_new,lww_new,totalarea],columns=['Values'],index=['HFL','Linear Waterway','HFL after construction','LWW after construction','Cross Section Area']).T).to_csv('outputs/Linear_WW.csv',encoding='utf-8')

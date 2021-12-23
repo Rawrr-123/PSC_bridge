@@ -489,19 +489,19 @@ def f_watercurrent(vel, theta=0):
         theta: angle from normal direction of current in degrees
 
     Returns:
-        p_par, p_nor: pressure intensity in direction parallel and normal to pier/current direction. in kN/m.sq
+        p_par, p_T: pressure intensity in direction parallel and normal to pier/current direction. in kN/m.sq
     """
     v_par = vel * math.cos(math.radians(theta))
-    v_nor = vel * math.sin(math.radians(theta))
+    v_T = vel * math.sin(math.radians(theta))
 
     # for piers with semi-circular ends
     k_par = 0.66
-    k_nor = 1.5
+    k_T = 1.5
 
     p_par = 52 * k_par * v_par ** 2 / 100
-    p_nor = 52 * k_nor * v_nor ** 2 / 100
+    p_T = 52 * k_T * v_T ** 2 / 100
 
-    return round(p_par, 3), round(p_nor, 3)
+    return round(p_par, 3), round(p_T, 3)
 
 
 ################################################################################################
