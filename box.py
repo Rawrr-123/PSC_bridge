@@ -1,7 +1,29 @@
+from tkinter.constants import FALSE
 import pandas as pd
+import csv
 from calcs import calc_area,calc_moi,calc_centroid,composite_centroid,calc_Ah2,i_composite
 from bridge_specs import box
-import openpyxl
+# import tkinter as tk
+# from PIL import Image,ImageTk
+from allinput import allinput
+################################################################################
+
+length=[]
+height=[]
+
+
+##############################################################################
+
+
+
+if False:
+    allinput()
+
+df=pd.read_excel('Saved Inputs/box.xlsx',index_col=None,header=None)
+height=df.values.tolist()[0]
+length=df.values.tolist()[1]
+
+##################################################################################
 
 """For Box Cross Section"""
 
@@ -25,31 +47,6 @@ import openpyxl
 # tri_cant_hei=0.3
 # chamfer_len=0.45
 # chamfer_hei=0.15
-
-
-
-pillar_len=box['pillar_len']
-pillar_hei=box['pillar_hei']
-botslab_len=box['botslab_len']
-botslab_hei=box['botslab_hei']
-topslab_len=box['topslab_len']
-topslab_hei=box['topslab_hei']
-rec_cant_length=box['rec_cant_length']
-rec_cant_height=box['rec_cant_height']
-lef_kerb_len=box['lef_kerb_len']
-lef_kerb_hei=box['lef_kerb_hei']
-rig_kerb_len=box['rig_kerb_len']
-rig_kerb_hei=box['rig_kerb_hei']
-tri_cant_len=box['tri_cant_len']
-tri_cant_hei=box['tri_cant_hei']
-chamfer_len=box['chamfer_len']
-chamfer_hei=box['chamfer_hei']
-
-
-length=[pillar_len,pillar_len,botslab_len,topslab_len,rec_cant_length,rec_cant_length,
-        lef_kerb_len,rig_kerb_len,tri_cant_len,tri_cant_len,chamfer_len,chamfer_len,chamfer_len,chamfer_len]
-height=[pillar_hei,pillar_hei,botslab_hei,topslab_hei,rec_cant_height,rec_cant_height,
-        lef_kerb_hei,rig_kerb_hei,tri_cant_hei,tri_cant_hei,chamfer_hei,chamfer_hei,chamfer_hei,chamfer_hei]
 
 
 """Fixed Data for bridge particulars"""
@@ -77,20 +74,21 @@ obj=['rectangle','rectangle','rectangle','rectangle','rectangle','rectangle','re
 
 
 """Position from left bounding box"""
-pos=[[3.5,3.5]]
-pos.append([pos[0][0]+length[0]+length[2],pos[0][1]])
-pos.append([pos[0][0]+length[0],pos[0][1]])
-pos.append([pos[0][0]+length[0],pos[0][1]+height[0]-height[3]])
-pos.append([round(pos[0][0]-length[4],4),round(pos[0][1]+height[0]-height[4],4)])
-pos.append([round(pos[0][0]+length[0]+length[3]+length[1],4),round(pos[0][1]+height[0]-height[5],4)])
-pos.append([round(pos[0][0]-length[4],4),round(pos[0][1]+height[0],4)])
-pos.append([round(pos[0][0]+length[0]+length[3]+length[1]+length[5]-length[7],4),round(pos[0][1]+height[0],4)])
-pos.append([round(pos[0][0]-length[4],4),round(pos[0][1]+height[0]-height[4]-height[8],4)])
-pos.append([round(pos[0][0]+length[0]+length[3]+length[1],4),round(pos[0][1]+height[0]-height[5]-height[9],4)])
-pos.append([round(pos[0][0]+length[0],4),round(pos[0][1]+height[0]-height[3]-height[10],4)])
-pos.append([round(pos[0][0]+length[0]+length[3]-length[11],4),round(pos[0][1]+height[0]-height[3]-height[10],4)])
-pos.append([round(pos[0][0]+length[0],4),round(pos[0][1]+height[2],4)])
-pos.append([round(pos[0][0]+length[0]+length[2]-length[13],4),round(pos[0][1]+height[2],4)])
+pos=[[3.5,3.5]]#left pillar
+pos.append([pos[0][0]+length[0]+length[2],pos[0][1]])#right pillar
+pos.append([pos[0][0]+length[0],pos[0][1]])#bottom slab
+pos.append([pos[0][0]+length[0],pos[0][1]+height[0]-height[3]])#top slab
+pos.append([round(pos[0][0]-length[4],4),round(pos[0][1]+height[0]-height[4],4)])#left cantilever
+pos.append([round(pos[0][0]+length[0]+length[3]+length[1],4),round(pos[0][1]+height[0]-height[5],4)])#right cantilever
+pos.append([round(pos[0][0]-length[4],4),round(pos[0][1]+height[0],4)])#left kerb
+pos.append([round(pos[0][0]+length[0]+length[3]+length[1]+length[5]-length[7],4),round(pos[0][1]+height[0],4)])#right kerb
+pos.append([round(pos[0][0]-length[4],4),round(pos[0][1]+height[0]-height[4]-height[8],4)])#left triangle
+pos.append([round(pos[0][0]+length[0]+length[3]+length[1],4),round(pos[0][1]+height[0]-height[5]-height[9],4)])#right triangle
+pos.append([round(pos[0][0]+length[0],4),round(pos[0][1]+height[0]-height[3]-height[10],4)])#left top fillet
+pos.append([round(pos[0][0]+length[0]+length[3]-length[11],4),round(pos[0][1]+height[0]-height[3]-height[10],4)])#right top fillet
+pos.append([round(pos[0][0]+length[0],4),round(pos[0][1]+height[2],4)])#left bottom fillet
+pos.append([round(pos[0][0]+length[0]+length[2]-length[13],4),round(pos[0][1]+height[2],4)])#right bottom fillet
+
 
 
 """Calculations"""
