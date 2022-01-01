@@ -1,0 +1,1 @@
+a']).T).to_csv('outputs/Linear_WW.csv',encoding='utf-8')
