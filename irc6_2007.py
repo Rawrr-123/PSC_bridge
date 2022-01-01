@@ -407,13 +407,16 @@ def ped_ll(span, width_footway):
     Returns:
         pedll: footway loading in kg/m.sq
     """
-    if span <= 7.5:
-        pedll = 500
+    pedll = 0
+    if span <= 50:
+        pedll = (500 / 100)*width_footway
     elif 7.5 < span <= 30:
-        pedll = 500 - (40 * span - 300) / 9
-    else:
-        pedll = (500 - 260 + 4800 / span) * (16.5 - width_footway) / 15
+        pedll = ((500 - (40 * span - 300) / 9) / 100)*width_footway
+    elif span > 30:
+        pedll = (((500 - 260) + (4800 / span)) * (16.5 - width_footway) / 1500)**width_footway
+        
     return pedll
+
 
 
 #################################################################################

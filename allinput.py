@@ -19,9 +19,12 @@ def allinput():
     ############Buttons######################
 
     button1 = tk.Button(text='Bridge Section Inputs', command=tkinput)    
-    button2 = tk.Button(text='Exit',command=quit)
+    button2 = tk.Button(text='Span Input', command=spaninput)
+
+    button_quit = tk.Button(text='Exit',command=quit)
     main_canvas.create_window(100, 50, window=button1)
     main_canvas.create_window(100, 100, window=button2)
+    main_canvas.create_window(100, 150, window=button_quit)
     main_root.mainloop()
 
     
@@ -124,36 +127,36 @@ def tkinput():
     canvas1.create_window(300, 325, window=e20)
 
 
-    l13 = tk.Label(root, text='Section 11')
-    canvas1.create_window(50, 350, window=l13)
-    e21 = tk.Entry(root)
-    canvas1.create_window(160, 350, window=e21)
-    e22 = tk.Entry(root)
-    canvas1.create_window(300, 350, window=e22)
+    # l13 = tk.Label(root, text='Section 11')
+    # canvas1.create_window(50, 350, window=l13)
+    # e21 = tk.Entry(root)
+    # canvas1.create_window(160, 350, window=e21)
+    # e22 = tk.Entry(root)
+    # canvas1.create_window(300, 350, window=e22)
 
 
-    l14 = tk.Label(root, text='Section 12')
-    canvas1.create_window(50, 375, window=l14)
+    l14 = tk.Label(root, text='Section 11')
+    canvas1.create_window(50, 350, window=l14)
     e23 = tk.Entry(root)
-    canvas1.create_window(160, 375, window=e23)
+    canvas1.create_window(160, 350, window=e23)
     e24 = tk.Entry(root)
-    canvas1.create_window(300, 375, window=e24)
+    canvas1.create_window(300, 350, window=e24)
 
 
-    l15 = tk.Label(root, text='Section 13')
-    canvas1.create_window(50, 400, window=l15)
+    l15 = tk.Label(root, text='Section 12')
+    canvas1.create_window(50, 375, window=l15)
     e25 = tk.Entry(root)
-    canvas1.create_window(160, 400, window=e25)
+    canvas1.create_window(160, 375, window=e25)
     e26 = tk.Entry(root)
-    canvas1.create_window(300, 400, window=e26)
+    canvas1.create_window(300, 375, window=e26)
 
 
-    l16 = tk.Label(root, text='Section 14')
-    canvas1.create_window(50, 425, window=l16)
-    e27 = tk.Entry(root)
-    canvas1.create_window(160, 425, window=e27)
-    e28 = tk.Entry(root)
-    canvas1.create_window(300, 425, window=e28)
+    # l16 = tk.Label(root, text='Section 14')
+    # canvas1.create_window(50, 425, window=l16)
+    # e27 = tk.Entry(root)
+    # canvas1.create_window(160, 425, window=e27)
+    # e28 = tk.Entry(root)
+    # canvas1.create_window(300, 425, window=e28)
 
 
     def entry():
@@ -177,16 +180,16 @@ def tkinput():
         l9=float(e18.get())
         w10=float(e19.get())
         l10=float(e20.get())
-        w11=float(e21.get())
-        l11=float(e22.get())
+        # w11=float(e21.get())
+        # l11=float(e22.get())
         w12=float(e23.get())
         l12=float(e24.get())
         w13=float(e25.get())
         l13=float(e26.get())
-        w14=float(e27.get())
-        l14=float(e28.get())
-        length.extend([w1,w2,w3,w4,w10,w13,w11,w14,w9,w12,w5,w6,w7,w8])
-        height.extend([l1,l2,l3,l4,l10,l13,l11,l14,l9,l12,l5,l6,l7,l8])
+        # w14=float(e27.get())
+        # l14=float(e28.get())
+        length.extend([w1,w2,w3,w4,w10,w13,w9,w12,w5,w6,w7,w8])
+        height.extend([l1,l2,l3,l4,l10,l13,l9,l12,l5,l6,l7,l8])
         root.quit()
     button4 = tk.Button(root,text='Input', command=entry)
     canvas1.create_window(225, 475, window=button4)
@@ -194,5 +197,27 @@ def tkinput():
     root.mainloop()
     df=pd.DataFrame(length,height).T
     df.to_excel('Saved Inputs/box.xlsx',encoding='utf-8',index_label='Columns',index=False)
+
+def spaninput():
+    span_root = tk.Toplevel()
+    span_canvas = tk.Canvas(span_root,width=300,height=250)
+    span_canvas.pack()
+    span_root.title("Span Input")
+
+
+    l1 = tk.Label(span_root, text='Span(m)')
+    span_canvas.create_window(75, 75, window=l1)
+
+    e1 = tk.Entry(span_root)
+    span_canvas.create_window(160, 75, window=e1)
+
+    def entry():
+        s1=float(e1.get())
+        span_root.quit()
+        df=pd.DataFrame({s1})
+        df.to_excel('Saved Inputs/span.xlsx',encoding='utf-8',index_label='Columns',index=False)
+
+    button4 = tk.Button(span_root,text='Input', command=entry)
+    span_canvas.create_window(150, 150, window=button4)
 
 allinput()

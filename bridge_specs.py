@@ -3,7 +3,6 @@ import math
 import openpyxl
 
 
-
 """Bridge Sepcifications Data"""
 df_bridge=pd.read_excel('outputs/section.xlsx').set_index('Name')
 # print(df_bridge)
@@ -77,7 +76,13 @@ water={
 
     # """HFL after construction"""
 
-    'HFL':  arr1[3]
+    'HFL':  arr1[3],
+
+    'Q':516.89,
+
+    'cross_area':arr1[5],
+
+    'lww_final':arr1[4]
 }
 # ----------------------------------------------------------------
 
@@ -116,10 +121,19 @@ pier={
 pier.update({
 
     'clear_height': math.ceil(water['HFL']) + 3 - math.floor(water['lowest_bed'])-pier['pcap_height'],
+    'stem_area':((pier['pout_dia']**2)*math.pi/4)-((pier['pin_dia']**2)*math.pi/4),
+    
 #
     # """Lever Arms"""
     'l_larm':(pier['pcap_len']-bearing['c_c'])/2,
     'r_larm':(pier['pcap_len']+bearing['c_c'])/2,
-    't_larm':pier['pcap_wide']/2
+    't_larm':pier['pcap_wide']/2,
+    
+
 
          })
+
+pier.update({
+    'stem_vol':pier['stem_area']*pier['clear_height']
+
+      })
