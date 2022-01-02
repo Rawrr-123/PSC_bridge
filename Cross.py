@@ -341,6 +341,7 @@ ODL=Dead_Load('ODL',area_sum,sc,span,l_kerblen+r_kerblen,0.3,0.065,6,2,section.I
 PEDL=Dead_Load('PEDL',area_sum,sc,span,l_kerblen+r_kerblen,0.3,0.065,6,2,section.I[0],section.ymax,section.ymin)
 SIDL=Dead_Load('SIDL',area_sum,sc,span,l_kerblen+r_kerblen,0.3,0.065,6,2,section.I[0],section.ymax,section.ymin)
 
-excel_loads(PDL,ODL,PEDL,SIDL,sc)
+# excel_loads(PDL,ODL,PEDL,SIDL,sc)
 # print(dls.stress)
 
+# print(section.Centroid)
