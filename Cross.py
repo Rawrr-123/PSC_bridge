@@ -98,9 +98,9 @@ def composite_centroid(area,centroid):
     ay=0
     asum=0
     for i in range(len(area)):
-        ax+=round(area[i]*centroid[i][0],8)
-        ay += round(area[i] * centroid[i][1],8)
-        asum+=round(area[i],5)
+        ax+=round(area[i]*centroid[i][0],6)
+        ay+=round(area[i]*centroid[i][1],6)
+        asum+=area[i]
     return [round(ax/asum,6),round(ay/asum,6)]
 
 
@@ -168,8 +168,8 @@ class Cross_section:
         pos.append([round(pos[0][0]+self.length[0]+self.length[3]+self.length[1],4),round(pos[0][1]+self.height[0]-self.height[5],4)])#right cantilever
         # pos.append([round(pos[0][0]-length[4],4),round(pos[0][1]+height[0],4)])#left kerb
         # pos.append([round(pos[0][0]+length[0]+length[3]+length[1]+length[5]-length[7],4),round(pos[0][1]+height[0],4)])#right kerb
-        pos.append([round(pos[0][0]-self.length[4],4),round(pos[0][1]+self.height[0]-self.height[4]-self.height[8],4)])#left triangle
-        pos.append([round(pos[0][0]+self.length[0]+self.length[3]+self.length[1],4),round(pos[0][1]+self.height[0]-self.height[5]-self.height[9],4)])#right triangle
+        pos.append([round(pos[0][0]-self.length[4],4),round(pos[0][1]+self.height[0]-self.height[4]-self.height[6],4)])#left triangle
+        pos.append([round(pos[0][0]+self.length[0]+self.length[3]+self.length[1],4),round(pos[0][1]+self.height[0]-self.height[5]-self.height[7],4)])#right triangle
         pos.append([round(pos[0][0]+self.length[0],4),round(pos[0][1]+self.height[0]-self.height[3]-self.height[9],4)])#left top fillet
         pos.append([round(pos[0][0]+self.length[0]+self.length[3]-self.length[10],4),round(pos[0][1]+self.height[0]-self.height[3]-self.height[9],4)])#right top fillet
         pos.append([round(pos[0][0]+self.length[0],4),round(pos[0][1]+self.height[2],4)])#left bottom fillet
@@ -245,16 +245,6 @@ class Cross_section:
 
 
 
-def excel_export(section):
-
-    df=pd.DataFrame([section.name,section.length,section.height,section.position,section.section_area,section.section_centroid,section.section_moi,section.AH2,section.obj],
-                    index=['Name','Length','Height','Position','Area','Centroid','I','Ah2','Object Type']).T
-    df.set_index('Name',inplace=True)
-    df2=pd.DataFrame([section.Centroid],index=['Centroidal Axis'])
-    df.to_excel('outputs/section.xlsx')
-    df2.to_excel('outputs/bridge_axis.xlsx')
-
-
 
 class Dead_Load:
     def __init__(self,name,asum,sc,span,walkway_width,walkway_thickness,wearing_course,cw,railing_udl,I,ymax,ymin):
@@ -303,6 +293,18 @@ class Dead_Load:
         return [smax,smin]
 
 
+
+def excel_export(section):
+
+    df=pd.DataFrame([section.name,section.length,section.height,section.position,section.section_area,section.section_centroid,section.section_moi,section.AH2,section.obj],
+                    index=['Name','Length','Height','Position','Area','Centroid','I','Ah2','Object Type']).T
+    df.set_index('Name',inplace=True)
+    df2=pd.DataFrame([section.Centroid],index=['Centroidal Axis'])
+    df.to_excel('outputs/section.xlsx')
+    df2.to_excel('outputs/bridge_axis.xlsx')
+
+
+
 def excel_loads(PDL,ODL,PEDL,SIDL,sc):
         
     df3 = pd.DataFrame({'Section at': sc, 'Dead Load': PDL.BM, 'Other Loads': ODL.BM, 'Surface Loads': SIDL.BM,
@@ -342,4 +344,5 @@ PEDL=Dead_Load('PEDL',area_sum,sc,span,l_kerblen+r_kerblen,0.3,0.065,6,2,section
 SIDL=Dead_Load('SIDL',area_sum,sc,span,l_kerblen+r_kerblen,0.3,0.065,6,2,section.I[0],section.ymax,section.ymin)
 # excel_export(section)
 # excel_loads(PDL,ODL,PEDL,SIDL,sc)
-# print(dls.stress)
+# print(section.Centroid)
+
