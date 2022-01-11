@@ -345,4 +345,3 @@ SIDL=Dead_Load('SIDL',area_sum,sc,span,l_kerblen+r_kerblen,0.3,0.065,6,2,section
 # excel_export(section)
 # excel_loads(PDL,ODL,PEDL,SIDL,sc)
 # print(section.Centroid)
-
