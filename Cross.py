@@ -38,13 +38,15 @@ length=df.values.tolist()[1]
 
 df_bridge=pd.read_excel('outputs/section.xlsx').set_index('Name')
 
-
 span=50
 cw=6
 l_kerblen=0.6
 r_kerblen=0.6
 area_sum=round(sum(pd.to_numeric(df_bridge.loc[:,'Area'])),5)
-sc=[(j)/8*50 for j in range(9)]
+
+""""distance form left of 9 divisions of section"""
+sc=[(j)/8*50 for j in range(9)] 
+
 loads=["PDL","ODL","SIDL","PEDL"]
 
 ####################################################################################3###############
@@ -193,8 +195,11 @@ def stiffness(fck,I,l):
     E = 22 * (fcm / 12.5) ** 0.3
     return 3*E*I/l**3
 
+
+"""CALCULATE WIDTH OF EXPANDED SECTION OF BOX"""
+
 def expansion_calc(span,section_at,cable):
-    pass 
+    return 0
 
 #################################################################################################
 
@@ -205,18 +210,28 @@ HEIGHT = ARRAY OF LENGTH OF DIFFERENT SECTIONS
 
 class Cross_section:
     def __init__(self,length,height,expanwidth=0):
-        self.length=length
-        self.height=height
+        self.len=length
+        self.hei=height
         self.exp_width=expanwidth
+       
+    @property 
+    def length(self):
         if self.expansion_width>0:
-            if self.expansion_width>=self.height[10] and self.expansion_width>=self.height[11]:
-                h1=self.height[10]
-                h2=self.height[11]
+            return self.len+[self.len[10],round(self.len[2]*0.45-self.len[10]*2,5),round(self.len[2]*0.45-self.len[10],5),self.len[10],self.len[11],round(self.len[2]*0.45-self.len[11],5),round(self.len[2]*0.45-self.len[11]*2,5),self.len[11]]
+        else:
+            return self.len
+
+    @property 
+    def height(self):
+        if self.expansion_width>0:
+            if self.expansion_width>=self.hei[10] and self.expansion_width>=self.hei[11]:
+                h1=self.hei[10]
+                h2=self.hei[11]
             else:
-                h1=h2=0
-            self.length=self.length+[self.length[10],round(self.length[2]*0.45-self.length[10]*2,5),round(self.length[2]*0.45-self.length[10],5),self.length[10],self.length[11],round(self.length[2]*0.45-self.length[11],5),round(self.length[2]*0.45-self.length[11]*2,5),self.length[11]]
-            self.height=self.height+[h1,h1,self.expansion_width-h1,self.expansion_width-h1,self.expansion_width-h2,self.expansion_width-h2,h2,h2]
-    
+                h1=h2=0 
+            return self.hei+[h1,h1,self.expansion_width-h1,self.expansion_width-h1,self.expansion_width-h2,self.expansion_width-h2,h2,h2]
+        else:
+            return self.hei
 
     """WIDTH OF EXPANSION IN END SIDES """
     @property
@@ -480,27 +495,27 @@ class cables:
         nbotup=int(self.nbotup)
         for i in range(ntop):
             if i==0:                
-                midtop.append([round(x+y,4) for x,y in zip(section.position[0],[e,b+3*amid])])
+                midtop.append([round(x+y,4) for x,y in zip(section.position[0],[self.e,self.b+3*self.amid])])
                 
             if i>0:                
-                midtop.append([round(x+y,4) for x,y in zip(midtop[i-1],[0,amid])])
+                midtop.append([round(x+y,4) for x,y in zip(midtop[i-1],[0,self.amid])])
 
-        for i in range(len(toppos)):           
-            midtop.append([x+y for x,y in zip(midtop[i],[cc,0])])
+        for i in range(len(midtop)):           
+            midtop.append([x+y for x,y in zip(midtop[i],[self.cc,0])])
 
             
         for i in range(nbot):
             if i==0:                
-                midbot.append([round(x+y,4) for x,y in zip(section.position[0],[e,b])])
+                midbot.append([round(x+y,4) for x,y in zip(section.position[0],[self.e,self.b])])
             if i>0:                
-                midbot.append([round(x+y,4) for x,y in zip(midbot[i-1],[adash,0])])
+                midbot.append([round(x+y,4) for x,y in zip(midbot[i-1],[self.adash,0])])
         for i in range(nbotup):
             if i==0:                
-                midbotupleft.append([round(x+y,4) for x,y in zip(section.position[0],[e,b+a])])
-                midbotupright.append([round(x+y,4) for x,y in zip(section.position[0],[-e,b+a])])
+                midbotupleft.append([round(x+y,4) for x,y in zip(section.position[0],[self.e,self.b+self.a])])
+                midbotupright.append([round(x+y,4) for x,y in zip(section.position[0],[-self.e,self.b+self.a])])
             if i>0:                
-                midbotupleft.append([round(x+y,4) for x,y in zip(midbotupleft[i-1],[a,0])])
-                midbotupright.append([round(x+y,4) for x,y in zip(midbotupright[i-1],[-a,0])])
+                midbotupleft.append([round(x+y,4) for x,y in zip(midbotupleft[i-1],[self.a,0])])
+                midbotupright.append([round(x+y,4) for x,y in zip(midbotupright[i-1],[-self.a,0])])
         
         self.bottomposup_mid=midbotupleft+midbotupright
         midcablepos=[*midtop,*midbot,*midbotupleft,*midbotupright]
@@ -527,6 +542,7 @@ class cables:
         SC= SECTION DIVISIONS ARRAY EG. [0M,25M,50M]
         CW= CLEARWAY OF ROAD 
         YMAX,YMIN = MAXIMUM,MINIMUM Y FROM CENTROID OF BOX GIRDER """
+
 class Dead_Load:
     def __init__(self,name,asum,sc,span,walkway_width,walkway_thickness,wearing_course,cw,railing_udl,I,ymax,ymin):
         self.areasum=asum
@@ -546,7 +562,7 @@ class Dead_Load:
     @property
     def load(self):
         if self.name=="PDL":
-            return self.areasum*25
+            return 25
         elif self.name=="ODL":
             return self.www*self.wwt*25+2*self.rudl
         elif self.name=="SIDL":
@@ -562,7 +578,10 @@ class Dead_Load:
     def BM(self):
         bm=[]
         for i in range(len(self.sections)):
-            bm.append(bm_udl(span,self.sections[i],self.load))
+            if self.name=="PDL":
+                bm.append(bm_udl(span,self.sections[i],self.load*self.areasum[i]))
+            else:
+                bm.append(bm_udl(span,self.sections[i],self.load))
         return bm
     
 
@@ -575,8 +594,8 @@ class Dead_Load:
         smax=[]
         smin=[]
         for i in range(len(self.BM)):
-            smax.append(self.BM[i]*self.ymax/self.I)
-            smin.append(self.BM[i]*self.ymin/self.I)
+            smax.append(self.BM[i]*self.ymax[i]/self.I[i][0])
+            smin.append(self.BM[i]*self.ymin[i]/self.I[i][0])
         return [smax,smin]
 
 ###########################################################################################
@@ -626,18 +645,47 @@ def excel_loads(PDL,ODL,PEDL,SIDL,sc):
 #############################################################################################33
 
 
-
+"""Creation of required cross section with length and height inputs"""
 section=Cross_section(length,height)
 
-PDL=Dead_Load('PDL',area_sum,sc,span,l_kerblen+r_kerblen,0.3,0.065,6,2,section.I[0],section.ymax,section.ymin)
-ODL=Dead_Load('ODL',area_sum,sc,span,l_kerblen+r_kerblen,0.3,0.065,6,2,section.I[0],section.ymax,section.ymin)
-PEDL=Dead_Load('PEDL',area_sum,sc,span,l_kerblen+r_kerblen,0.3,0.065,6,2,section.I[0],section.ymax,section.ymin)
-SIDL=Dead_Load('SIDL',area_sum,sc,span,l_kerblen+r_kerblen,0.3,0.065,6,2,section.I[0],section.ymax,section.ymin)
+
+"""Creation of cable properties """
 cable=cables(35,14,section)
+
+
+I=[]
+ymax=[]
+ymin=[]
+area_sum=[]
+
+
+"""Cross Section values for given no of divisions """
+for i in range(len(sc)):
+    
+    section.expansion_width+=expansion_calc(span,sc,cable)
+    I.append(section.I)    
+    ymax.append(section.ymax)
+    ymin.append(section.ymin)
+    area_sum.append(sum(section.section_area))
+
+
+
+
+
+
+"""Calculation of loads """
+
+PDL=Dead_Load('PDL',area_sum,sc,span,l_kerblen+r_kerblen,0.3,0.065,6,2,I,ymax,ymin)
+ODL=Dead_Load('ODL',area_sum,sc,span,l_kerblen+r_kerblen,0.3,0.065,6,2,I,ymax,ymin)
+PEDL=Dead_Load('PEDL',area_sum,sc,span,l_kerblen+r_kerblen,0.3,0.065,6,2,I,ymax,ymin)
+SIDL=Dead_Load('SIDL',area_sum,sc,span,l_kerblen+r_kerblen,0.3,0.065,6,2,I,ymax,ymin)
+
 # excel_export(section)
 # excel_loads(PDL,ODL,PEDL,SIDL,sc)
 # print(section.Centroid)
 # section.expansion_width=0.5
 # print(section.cable_pos(35,14,50,12))
-print(section.length[0])
-print(cable.cable_arrangement)
+
+# print(len(section.length))
+# print(cable.cable_arrangement)
+
