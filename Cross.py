@@ -194,7 +194,7 @@ def stiffness(fck,I,l):
     return 3*E*I/l**3
 
 def expansion_calc(span,section_at,cable):
-    
+    pass 
 
 #################################################################################################
 
