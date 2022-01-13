@@ -4,50 +4,6 @@ from reaction import bm_udl
 from irc6_2007 import ped_ll
 import math
 
-# import tkinter as tk
-# from PIL import Image,ImageTk
-# from allinput import allinput
-
-######################################################################################3
-
-"""INPUTS SECTION"""
-
-"""FOR CROSS SECTION"""
-length=[]
-height=[]
-
-
-#####################################################################################################################
-
-"""GUI INPUT OF BRIDGE SECTION LENGTHS AND HEIGHTS"""
-
-if False:
-    allinput()
-
-df=pd.read_excel('Saved Inputs/box.xlsx',index_col=None,header=None)
-
-
-height=df.values.tolist()[0]
-length=df.values.tolist()[1]
-
-
-
-###############################################################################################
-"""FOR DEAD LOAD MOMENTS INPUTS"""
-
-
-df_bridge=pd.read_excel('outputs/section.xlsx').set_index('Name')
-
-span=50
-cw=6
-l_kerblen=0.6
-r_kerblen=0.6
-area_sum=round(sum(pd.to_numeric(df_bridge.loc[:,'Area'])),5)
-
-""""distance form left of 9 divisions of section"""
-sc=[(j)/8*50 for j in range(9)] 
-
-loads=["PDL","ODL","SIDL","PEDL"]
 
 ####################################################################################3###############
 """Dimensions=[length,height] for rectangle/triangle and radius for circle"""
@@ -213,6 +169,7 @@ class Cross_section:
         self.len=length
         self.hei=height
         self.exp_width=expanwidth
+        self.cableprop=[]
        
     @property 
     def length(self):
@@ -373,6 +330,14 @@ class Cross_section:
                 ymin=hold 
         return round(ymin,5)
 
+    @property
+    def cableprop(self):
+        return self.cable_prop
+
+    @cableprop.setter
+    def cableprop(self,value):
+        self.cable_prop=value 
+    
 
 ################################################################################################
 """CABLE PROPERTIES CLASS 
@@ -385,13 +350,14 @@ class cables:
         self.n=nos
         self.section=section
         self.cc=round(section.position[1][0]+section.length[1]-section.position[0][0]-section.length[0],3)
+   
     
     @property 
     def expanlen(self):
         try:
-            expanlen=min(section.length[14],section.length[17])+section.length[0]
+            expanlen=min(self.section.length[14],self.section.length[17])+self.section.length[0]
         except:
-            expanlen=section.length[0]
+            expanlen=self.section.length[0]
         return expanlen
 
     @property 
@@ -418,74 +384,52 @@ class cables:
 
     @property
     def e(self):
-        e=section.length[0]/2
+        e=self.section.length[0]/2
         if e<=self.b:
             raise ValueError ("Very bad input section")
         return e
 
     @property 
     def cable_arrangement(self):
-        self.ntop=round(self.n/4)/2
-        self.nbot=self.n-self.ntop*2
-        self.nbotup=0
-        self.adash=self.cc/(self.nbot-1)
+        ntop=round(self.n/4)/2
+        
+        nbot=self.n-ntop*2
+        nbotup=0
+        self.adash=self.cc/(nbot-1)
         while self.adash<self.a:
 
-            if (self.nbotup/2)<=math.floor((self.expanlen-2*self.e)/self.a):
-                print((self.expanlen-2*self.e)/self.a)
-                self.nbot=self.nbot-2
-                self.nbotup=self.nbotup+2
-                self.adash=self.cc/(self.nbot+1)
+            if (nbotup/2)<=math.floor((self.expanlen-2*self.e)/self.a):
+                
+                nbot=nbot-2
+                nbotup=nbotup+2
+                self.adash=self.cc/(nbot+1)
             else:
-                self.ntop=self.ntop+1
-                self.nbot=self.nbot-2
-                self.adash=self.cc/(self.nbot+1)
+                ntop=ntop+1
+                nbot=nbot-2
+                self.adash=self.cc/(nbot+1)
 
-        self.nbotup=self.nbotup/2
+        nbotup=nbotup/2
         self.amid=0.15
-        return self.ntop,self.nbot,self.nbotup
+        return [ntop,nbot,nbotup]
+
+    @property
+    def ntop(self):
+        return self.cable_arrangement[0]
+    
+    @property
+    def nbot(self):
+        return self.cable_arrangement[1]
+    
+    @property
+    def nbotup(self):
+        return self.cable_arrangement[2]
         
     @property
-    def endcablepos(self):
+    def collarr(self):
         toppos=[]
         bottompos=[]
         bottomposupleft=[]
         bottomposupright=[]
-        ntop=int(self.ntop)
-        nbot=int(self.nbot)
-        nbotup=int(self.nbotup)
-
-        for i in range(ntop):
-            if i==0:
-                toppos.append([round(x+y,4) for x,y in zip(self.section.position[0],[self.e,self.b+3*self.a])])
-                                
-            if i>0:
-                toppos.append([round(x+y,4) for x,y in zip(toppos[i-1],[0,self.a])])
-                
-        for i in range(len(toppos)):
-            toppos.append([x+y for x,y in zip(toppos[i],[self.cc,0])])
-            
-            
-        for i in range(nbot):
-            if i==0:
-                bottompos.append([round(x+y,4) for x,y in zip(self.section.position[0],[self.e,self.b])])
-            if i>0:
-                bottompos.append([round(x+y,4) for x,y in zip(bottompos[i-1],[self.adash,0])])
-        for i in range(nbotup):
-            if i==0:
-                bottomposupleft.append([round(x+y,4) for x,y in zip(self.section.position[0],[self.e,self.b+self.a])])
-                bottomposupright.append([round(x+y,4) for x,y in zip(self.section.position[1],[-self.e,self.b+self.a])])
-                
-            if i>0:
-                bottomposupleft.append([round(x+y,4) for x,y in zip(bottomposupleft[i-1],[self.a,0])])
-                bottomposupright.append([round(x+y,4) for x,y in zip(bottomposupright[i-1],[-self.a,0])])
-                
-        endcablepos=[*toppos,*bottompos,*bottomposupleft,*bottomposupright]
-        self.bottomposup_end=bottomposupleft+bottomposupright
-        return endcablepos
-    
-    @property
-    def midcablepos(self):
         midtop=[]
         midbot=[]
         midbotupleft=[]
@@ -493,34 +437,57 @@ class cables:
         ntop=int(self.ntop)
         nbot=int(self.nbot)
         nbotup=int(self.nbotup)
+
         for i in range(ntop):
-            if i==0:                
-                midtop.append([round(x+y,4) for x,y in zip(section.position[0],[self.e,self.b+3*self.amid])])
-                
-            if i>0:                
+            if i==0:
+                toppos.append([round(x+y,4) for x,y in zip(self.section.position[0],[self.e,self.b+3*self.a])])
+                midtop.append([round(x+y,4) for x,y in zip(self.section.position[0],[self.e,self.b+3*self.amid])])
+                                
+            if i>0:
+                toppos.append([round(x+y,4) for x,y in zip(toppos[i-1],[0,self.a])])
                 midtop.append([round(x+y,4) for x,y in zip(midtop[i-1],[0,self.amid])])
-
-        for i in range(len(midtop)):           
+                
+        for i in range(len(toppos)):
+            toppos.append([x+y for x,y in zip(toppos[i],[self.cc,0])])
             midtop.append([x+y for x,y in zip(midtop[i],[self.cc,0])])
-
+            
             
         for i in range(nbot):
-            if i==0:                
-                midbot.append([round(x+y,4) for x,y in zip(section.position[0],[self.e,self.b])])
-            if i>0:                
+            if i==0:
+                bottompos.append([round(x+y,4) for x,y in zip(self.section.position[0],[self.e,self.b])])
+                midbot.append([round(x+y,4) for x,y in zip(self.section.position[0],[self.e,self.b])])
+            if i>0:
+                bottompos.append([round(x+y,4) for x,y in zip(bottompos[i-1],[self.adash,0])])
                 midbot.append([round(x+y,4) for x,y in zip(midbot[i-1],[self.adash,0])])
         for i in range(nbotup):
-            if i==0:                
-                midbotupleft.append([round(x+y,4) for x,y in zip(section.position[0],[self.e,self.b+self.a])])
-                midbotupright.append([round(x+y,4) for x,y in zip(section.position[0],[-self.e,self.b+self.a])])
-            if i>0:                
+            if i==0:
+                bottomposupleft.append([round(x+y,4) for x,y in zip(self.section.position[0],[self.e,self.b+self.a])])
+                bottomposupright.append([round(x+y,4) for x,y in zip(self.section.position[1],[-self.e,self.b+self.a])])
+                midbotupleft.append([round(x+y,4) for x,y in zip(self.section.position[0],[self.e,self.b+self.a])])
+                midbotupright.append([round(x+y,4) for x,y in zip(self.section.position[0],[-self.e,self.b+self.a])])
+                
+            if i>0:
+                bottomposupleft.append([round(x+y,4) for x,y in zip(bottomposupleft[i-1],[self.a,0])])
+                bottomposupright.append([round(x+y,4) for x,y in zip(bottomposupright[i-1],[-self.a,0])])
                 midbotupleft.append([round(x+y,4) for x,y in zip(midbotupleft[i-1],[self.a,0])])
                 midbotupright.append([round(x+y,4) for x,y in zip(midbotupright[i-1],[-self.a,0])])
-        
-        self.bottomposup_mid=midbotupleft+midbotupright
+                
+        endcablepos=[*toppos,*bottompos,*bottomposupleft,*bottomposupright]
+        bottomposup_end=bottomposupleft+bottomposupright
+        bottomposup_mid=midbotupleft+midbotupright
         midcablepos=[*midtop,*midbot,*midbotupleft,*midbotupright]
-        return midcablepos
+        return [endcablepos,midcablepos,bottomposup_end,bottomposup_mid]
+    
 
+    @property 
+    def endcablepos(self):
+        return self.collarr[0]
+
+    @property
+    def midcablepos(self):
+        return self.collarr[1]
+        
+        
     
     def cablepos(self,section_at,span):
         x=section_at
@@ -579,9 +546,9 @@ class Dead_Load:
         bm=[]
         for i in range(len(self.sections)):
             if self.name=="PDL":
-                bm.append(bm_udl(span,self.sections[i],self.load*self.areasum[i]))
+                bm.append(bm_udl(self.span,self.sections[i],self.load*self.areasum[i]))
             else:
-                bm.append(bm_udl(span,self.sections[i],self.load))
+                bm.append(bm_udl(self.span,self.sections[i],self.load))
         return bm
     
 
@@ -628,64 +595,17 @@ def excel_loads(PDL,ODL,PEDL,SIDL,sc):
 
                         })
 
-    df5.to_csv('outputs/Stresses.csv')
+    # df5.to_csv('outputs/Stresses.csv')
 
 
-    a=[PDL.load*span/2,PDL.load*span/2,PDL.load*span]
-    b=[ODL.load*span/2,ODL.load*span/2,ODL.load*span]
-    c=[SIDL.load*span/2,SIDL.load*span/2,SIDL.load*span]
-    d=[PEDL.load*span/2,PEDL.load*span/2,PEDL.load*span]
-    df4=pd.DataFrame([a,b,c,d],columns=['RL','RR','Sum'],index=['Dead Load','Other Load','Surface Load','Pedestrian load']
-    )
-    df4.to_csv('outputs/DL_for_Seismic.csv')
-
-
-
-
-#############################################################################################33
-
-
-"""Creation of required cross section with length and height inputs"""
-section=Cross_section(length,height)
-
-
-"""Creation of cable properties """
-cable=cables(35,14,section)
-
-
-I=[]
-ymax=[]
-ymin=[]
-area_sum=[]
-
-
-"""Cross Section values for given no of divisions """
-for i in range(len(sc)):
-    
-    section.expansion_width+=expansion_calc(span,sc,cable)
-    I.append(section.I)    
-    ymax.append(section.ymax)
-    ymin.append(section.ymin)
-    area_sum.append(sum(section.section_area))
+    # a=[PDL.load*span/2,PDL.load*span/2,PDL.load*span]
+    # b=[ODL.load*span/2,ODL.load*span/2,ODL.load*span]
+    # c=[SIDL.load*span/2,SIDL.load*span/2,SIDL.load*span]
+    # d=[PEDL.load*span/2,PEDL.load*span/2,PEDL.load*span]
+    # df4=pd.DataFrame([a,b,c,d],columns=['RL','RR','Sum'],index=['Dead Load','Other Load','Surface Load','Pedestrian load']
+    # )
+    # df4.to_csv('outputs/DL_for_Seismic.csv')
 
 
 
-
-
-
-"""Calculation of loads """
-
-PDL=Dead_Load('PDL',area_sum,sc,span,l_kerblen+r_kerblen,0.3,0.065,6,2,I,ymax,ymin)
-ODL=Dead_Load('ODL',area_sum,sc,span,l_kerblen+r_kerblen,0.3,0.065,6,2,I,ymax,ymin)
-PEDL=Dead_Load('PEDL',area_sum,sc,span,l_kerblen+r_kerblen,0.3,0.065,6,2,I,ymax,ymin)
-SIDL=Dead_Load('SIDL',area_sum,sc,span,l_kerblen+r_kerblen,0.3,0.065,6,2,I,ymax,ymin)
-
-# excel_export(section)
-# excel_loads(PDL,ODL,PEDL,SIDL,sc)
-# print(section.Centroid)
-# section.expansion_width=0.5
-# print(section.cable_pos(35,14,50,12))
-
-# print(len(section.length))
-# print(cable.cable_arrangement)
 
