@@ -24,8 +24,8 @@ import math
                   #        \ |                  |       \           | /                /       |
                   #         \|                  |________\          |/                /________|
                   #   triangle-1                triangle_2          triangle_3        triangle_4
-        
-    
+
+
 
 ####################################################################################################
 """CALCULATE SECTION AREA FOR SIMPLE SHAPES
@@ -97,7 +97,7 @@ def calc_centroid(object, dimensions,pos):
 CENTROID=CENTROID OF INDIVIDUAL SHAPES ABOUT ORIGIN
 """
 
-    
+
 def composite_centroid(area,centroid):
     ax=0
     ay=0
@@ -117,7 +117,7 @@ COMPOSITE AXIS=CENTROID OF COMPOSITE SECTION
 
 def calc_Ah2(area,centroid,composite_axis):
     return [round(area*(centroid[1]-composite_axis[1])**2,6),round(area*(centroid[0]-composite_axis[0])**2,6)]
-    
+
 ################################################################################################
 
 # def i_composite(moi,ah2):
@@ -171,22 +171,22 @@ class Cross_section:
         self.hei=height
         self.exp_width=expanwidth
         self.cableprop=[]
-       
-    @property 
+
+    @property
     def length(self):
         if self.expansion_width>0:
             return self.len+[self.len[10],round(self.len[2]*0.45-self.len[10]*2,5),round(self.len[2]*0.45-self.len[10],5),self.len[10],self.len[11],round(self.len[2]*0.45-self.len[11],5),round(self.len[2]*0.45-self.len[11]*2,5),self.len[11]]
         else:
             return self.len
 
-    @property 
+    @property
     def height(self):
         if self.expansion_width>0:
             if self.expansion_width>=self.hei[10] and self.expansion_width>=self.hei[11]:
                 h1=self.hei[10]
                 h2=self.hei[11]
             else:
-                h1=h2=0 
+                h1=h2=0
             return self.hei+[h1,h1,self.expansion_width-h1,self.expansion_width-h1,self.expansion_width-h2,self.expansion_width-h2,h2,h2]
         else:
             return self.hei
@@ -210,11 +210,11 @@ class Cross_section:
             nyam=nyam+['Expanded_triangle_left','Top_Expanded_rectangle_left','Side_Expanded_rectangle_left','Fillet_triangle_left','Fillet_triangle_right','Side_Expanded_rectangle_right',
             'Top_Expanded_rectangle_right','Expanded_triangle_right']
         return nyam
-    
 
-    """OBJECT TYPE CORRESPONDING TO DIFFERENT PARTS OF THE SECTION"""   
+
+    """OBJECT TYPE CORRESPONDING TO DIFFERENT PARTS OF THE SECTION"""
     @property
-    def obj(self):    
+    def obj(self):
         obui=['rectangle','rectangle','rectangle','rectangle','rectangle','rectangle','triangle_1',
      'triangle_3','triangle_3','triangle_1','triangle_2','triangle_4']
         if self.expansion_width>0:
@@ -222,7 +222,7 @@ class Cross_section:
         return obui
 
 
-    """POSITION OF DIFFERENT PARTS OF THE SECTION WRT ORIGIN WITH LEFT BOTTOM CORNER OF LEFT PILLAR SECTION AT [0,0]"""   
+    """POSITION OF DIFFERENT PARTS OF THE SECTION WRT ORIGIN WITH LEFT BOTTOM CORNER OF LEFT PILLAR SECTION AT [0,0]"""
     @property
     def position(self):
         pos=[[0,0]]#left pillar  0
@@ -245,14 +245,14 @@ class Cross_section:
             pos= pos + [[pos[10][0],pos[10][1]+self.height[10]]]
             pos = pos +[[round(pos[10][0]+self.length[2]*0.45-self.length[10],4),pos[10][1]]]
 
-            
+
             pos = pos+ [[pos[11][0]-self.length[2]*0.45-self.length[11],pos[11][1]]]
             pos = pos+[[pos[11][0]+self.length[11]-self.length[2]*0.45,pos[11][1]+self.height[11]]]
             pos = pos+ [[pos[11][0]-self.length[2]*0.45+self.length[11],pos[11][1]]]
             pos=pos+[[pos[11][0],pos[11][1]]]
 
         return pos
-    
+
 
     """ARRAY OF DIMENSIONS OF EACH SECTION IE [LENGTH,HEIGHT]"""
     @property
@@ -263,7 +263,7 @@ class Cross_section:
         return dimen
 
 
-    """AREA OF EACH INDIVIDUAL SECTIONS """    
+    """AREA OF EACH INDIVIDUAL SECTIONS """
     @property
     def section_area(self):
         area=[]
@@ -280,7 +280,7 @@ class Cross_section:
             centroid.append(calc_centroid(self.obj[i],self.dimensions[i],self.position[i]))
         return centroid
 
-    
+
     """"MOI OF EACH INDIVIDUAL SECTIONS """
     @property
     def section_moi(self):
@@ -293,7 +293,7 @@ class Cross_section:
     @property
     def Centroid(self):
         return composite_centroid(self.section_area,self.section_centroid)
-    
+
 
     """AH2 OF EACH INDIVIDUAL SECTIONS FROM THEIR OWN CENTROID TO CENTROID OF COMPOSITE BRIDGE SECTION"""
     @property
@@ -302,13 +302,13 @@ class Cross_section:
         for i in range(len(self.obj)):
             ah2.append(calc_Ah2(self.section_area[i],self.section_centroid[i],self.Centroid))
         return ah2
-    
+
 
     """COMPOSITE MOI OF BOX CROSS SECTION"""
     @property
     def I(self):
         return i_composite(self.section_moi,self.AH2)\
-    
+
 
     """MAX AND MIN Y VALUES FROM CENTROID OF BOX GIRDER"""
     @property
@@ -328,7 +328,7 @@ class Cross_section:
         for i in range(len(self.name)):
             hold=abs(self.position[i][1]-self.Centroid[1])
             if ymin>hold:
-                ymin=hold 
+                ymin=hold
         return round(ymin,5)
 
     @property
@@ -337,8 +337,8 @@ class Cross_section:
 
     @cableprop.setter
     def cableprop(self,value):
-        self.cable_prop=value 
-    
+        self.cable_prop=value
+
 
 ################################################################################################
 """CABLE PROPERTIES CLASS 
@@ -351,9 +351,9 @@ class cables:
         self.n=nos
         self.section=section
         self.cc=round(section.position[1][0]+section.length[1]-section.position[0][0]-section.length[0],3)
-   
-    
-    @property 
+
+
+    @property
     def expanlen(self):
         try:
             expanlen=min(self.section.length[14],self.section.length[17])+self.section.length[0]
@@ -361,7 +361,7 @@ class cables:
             expanlen=self.section.length[0]
         return expanlen
 
-    @property 
+    @property
     def a(self):
         if self.fck<45:
             mina=0.280+(45-self.fck)*4/1000
@@ -371,8 +371,8 @@ class cables:
         if a<mina:
             raise ValueError ("Very bad input section")
         return a
-    
-    @property 
+
+    @property
     def b(self):
         if self.fck<45:
             minb=0.200+(45-self.fck)*4/1000
@@ -390,17 +390,17 @@ class cables:
             raise ValueError ("Very bad input section")
         return e
 
-    @property 
+    @property
     def cable_arrangement(self):
         ntop=round(self.n/4)/2
-        
+
         nbot=self.n-ntop*2
         nbotup=0
         adash=self.cc/(nbot-1)
         while adash<self.a:
 
             if (nbotup/2)<=math.floor((self.expanlen-2*self.e)/self.a):
-                
+
                 nbot=nbot-2
                 nbotup=nbotup+2
                 adash=self.cc/(nbot-1)
@@ -416,19 +416,19 @@ class cables:
     @property
     def ntop(self):
         return self.cable_arrangement[0]
-    
+
     @property
     def nbot(self):
         return self.cable_arrangement[1]
-    
+
     @property
     def nbotup(self):
         return self.cable_arrangement[2]
-    
+
     @property
     def adash(self):
         return self.cable_arrangement[3]
-    
+
     @property
     def amid(self):
         return self.cable_arrangement[4]
@@ -450,16 +450,16 @@ class cables:
             if i==0:
                 toppos.append([round(x+y,4) for x,y in zip(self.section.position[0],[self.e,self.b+2*self.a])])
                 midtop.append([round(x+y,4) for x,y in zip(self.section.position[0],[self.e,self.b+2*self.amid])])
-                                
+
             if i>0:
                 toppos.append([round(x+y,4) for x,y in zip(toppos[i-1],[0,self.a])])
                 midtop.append([round(x+y,4) for x,y in zip(midtop[i-1],[0,self.amid])])
-                
+
         for i in range(len(toppos)):
             toppos.append([x+y for x,y in zip(toppos[i],[self.cc,0])])
             midtop.append([x+y for x,y in zip(midtop[i],[self.cc,0])])
-            
-            
+
+
         for i in range(nbot):
             if i==0:
                 bottompos.append([round(x+y,4) for x,y in zip(self.section.position[0],[self.e,self.b])])
@@ -473,37 +473,37 @@ class cables:
                 bottomposupright.append([round(x+y,4) for x,y in zip([self.section.position[1][0]+self.section.length[1],self.section.position[1][1]],[-self.e,self.b+self.a])])
                 midbotupleft.append([round(x+y,4) for x,y in zip(self.section.position[0],[self.e,self.b+self.amid])])
                 midbotupright.append([round(x+y,4) for x,y in zip([self.section.position[1][0]+self.section.length[1],self.section.position[1][1]],[-self.e,self.b+self.amid])])
-                
+
             if i>0:
                 bottomposupleft.append([round(x+y,4) for x,y in zip(bottomposupleft[i-1],[self.a,0])])
                 bottomposupright.append([round(x+y,4) for x,y in zip(bottomposupright[i-1],[-self.a,0])])
                 midbotupleft.append([round(x+y,4) for x,y in zip(midbotupleft[i-1],[self.a,0])])
                 midbotupright.append([round(x+y,4) for x,y in zip(midbotupright[i-1],[-self.a,0])])
-                
+
         endcablepos=[*toppos,*bottompos,*bottomposupleft,*bottomposupright]
         bottomposup_end=bottomposupleft+bottomposupright
         bottomposup_mid=midbotupleft+midbotupright
         midcablepos=[*midtop,*midbot,*midbotupleft,*midbotupright]
         return [endcablepos,midcablepos,bottomposup_end,bottomposup_mid]
-    
 
-    @property 
+
+    @property
     def endcablepos(self):
         return self.arrcoll[0]
 
     @property
     def midcablepos(self):
         return self.arrcoll[1]
-        
-        
-    
+
+
+
     def cablepos(self,section_at,span):
         x=section_at
         l=span
         cablepos=[]
 
         for i in range(len(self.endcablepos)):
-            
+
             h=self.midcablepos[i][1]-self.endcablepos[i][1]
             pos= -((4*h*x**2)/(l**2))+4*h*x/l+self.endcablepos[i][1]
             cablepos.append([self.endcablepos[i][0],pos])
@@ -533,7 +533,7 @@ class Dead_Load:
         self.ymax=ymax
         self.ymin=ymin
 
-    
+
     @property
     def load(self):
         if self.name=="PDL":
@@ -544,16 +544,16 @@ class Dead_Load:
             return self.wc*self.cw*22
         elif self.name=="PEDL":
             return ped_ll(self.span,self.www)
-        
+
 
 
     """FIND BENDING MOMENT DUE TO UDLS OF DIFFERENT LOADS"""
 
     @property
-    def BM(self):            
+    def BM(self):
         bm= bm_udl(self.span,self.sections,self.load)
         return bm
-    
+
 
 
 
@@ -582,27 +582,52 @@ def excel_export(section):
 (PEDL) AND  OTHER DEAD LOAD(ODL)"""
 
 def excel_loads(PDL,ODL,PEDL,SIDL,sc):
-    df3 = pd.DataFrame({'Section at', 'Dead Load', 'Other Loads', 'Surface Loads',
-                        'Pedestrian Load'
-
-                        }).T
+    # col3 = ['Section at', 'Dead Load', 'Other Loads', 'Surface Loads', 'Pedestrian Load']
+    sec_at = []
+    bm_pdl = []
+    bm_odl = []
+    bm_sidl = []
+    bm_pedl = []
     for i in range(len(PDL)):
-        df3.append([PDL[i].sections,PDL[i].BM,ODL[i].BM,SIDL[i].BM,PEDL[i].BM])
-
- 
-
-    df3.to_csv('outputs/Moments.csv')
-    
-    df5=pd.DataFrame({'Section at', 'S+ PDL', 'S- PDL', 'S+ ODL','S- ODL',
-                     'S+ PEDL', 'S- PEDL','S+ SIDL', 'S- SIDL'
-
-                        }).T
+        sec_at.append(PDL[i].sections)
+        bm_pdl.append(PDL[i].BM)
+        bm_odl.append(ODL[i].BM)
+        bm_sidl.append(SIDL[i].BM)
+        bm_pedl.append(PEDL[i].BM)
+    data = {'Section at': sec_at,
+            'Dead Load': bm_pdl,
+            'Other Loads': bm_odl,
+            'Surface Loads': bm_sidl,
+            'Pedestrian Load': bm_pedl}
+    # print(data)
+    df3 = pd.DataFrame(data)
+    # print(df3)
+    df3.to_excel('outputs/Moments.xlsx')
+    # print(df3)
+    #strpdl1=[]
+    strpdl2=[]
+    strodl1=[]
+    strodl2=[]
+    strsidl1=[]
+    strsidl2=[]
+    strpedl1=[]
+    strpedl2=[]
     for i in range(len(PDL)):
-        df5.append([PDL[i].sections,PDL[i].stress[0],PDL[i].stress[1],ODL[i].stress[0],ODL[i].stress[1],
-        PEDL[i].stress[0],PEDL[i].stress[1],SIDL[i].stress[0],SIDL[i].stress[1]])                     
 
+        strpdl1.append(PDL[i].stress[0])
+        strpdl2.append(PDL[i].stress[1])
+        strodl1.append(ODL[i].stress[0])
+        strodl2.append(ODL[i].stress[1])
+        strpedl1.append(PEDL[i].stress[0])
+        strpedl2.append(PEDL[i].stress[1])
+        strsidl1.append(SIDL[i].stress[0])
+        strsidl2.append(SIDL[i].stress[1])
+
+    df5=pd.DataFrame({'Section at':sections, 'S+ PDL':strpdl1, 'S- PDL':strpdl2, 'S+ ODL':strodl1,'S- ODL':strodl2,
+                     'S+ PEDL':strpedl1, 'S- PEDL':strpedl2,'S+ SIDL':strsidl1, 'S- SIDL':strsidl2
+
+                        })
     df5.to_csv('outputs/Stresses.csv')
-
 
     # a=[PDL.load*span/2,PDL.load*span/2,PDL.load*span]
     # b=[ODL.load*span/2,ODL.load*span/2,ODL.load*span]
@@ -611,7 +636,29 @@ def excel_loads(PDL,ODL,PEDL,SIDL,sc):
     # df4=pd.DataFrame([a,b,c,d],columns=['RL','RR','Sum'],index=['Dead Load','Other Load','Surface Load','Pedestrian load']
     # )
     # df4.to_csv('outputs/DL_for_Seismic.csv')
+def k(a,e,i,l):
+    """
+    Member stiffness matrix
+    Args:
+        a: Area
+        e: Modulus of elasticity kN/m**2
+        i: Moment of Inertia about Z axis m**4
+        l: length of member m
 
+    Returns:
+        numpy array of member stiffness matrix
 
-
-
+    """
+    a = a*e/l
+    b = 6*e*i/l**2
+    c = 12*e*i/l**3
+    d = 4*e*i/l
+    k = np.array([
+        [a, 0, 0, -a, 0, 0],
+        [0, c, b, 0, -c, b],
+        [0, b, d, 0, -b, d/2],
+        [-a, 0, 0, a, 0, 0],
+        [0, -c, -b, 0, c, -b],
+        [0, b, d/2, 0, -b, d]
+    ])
+    return k
