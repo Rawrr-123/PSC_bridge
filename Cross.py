@@ -1,3 +1,4 @@
+from urllib.request import AbstractBasicAuthHandler
 import pandas as pd
 import csv
 from reaction import bm_udl
@@ -155,7 +156,7 @@ def stiffness(fck,I,l):
 """CALCULATE WIDTH OF EXPANDED SECTION OF BOX"""
 
 def expansion_calc(span,section_at,cable):
-    return 0
+    return 0.3
 
 #################################################################################################
 
@@ -377,7 +378,7 @@ class cables:
             minb=0.200+(45-self.fck)*4/1000
         else:
             minb=0.220
-        b=self.section.height[2]/2
+        b=min(self.section.height[2]/2,0.25)
         if b<minb:
             raise ValueError ("Very bad input section")
         return b
@@ -395,22 +396,22 @@ class cables:
         
         nbot=self.n-ntop*2
         nbotup=0
-        self.adash=self.cc/(nbot-1)
-        while self.adash<self.a:
+        adash=self.cc/(nbot-1)
+        while adash<self.a:
 
             if (nbotup/2)<=math.floor((self.expanlen-2*self.e)/self.a):
                 
                 nbot=nbot-2
                 nbotup=nbotup+2
-                self.adash=self.cc/(nbot+1)
+                adash=self.cc/(nbot-1)
             else:
                 ntop=ntop+1
                 nbot=nbot-2
-                self.adash=self.cc/(nbot+1)
+                adash=self.cc/(nbot-1)
 
         nbotup=nbotup/2
-        self.amid=0.15
-        return [ntop,nbot,nbotup]
+        amid=0.15
+        return [ntop,nbot,nbotup,adash,amid]
 
     @property
     def ntop(self):
@@ -423,9 +424,16 @@ class cables:
     @property
     def nbotup(self):
         return self.cable_arrangement[2]
-        
+    
     @property
-    def collarr(self):
+    def adash(self):
+        return self.cable_arrangement[3]
+    
+    @property
+    def amid(self):
+        return self.cable_arrangement[4]
+    @property
+    def arrcoll(self):
         toppos=[]
         bottompos=[]
         bottomposupleft=[]
@@ -440,8 +448,8 @@ class cables:
 
         for i in range(ntop):
             if i==0:
-                toppos.append([round(x+y,4) for x,y in zip(self.section.position[0],[self.e,self.b+3*self.a])])
-                midtop.append([round(x+y,4) for x,y in zip(self.section.position[0],[self.e,self.b+3*self.amid])])
+                toppos.append([round(x+y,4) for x,y in zip(self.section.position[0],[self.e,self.b+2*self.a])])
+                midtop.append([round(x+y,4) for x,y in zip(self.section.position[0],[self.e,self.b+2*self.amid])])
                                 
             if i>0:
                 toppos.append([round(x+y,4) for x,y in zip(toppos[i-1],[0,self.a])])
@@ -462,9 +470,9 @@ class cables:
         for i in range(nbotup):
             if i==0:
                 bottomposupleft.append([round(x+y,4) for x,y in zip(self.section.position[0],[self.e,self.b+self.a])])
-                bottomposupright.append([round(x+y,4) for x,y in zip(self.section.position[1],[-self.e,self.b+self.a])])
-                midbotupleft.append([round(x+y,4) for x,y in zip(self.section.position[0],[self.e,self.b+self.a])])
-                midbotupright.append([round(x+y,4) for x,y in zip(self.section.position[0],[-self.e,self.b+self.a])])
+                bottomposupright.append([round(x+y,4) for x,y in zip([self.section.position[1][0]+self.section.length[1],self.section.position[1][1]],[-self.e,self.b+self.a])])
+                midbotupleft.append([round(x+y,4) for x,y in zip(self.section.position[0],[self.e,self.b+self.amid])])
+                midbotupright.append([round(x+y,4) for x,y in zip([self.section.position[1][0]+self.section.length[1],self.section.position[1][1]],[-self.e,self.b+self.amid])])
                 
             if i>0:
                 bottomposupleft.append([round(x+y,4) for x,y in zip(bottomposupleft[i-1],[self.a,0])])
@@ -481,11 +489,11 @@ class cables:
 
     @property 
     def endcablepos(self):
-        return self.collarr[0]
+        return self.arrcoll[0]
 
     @property
     def midcablepos(self):
-        return self.collarr[1]
+        return self.arrcoll[1]
         
         
     
@@ -529,7 +537,7 @@ class Dead_Load:
     @property
     def load(self):
         if self.name=="PDL":
-            return 25
+            return 25*self.areasum
         elif self.name=="ODL":
             return self.www*self.wwt*25+2*self.rudl
         elif self.name=="SIDL":
@@ -542,13 +550,8 @@ class Dead_Load:
     """FIND BENDING MOMENT DUE TO UDLS OF DIFFERENT LOADS"""
 
     @property
-    def BM(self):
-        bm=[]
-        for i in range(len(self.sections)):
-            if self.name=="PDL":
-                bm.append(bm_udl(self.span,self.sections[i],self.load*self.areasum[i]))
-            else:
-                bm.append(bm_udl(self.span,self.sections[i],self.load))
+    def BM(self):            
+        bm= bm_udl(self.span,self.sections,self.load)
         return bm
     
 
@@ -558,11 +561,8 @@ class Dead_Load:
 
     @property
     def stress(self):
-        smax=[]
-        smin=[]
-        for i in range(len(self.BM)):
-            smax.append(self.BM[i]*self.ymax[i]/self.I[i][0])
-            smin.append(self.BM[i]*self.ymin[i]/self.I[i][0])
+        smax=self.BM*self.ymax/self.I[0]
+        smin=self.BM*self.ymin/self.I[0]
         return [smax,smin]
 
 ###########################################################################################
@@ -582,20 +582,26 @@ def excel_export(section):
 (PEDL) AND  OTHER DEAD LOAD(ODL)"""
 
 def excel_loads(PDL,ODL,PEDL,SIDL,sc):
-        
-    df3 = pd.DataFrame({'Section at': sc, 'Dead Load': PDL.BM, 'Other Loads': ODL.BM, 'Surface Loads': SIDL.BM,
-                        'Pedestrian Load': PEDL.BM
+    df3 = pd.DataFrame({'Section at', 'Dead Load', 'Other Loads', 'Surface Loads',
+                        'Pedestrian Load'
 
-                        })
+                        }).T
+    for i in range(len(PDL)):
+        df3.append([PDL[i].sections,PDL[i].BM,ODL[i].BM,SIDL[i].BM,PEDL[i].BM])
+
+ 
 
     df3.to_csv('outputs/Moments.csv')
     
-    df5=pd.DataFrame({'Section at': sc, 'S+ PDL': PDL.stress[0], 'S- PDL': PDL.stress[1], 'S+ ODL': ODL.stress[0],'S- ODL': ODL.stress[1],
-                     'S+ PEDL': PEDL.stress[0], 'S- PEDL': PEDL.stress[1],'S+ SIDL': SIDL.stress[0], 'S- SIDL': SIDL.stress[1]
+    df5=pd.DataFrame({'Section at', 'S+ PDL', 'S- PDL', 'S+ ODL','S- ODL',
+                     'S+ PEDL', 'S- PEDL','S+ SIDL', 'S- SIDL'
 
-                        })
+                        }).T
+    for i in range(len(PDL)):
+        df5.append([PDL[i].sections,PDL[i].stress[0],PDL[i].stress[1],ODL[i].stress[0],ODL[i].stress[1],
+        PEDL[i].stress[0],PEDL[i].stress[1],SIDL[i].stress[0],SIDL[i].stress[1]])                     
 
-    # df5.to_csv('outputs/Stresses.csv')
+    df5.to_csv('outputs/Stresses.csv')
 
 
     # a=[PDL.load*span/2,PDL.load*span/2,PDL.load*span]
