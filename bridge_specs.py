@@ -5,7 +5,7 @@ import openpyxl
 
 """Bridge Sepcifications Data"""
 df_bridge=pd.read_excel('outputs/section.xlsx').set_index('Name')
-# print(df_bridge)
+print(df_bridge)
 """HFL and LWW Data"""
 
 arr1=pd.read_csv('outputs/Linear_WW.csv').values.tolist()[0]
