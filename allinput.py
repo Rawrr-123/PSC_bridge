@@ -10,7 +10,7 @@ def allinput():
         main_root.quit()
 
     main_root=tk.Tk()
-    main_canvas=tk.Canvas(main_root,width=200,height=200)
+    main_canvas=tk.Canvas(main_root,width=300,height=300)
     main_canvas.pack()
     main_root.title("Bridge Inputs")
     logo=ImageTk.PhotoImage(file="Images\logo.png")
@@ -18,13 +18,14 @@ def allinput():
 
     ############Buttons######################
 
-    button1 = tk.Button(text='Bridge Section Inputs', command=tkinput)    
-    button2 = tk.Button(text='Span Input', command=spaninput)
+    button1 = tk.Button(text='Permanent Cross Section Inputs', command=tkinput)    
+    button2 = tk.Button(text='Span and Number of Sections Input', command=spaninput)
 
     button_quit = tk.Button(text='Exit',command=quit)
-    main_canvas.create_window(100, 50, window=button1)
-    main_canvas.create_window(100, 100, window=button2)
-    main_canvas.create_window(100, 150, window=button_quit)
+    main_canvas.create_window(150, 50, window=button1)
+    main_canvas.create_window(150, 100, window=button2)
+
+    main_canvas.create_window(150, 150, window=button_quit)
     main_root.mainloop()
 
     
@@ -202,22 +203,30 @@ def spaninput():
     span_root = tk.Toplevel()
     span_canvas = tk.Canvas(span_root,width=300,height=250)
     span_canvas.pack()
-    span_root.title("Span Input")
+    span_root.title("Span and Number of Section")
 
 
     l1 = tk.Label(span_root, text='Span(m)')
     span_canvas.create_window(75, 75, window=l1)
 
-    e1 = tk.Entry(span_root)
-    span_canvas.create_window(160, 75, window=e1)
+    l2 = tk.Label(span_root, text='No of sections')
+    span_canvas.create_window(75, 125, window=l2)
 
+    e1 = tk.Entry(span_root)
+    span_canvas.create_window(190, 75, window=e1)
+
+    e2 = tk.Entry(span_root)
+    span_canvas.create_window(190, 125, window=e2)
+
+   
     def entry():
         s1=float(e1.get())
+        s2=float(e2.get())
         span_root.quit()
-        df=pd.DataFrame({s1})
+        df=pd.DataFrame({s1,s2})
         df.to_excel('Saved Inputs/span.xlsx',encoding='utf-8',index_label='Columns',index=False)
 
     button4 = tk.Button(span_root,text='Input', command=entry)
-    span_canvas.create_window(150, 150, window=button4)
+    span_canvas.create_window(150, 175, window=button4)
 
 allinput()
