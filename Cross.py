@@ -4,6 +4,7 @@ import csv
 from reaction import bm_udl
 from irc6_2007 import ped_ll
 import math
+import numpy as np
 
 
 ####################################################################################3###############
@@ -604,7 +605,7 @@ def excel_loads(PDL,ODL,PEDL,SIDL,sc):
     # print(df3)
     df3.to_excel('outputs/Moments.xlsx')
     # print(df3)
-    #strpdl1=[]
+    strpdl1=[]
     strpdl2=[]
     strodl1=[]
     strodl2=[]
@@ -623,7 +624,7 @@ def excel_loads(PDL,ODL,PEDL,SIDL,sc):
         strsidl1.append(SIDL[i].stress[0])
         strsidl2.append(SIDL[i].stress[1])
 
-    df5=pd.DataFrame({'Section at':sections, 'S+ PDL':strpdl1, 'S- PDL':strpdl2, 'S+ ODL':strodl1,'S- ODL':strodl2,
+    df5=pd.DataFrame({'Section at':sec_at, 'S+ PDL':strpdl1, 'S- PDL':strpdl2, 'S+ ODL':strodl1,'S- ODL':strodl2,
                      'S+ PEDL':strpedl1, 'S- PEDL':strpedl2,'S+ SIDL':strsidl1, 'S- SIDL':strsidl2
 
                         })
