@@ -20,12 +20,14 @@ def allinput():
 
     button1 = tk.Button(text='Permanent Cross Section Inputs', command=tkinput)    
     button2 = tk.Button(text='Span and Number of Sections Input', command=spaninput)
+    button3 = tk.Button(text='Discharge Input', command=dischargeinput)
 
     button_quit = tk.Button(text='Exit',command=quit)
     main_canvas.create_window(150, 50, window=button1)
     main_canvas.create_window(150, 100, window=button2)
+    main_canvas.create_window(150, 150, window=button3)
 
-    main_canvas.create_window(150, 150, window=button_quit)
+    main_canvas.create_window(150, 250, window=button_quit)
     main_root.mainloop()
 
     
@@ -222,11 +224,35 @@ def spaninput():
     def entry():
         s1=float(e1.get())
         s2=float(e2.get())
-        span_root.quit()
+        span_root.destroy()
         df=pd.DataFrame({s1,s2})
         df.to_excel('Saved Inputs/span.xlsx',encoding='utf-8',index_label='Columns',index=False)
 
     button4 = tk.Button(span_root,text='Input', command=entry)
     span_canvas.create_window(150, 175, window=button4)
+
+def dischargeinput():
+    discharge_root = tk.Toplevel()
+    discharge_canvas = tk.Canvas(discharge_root,width=300,height=250)
+    discharge_canvas.pack()
+    discharge_root.title("Discharge")
+
+
+    l1 = tk.Label(discharge_root, text='Discharge(m³/s)')
+    discharge_canvas.create_window(75, 75, window=l1)
+
+    e1 = tk.Entry(discharge_root)
+    discharge_canvas.create_window(190, 75, window=e1)
+
+   
+    def entry():
+        s1=float(e1.get())
+        discharge_root.destroy()
+        discharge_root.quit()
+        df=pd.DataFrame({s1})
+        df.to_excel('Saved Inputs/discharge.xlsx',encoding='utf-8',index_label='Columns',index=False)
+
+    button4 = tk.Button(discharge_root,text='Input', command=entry)
+    discharge_canvas.create_window(150, 175, window=button4)
 
 allinput()
