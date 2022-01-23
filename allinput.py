@@ -21,11 +21,13 @@ def allinput():
     button1 = tk.Button(text='Permanent Cross Section Inputs', command=tkinput)    
     button2 = tk.Button(text='Span and Number of Sections Input', command=spaninput)
     button3 = tk.Button(text='Discharge Input', command=dischargeinput)
+    button4 = tk.Button(text='Bearing Input', command=bearinginput)
 
     button_quit = tk.Button(text='Exit',command=quit)
     main_canvas.create_window(150, 50, window=button1)
     main_canvas.create_window(150, 100, window=button2)
     main_canvas.create_window(150, 150, window=button3)
+    main_canvas.create_window(150, 200, window=button4)
 
     main_canvas.create_window(150, 250, window=button_quit)
     main_root.mainloop()
@@ -248,11 +250,46 @@ def dischargeinput():
     def entry():
         s1=float(e1.get())
         discharge_root.destroy()
-        discharge_root.quit()
         df=pd.DataFrame({s1})
         df.to_excel('Saved Inputs/discharge.xlsx',encoding='utf-8',index_label='Columns',index=False)
 
     button4 = tk.Button(discharge_root,text='Input', command=entry)
     discharge_canvas.create_window(150, 175, window=button4)
+
+def bearinginput():
+    bearing_root = tk.Toplevel()
+    bearing_canvas = tk.Canvas(bearing_root,width=300,height=250)
+    bearing_canvas.pack()
+    bearing_root.title("Bearing")
+
+
+    l1 = tk.Label(bearing_root, text='Length(m)')
+    bearing_canvas.create_window(75, 75, window=l1)
+
+    e1 = tk.Entry(bearing_root)
+    bearing_canvas.create_window(190, 75, window=e1)
+
+    l2 = tk.Label(bearing_root, text='Width(m)')
+    bearing_canvas.create_window(75, 100, window=l2)
+    
+    e2 = tk.Entry(bearing_root)
+    bearing_canvas.create_window(190, 100, window=e2)
+
+    l3 = tk.Label(bearing_root, text='C/C distance(m)')
+    bearing_canvas.create_window(75, 125, window=l3)
+    
+    e3 = tk.Entry(bearing_root)
+    bearing_canvas.create_window(190, 125, window=e3)
+
+    def entry():
+        s1=float(e1.get())
+        s2=float(e2.get())
+        s3=float(e3.get())
+        bearing_root.destroy()
+        df=pd.DataFrame({s1,s2,s3})
+        df.to_excel('Saved Inputs/bearing.xlsx',encoding='utf-8',index_label='Columns',index=False)
+
+    button4 = tk.Button(bearing_root,text='Input', command=entry)
+    bearing_canvas.create_window(150, 175, window=button4)
 
 allinput()
