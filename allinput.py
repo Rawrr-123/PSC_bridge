@@ -201,7 +201,7 @@ def tkinput():
 
     root.mainloop()
     df=pd.DataFrame(length,height).T
-    df.to_excel('Saved Inputs/box.xlsx',encoding='utf-8',index_label='Columns',index=False)
+    df.to_excel('data/box.xlsx',encoding='utf-8',index_label='Columns',index=False)
 
 def spaninput():
     span_root = tk.Toplevel()
@@ -228,7 +228,7 @@ def spaninput():
         s2=float(e2.get())
         span_root.destroy()
         df=pd.DataFrame({s1,s2})
-        df.to_excel('Saved Inputs/span.xlsx',encoding='utf-8',index_label='Columns',index=False)
+        df.to_excel('data/span.xlsx',encoding='utf-8',index_label='Columns',index=False)
 
     button4 = tk.Button(span_root,text='Input', command=entry)
     span_canvas.create_window(150, 175, window=button4)
@@ -251,7 +251,7 @@ def dischargeinput():
         s1=float(e1.get())
         discharge_root.destroy()
         df=pd.DataFrame({s1})
-        df.to_excel('Saved Inputs/discharge.xlsx',encoding='utf-8',index_label='Columns',index=False)
+        df.to_excel('data/discharge.xlsx',encoding='utf-8',index_label='Columns',index=False)
 
     button4 = tk.Button(discharge_root,text='Input', command=entry)
     discharge_canvas.create_window(150, 175, window=button4)
@@ -287,7 +287,7 @@ def bearinginput():
         s3=float(e3.get())
         bearing_root.destroy()
         df=pd.DataFrame({s1,s2,s3})
-        df.to_excel('Saved Inputs/bearing.xlsx',encoding='utf-8',index_label='Columns',index=False)
+        df.to_excel('data/bearing.xlsx',encoding='utf-8',index_label='Columns',index=False)
 
     button4 = tk.Button(bearing_root,text='Input', command=entry)
     bearing_canvas.create_window(150, 175, window=button4)

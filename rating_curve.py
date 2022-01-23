@@ -10,7 +10,7 @@ plt.style.use('seaborn')
 
 
 """Inputs"""
-df=pd.read_excel('Saved Inputs/discharge.xlsx',index_col=None,header=None)
+df=pd.read_excel('data/discharge.xlsx',index_col=None,header=None)
 designQ = float(df.iloc[1])
 
 
