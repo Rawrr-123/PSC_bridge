@@ -2,14 +2,17 @@ import csv
 import math
 import matplotlib.pyplot as plt
 import pandas as pd
+from allinput import main_input
 plt.style.use('seaborn')
 # plt.ioff()
 
 
-
-
-
 """Inputs"""
+
+
+if False:
+    main_input()
+
 df=pd.read_excel('data/discharge.xlsx',index_col=None,header=None)
 designQ = float(df.iloc[1])
 
