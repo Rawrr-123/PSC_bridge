@@ -2,9 +2,18 @@ import csv
 import math
 import matplotlib.pyplot as plt
 import pandas as pd
-
 plt.style.use('seaborn')
 # plt.ioff()
+
+
+
+
+
+"""Inputs"""
+df=pd.read_excel('Saved Inputs/discharge.xlsx',index_col=None,header=None)
+designQ = float(df.iloc[1])
+
+
 
 original_coordinates = []
 with open('data/cross.csv') as csv_file:
@@ -127,7 +136,7 @@ def rating_curve(upper_limit, coord, slope, step=0.01):
 prop_before = rating_curve(1065, original_coordinates, s)
 prop_after = rating_curve(1065, new_coordinates, s)
 
-designQ = 516.89  # input design discharge
+# designQ = 516.89  # input design discharge
 
 
 def findProp(target_discharge, list_Q, list_stage, list_linearww, list_area):
