@@ -577,6 +577,22 @@ def sag(t, soil_type):
         elif 0.67 <= t <= 4.00:
             return 1.67 / t
 
+def ah(z, sag, r, i):
+    """
+
+    Args:
+        z: Zone factor as given in table 4.2 sp114
+        sag: Design acceleration coefficient
+        r: Response reduction factor given in table 4.1 sp114
+        i: Importance Factor given in table 4.3
+
+    Returns:
+        Design horizontal seismic coefficient
+    """
+
+    ahh = (z / 2) * sag / (r / i)
+    return ahh
+
 def mult_factor(load,direction):
     """
        Multiplication factor for different loads along different directions
