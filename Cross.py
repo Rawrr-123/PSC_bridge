@@ -633,7 +633,7 @@ def excel_loads(PDL,ODL,PEDL,SIDL,sc,span):
     x=0
     for i in range(len(sc)):
         x+=PDL[i].load*2       
-    a=[((x-PDL[0].load-PDL[-1].load)/((len(sc)-1)*2))*span,((x-PDL[0].load-PDL[-1].load)/((len(sc)-1)*2))*span,2*span*((x-PDL[0].load-PDL[-1].load)/((len(sc)-1)*2))]
+    a=[((x-PDL[0].load-PDL[-1].load)/((len(sc)-1)*4))*span,((x-PDL[0].load-PDL[-1].load)/((len(sc)-1)*4))*span,2*span*((x-PDL[0].load-PDL[-1].load)/((len(sc)-1)*4))]
     b=[ODL[0].load*span/2,ODL[0].load*span/2,ODL[0].load*span]
     c=[SIDL[0].load*span/2,SIDL[0].load*span/2,SIDL[0].load*span]
     d=[PEDL[0].load*span/2,PEDL[0].load*span/2,PEDL[0].load*span]
