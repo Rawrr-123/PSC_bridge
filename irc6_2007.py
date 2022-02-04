@@ -602,3 +602,10 @@ def RR_factor(direction):
         return 3.00
     elif direction.upper()=="TRANS":
         return 1.00
+
+####################################################################################################
+
+def ka(a,b,d,p):
+    """ Returns the coefficient of active earth pressure Ka estimated based on Coulomb earth pressure theory."""
+    k = (pow(math.cos(math.radians(p-a)),2)/((pow(math.cos(math.radians(a)),2))*math.cos(math.radians(d+a))))*pow((1/(1+pow((math.sin(math.radians(p+d))*math.sin(math.radians(p-b)))/(math.cos(math.radians(a-b))*math.cos(math.radians(d+a))),0.5))),2)
+    return round(k,5)
