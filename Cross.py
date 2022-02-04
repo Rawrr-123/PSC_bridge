@@ -582,7 +582,7 @@ def excel_export(section):
 """EXPORT MOMENTS AND STRESSES DUE TO PERMANENT DEAD LOAD(PDL), SUPER IMPOSED DEAD LOAD(SIDL),PEDESTRIAN LOAD
 (PEDL) AND  OTHER DEAD LOAD(ODL)"""
 
-def excel_loads(PDL,ODL,PEDL,SIDL,sc):
+def excel_loads(PDL,ODL,PEDL,SIDL,sc,span):
     # col3 = ['Section at', 'Dead Load', 'Other Loads', 'Surface Loads', 'Pedestrian Load']
     sec_at = []
     bm_pdl = []
@@ -630,13 +630,17 @@ def excel_loads(PDL,ODL,PEDL,SIDL,sc):
                         })
     df5.to_csv('outputs/Stresses.csv')
 
-    # a=[PDL.load*span/2,PDL.load*span/2,PDL.load*span]
-    # b=[ODL.load*span/2,ODL.load*span/2,ODL.load*span]
-    # c=[SIDL.load*span/2,SIDL.load*span/2,SIDL.load*span]
-    # d=[PEDL.load*span/2,PEDL.load*span/2,PEDL.load*span]
-    # df4=pd.DataFrame([a,b,c,d],columns=['RL','RR','Sum'],index=['Dead Load','Other Load','Surface Load','Pedestrian load']
-    # )
-    # df4.to_csv('outputs/DL_for_Seismic.csv')
+    x=0
+    for i in range(len(sc)):
+        x+=PDL[i].load*2       
+    a=[((x-PDL[0].load-PDL[-1].load)/((len(sc)-1)*2))*span,((x-PDL[0].load-PDL[-1].load)/((len(sc)-1)*2))*span,2*span*((x-PDL[0].load-PDL[-1].load)/((len(sc)-1)*2))]
+    b=[ODL[0].load*span/2,ODL[0].load*span/2,ODL[0].load*span]
+    c=[SIDL[0].load*span/2,SIDL[0].load*span/2,SIDL[0].load*span]
+    d=[PEDL[0].load*span/2,PEDL[0].load*span/2,PEDL[0].load*span]
+    df4=pd.DataFrame([a,b,c,d],columns=['RL','RR','Sum'],index=['Dead Load','Other Load','Surface Load','Pedestrian load']
+    )
+    df4.to_csv('outputs/DL_for_Seismic.csv')
+
 def k(a,e,i,l):
     """
     Member stiffness matrix
