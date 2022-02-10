@@ -625,3 +625,9 @@ def ka(a,b,d,p):
     """ Returns the coefficient of active earth pressure Ka estimated based on Coulomb earth pressure theory."""
     k = (pow(math.cos(math.radians(p-a)),2)/((pow(math.cos(math.radians(a)),2))*math.cos(math.radians(d+a))))*pow((1/(1+pow((math.sin(math.radians(p+d))*math.sin(math.radians(p-b)))/(math.cos(math.radians(a-b))*math.cos(math.radians(d+a))),0.5))),2)
     return round(k,5)
+
+def ca(a,b,d,p,l,av):
+    """ Returns the coefficient of active earth pressure Ka estimated based on Coulomb earth pressure theory."""
+    ca1 = (1+av)*(pow(math.cos(math.radians(p-a-l)),2)/((math.cos(math.radians(l))*(pow(math.cos(math.radians(a)),2))*math.cos(math.radians(d+a+l)))))*pow((1/(1+pow((math.sin(math.radians(p+d))*math.sin(math.radians(p-b-l)))/(math.cos(math.radians(a-b))*math.cos(math.radians(d+a+l))),0.5))),2)
+    ca2 = (1-av)*(pow(math.cos(math.radians(p-a-l)),2)/((math.cos(math.radians(l))*(pow(math.cos(math.radians(a)),2))*math.cos(math.radians(d+a+l)))))*pow((1/(1+pow((math.sin(math.radians(p+d))*math.sin(math.radians(p-b-l)))/(math.cos(math.radians(a-b))*math.cos(math.radians(d+a+l))),0.5))),2)
+    return round(max(ca1,ca2),5)
