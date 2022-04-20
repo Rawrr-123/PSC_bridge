@@ -157,7 +157,7 @@ def stiffness(fck,I,l):
 """CALCULATE WIDTH OF EXPANDED SECTION OF BOX"""
 
 def expansion_calc(span,section_at,cable):
-    return 0.3
+    return 0
 
 #################################################################################################
 
@@ -368,7 +368,7 @@ class cables:
             mina=0.280+(45-self.fck)*4/1000
         else:
             mina=0.280
-        a=0.450
+        a=0.400
         if a<mina:
             raise ValueError ("Very bad input section")
         return a
@@ -393,26 +393,31 @@ class cables:
 
     @property
     def cable_arrangement(self):
-        ntop=round(self.n/4)/2
+        ntop=round(self.n)/4
 
         nbot=self.n-ntop*2
-        nbotup=0
-        adash=self.cc/(nbot-1)
+        # nbotup=0
+        adash=self.cc/(nbot+1)
         while adash<self.a:
 
-            if (nbotup/2)<=math.floor((self.expanlen-2*self.e)/self.a):
+            # if (nbotup/2)<=math.floor((self.expanlen-2*self.e)/self.a):
+            #
+            #     nbot=nbot-2
+            #     nbotup=nbotup+2
+            #     adash=self.cc/(nbot-1)
+            # else:
+            ntop=ntop+1
+            nbot=nbot-2
+            adash=self.cc/(nbot+1)
 
-                nbot=nbot-2
-                nbotup=nbotup+2
-                adash=self.cc/(nbot-1)
-            else:
-                ntop=ntop+1
-                nbot=nbot-2
-                adash=self.cc/(nbot-1)
+        while nbot>8:
+            ntop=ntop+1
+            nbot=nbot-2
+            adash=self.cc/(nbot+1)
 
-        nbotup=nbotup/2
+        # nbotup=nbotup/2
         amid=0.15
-        return [ntop,nbot,nbotup,adash,amid]
+        return [ntop,nbot,adash,amid]
 
     @property
     def ntop(self):
@@ -422,35 +427,35 @@ class cables:
     def nbot(self):
         return self.cable_arrangement[1]
 
-    @property
-    def nbotup(self):
-        return self.cable_arrangement[2]
+    # @property
+    # def nbotup(self):
+    #     return self.cable_arrangement[2]
 
     @property
     def adash(self):
-        return self.cable_arrangement[3]
+        return self.cable_arrangement[2]
 
     @property
     def amid(self):
-        return self.cable_arrangement[4]
+        return self.cable_arrangement[3]
     @property
     def arrcoll(self):
         toppos=[]
         bottompos=[]
-        bottomposupleft=[]
-        bottomposupright=[]
+        # bottomposupleft=[]
+        # bottomposupright=[]
         midtop=[]
         midbot=[]
-        midbotupleft=[]
-        midbotupright=[]
+        # midbotupleft=[]
+        # midbotupright=[]
         ntop=int(self.ntop)
         nbot=int(self.nbot)
-        nbotup=int(self.nbotup)
+        # nbotup=int(self.nbotup)
 
         for i in range(ntop):
             if i==0:
-                toppos.append([round(x+y,4) for x,y in zip(self.section.position[0],[self.e,self.b+2*self.a])])
-                midtop.append([round(x+y,4) for x,y in zip(self.section.position[0],[self.e,self.b+2*self.amid])])
+                toppos.append([round(x+y,4) for x,y in zip(self.section.position[0],[self.e,self.b+self.a])])
+                midtop.append([round(x+y,4) for x,y in zip(self.section.position[0],[self.e,self.b+self.amid])])
 
             if i>0:
                 toppos.append([round(x+y,4) for x,y in zip(toppos[i-1],[0,self.a])])
@@ -463,29 +468,33 @@ class cables:
 
         for i in range(nbot):
             if i==0:
-                bottompos.append([round(x+y,4) for x,y in zip(self.section.position[0],[self.e,self.b])])
-                midbot.append([round(x+y,4) for x,y in zip(self.section.position[0],[self.e,self.b])])
+                bottompos.append([round(x+y,4) for x,y in zip(self.section.position[0],[self.e+self.adash,self.b])])
+                midbot.append([round(x+y,4) for x,y in zip(self.section.position[0],[self.e+self.adash,self.b])])
             if i>0:
                 bottompos.append([round(x+y,4) for x,y in zip(bottompos[i-1],[self.adash,0])])
                 midbot.append([round(x+y,4) for x,y in zip(midbot[i-1],[self.adash,0])])
-        for i in range(nbotup):
-            if i==0:
-                bottomposupleft.append([round(x+y,4) for x,y in zip(self.section.position[0],[self.e,self.b+self.a])])
-                bottomposupright.append([round(x+y,4) for x,y in zip([self.section.position[1][0]+self.section.length[1],self.section.position[1][1]],[-self.e,self.b+self.a])])
-                midbotupleft.append([round(x+y,4) for x,y in zip(self.section.position[0],[self.e,self.b+self.amid])])
-                midbotupright.append([round(x+y,4) for x,y in zip([self.section.position[1][0]+self.section.length[1],self.section.position[1][1]],[-self.e,self.b+self.amid])])
+        # for i in range(nbotup):
+        #     if i==0:
+        #         bottomposupleft.append([round(x+y,4) for x,y in zip(self.section.position[0],[self.e,self.b+self.a])])
+        #         bottomposupright.append([round(x+y,4) for x,y in zip([self.section.position[1][0]+self.section.length[1],self.section.position[1][1]],[-self.e,self.b+self.a])])
+        #         midbotupleft.append([round(x+y,4) for x,y in zip(self.section.position[0],[self.e,self.b+self.amid])])
+        #         midbotupright.append([round(x+y,4) for x,y in zip([self.section.position[1][0]+self.section.length[1],self.section.position[1][1]],[-self.e,self.b+self.amid])])
+        #
+        #     if i>0:
+        #         bottomposupleft.append([round(x+y,4) for x,y in zip(bottomposupleft[i-1],[self.a,0])])
+        #         bottomposupright.append([round(x+y,4) for x,y in zip(bottomposupright[i-1],[-self.a,0])])
+        #         midbotupleft.append([round(x+y,4) for x,y in zip(midbotupleft[i-1],[self.a,0])])
+        #         midbotupright.append([round(x+y,4) for x,y in zip(midbotupright[i-1],[-self.a,0])])
 
-            if i>0:
-                bottomposupleft.append([round(x+y,4) for x,y in zip(bottomposupleft[i-1],[self.a,0])])
-                bottomposupright.append([round(x+y,4) for x,y in zip(bottomposupright[i-1],[-self.a,0])])
-                midbotupleft.append([round(x+y,4) for x,y in zip(midbotupleft[i-1],[self.a,0])])
-                midbotupright.append([round(x+y,4) for x,y in zip(midbotupright[i-1],[-self.a,0])])
+        endcablepos=[*toppos,*bottompos]
+        # *bottomposupleft, *bottomposupright
+        # bottomposup_end=bottomposupleft+bottomposupright
+        # bottomposup_mid=midbotupleft+midbotupright
+        midcablepos=[*midtop,*midbot]
+        # , *midbotupleft, *midbotupright
+        return [endcablepos,midcablepos]
 
-        endcablepos=[*toppos,*bottompos,*bottomposupleft,*bottomposupright]
-        bottomposup_end=bottomposupleft+bottomposupright
-        bottomposup_mid=midbotupleft+midbotupright
-        midcablepos=[*midtop,*midbot,*midbotupleft,*midbotupright]
-        return [endcablepos,midcablepos,bottomposup_end,bottomposup_mid]
+    # , bottomposup_end, bottomposup_mid
 
 
     @property

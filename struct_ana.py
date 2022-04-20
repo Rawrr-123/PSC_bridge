@@ -14,16 +14,52 @@ r_kerblen=0.3
 
 d=0.5
 sp=0.065
+pul_len=15
+"""span/no_of_diaphragms"""
+pul_width=5
+"""actual width of box"""
+
 
 def dist_len(veh):
+    l=0
     if veh=="70R_T":
-        l=2*(d+sp)+4.750
+        l=2*(d+sp)+0.84
     if veh=="70R_W":
-        l=2*(d+sp)+0.25
+        l=2*(d+sp)+0.5
     if veh=="Class_A":
-        l=2*(d+sp)+0.25
-    return l
-    
+        l=2*(d+sp)+0.5
+    return round(l,4)
+
+"""For interior 
+         if BM a=5/2
+         if SF a=dist_len/2         
+                  
+   For cantilever 
+        if bm a = 0.6(Kerb length)+0.4(clear spacing)+ wheel width/2
+        
+        if sf = a = dist len/2            
+                  
+                  
+                  
+                  """
+def dist_width(section,veh):
+    if section=="Cantilever":
+        if veh == "70R_T":
+            l = 2 * (d + sp) + 0.84
+        if veh == "70R_W":
+            l = 2 * (d + sp) + 0.5
+        if veh == "Class_A":
+            l = 2 * (d + sp) + 0.5
+        return l
+
+    if section=="Interior":
+        if veh == "70R_T":
+            l = 2 * (d + sp) + 0.84
+        if veh == "70R_W":
+            l = 2 * (d + sp) + 0.5
+        if veh == "Class_A":
+            l = 2 * (d + sp) + 0.5
+        return l
 
 ss = SystemElements()
 
@@ -88,14 +124,18 @@ def SeventyR_W():
 
 class_A(g)
 # SeventyR_W()
-ss.add_support_fixed(node_id=5+2+2*s)
-ss.add_support_fixed(node_id=6+2+2*s)
+ss.add_support_hinged(node_id=5+2+2*s)
+ss.add_support_hinged(node_id=6+2+2*s)
 
 
 
 
-
+#
 ss.solve()
 ss.show_structure()
-ss.show_bending_moment()
-
+# ss.show_bending_moment()
+#
+print(dist_len("70R_T"))
+print(dist_len("70R_W"))
+print(dist_len("Class_A"))
+print(d+sp)
