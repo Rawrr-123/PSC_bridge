@@ -9,8 +9,8 @@ from inspect import currentframe
 
 df=pd.read_excel('data/box.xlsx',index_col=None,header=None)
 s=0
-l_kerblen=0.3
-r_kerblen=0.3
+l_kerblen=0.6
+r_kerblen=0.6
 
 d=0.5
 sp=0.065
@@ -61,7 +61,7 @@ def dist_width(section,veh):
             l = 2 * (d + sp) + 0.5
         return l
 
-ss = SystemElements()
+ss = SystemElements(mesh=20,load_factor=1.0)
 
 ss.add_element(location=[[0, 3], [df.iloc[1,4]+0, 3]])
 ss.add_element(location=[[df.iloc[1,4]+0, 3], [0+df.iloc[1,4]+df.iloc[1,3], 3]])
@@ -71,7 +71,9 @@ ss.add_element(location=[[0+df.iloc[1,4]+df.iloc[1,3], 3], [0+df.iloc[1,4]+df.il
 ss.add_element(location=[[df.iloc[1,4]+0, 3-df.iloc[0,0]],[0+df.iloc[1,4]+df.iloc[1,3], 3-df.iloc[0,1]]])
 
 
-
+# def dist_width(veh):
+#     if veh=="70R_T":
+        
 
 
 no=2
@@ -110,7 +112,7 @@ def SeventyR_T():
     if (df.iloc[1,4]+0)>l_kerblen+1.2:
         ss.insert_node(element_id=1, location=[0+l_kerblen+1.2+0.42, 3])
         ss.insert_node(element_id=3, location=[0+l_kerblen+1.2+2.06+0.42, 3])
-        ss.point_load(node_id=[2, 4], Fy=-(350/dist_len("70R_T")))
+        ss.point_load(node_id=[2,4], Fy=-(350/dist_len("70R_T")))
 
 def SeventyR_W():
     if (df.iloc[1,4]+0)<l_kerblen+1.2:
@@ -121,21 +123,20 @@ def SeventyR_W():
         ss.insert_node(element_id=3, location=[0+l_kerblen+1.2+1.93+0.42, 3])
         ss.point_load(node_id=[2, 4], Fy=-85/dist_len("70R_W"))
 
+def dead():
+    ss.q_load(element_id=[1,2,3,4,5,6],q=12)
 
-class_A(g)
-# SeventyR_W()
-ss.add_support_hinged(node_id=5+2+2*s)
-ss.add_support_hinged(node_id=6+2+2*s)
+# class_A(g)
+dead()
+# SeventyR_T()
+ss.add_support_fixed(node_id=5+2+2*s)
+ss.add_support_fixed(node_id=6+2+2*s)
 
 
 
 
-#
 ss.solve()
-ss.show_structure()
+# ss.show_structure()
 # ss.show_bending_moment()
-#
-print(dist_len("70R_T"))
-print(dist_len("70R_W"))
-print(dist_len("Class_A"))
-print(d+sp)
+# ss.show_displacement()
+ss.show_results()
