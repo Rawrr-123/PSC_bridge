@@ -17,8 +17,10 @@ def all_input():
             ss_out_root.title("Superstructure Outputs")
             import dead_loads,liveloads
 
-            def 
-            Logs_button=tk.Button(ss_out_root,text='Logs',command=run)
+            def run():
+                pass
+
+            Logs_button=tk.Button(ss_out_root,text='Run',command=run)
             ss_out_canvas.create_window(50,50,window=Logs_button)
            
 
