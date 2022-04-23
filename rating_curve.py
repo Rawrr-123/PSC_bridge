@@ -2,7 +2,7 @@ import csv
 import math
 import matplotlib.pyplot as plt
 import pandas as pd
-from allinput import main_input
+# from allinput import main_input
 plt.style.use('seaborn')
 # plt.ioff()
 

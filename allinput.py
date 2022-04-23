@@ -14,6 +14,10 @@ def all_input():
             ss_out_canvas = tk.Canvas(ss_out_root, width=425, height=500)
             ss_out_canvas.pack()
             ss_out_root.title("Superstructure Outputs")
+            import dead_loads
+            import rating_curve as rc
+            print(rc.pd)
+
 
         def ss_input():
 
@@ -469,32 +473,32 @@ def all_input():
                 canvas_abut.create_window(300, 300, window=e18)
 
 
-                l_stembase=tk.Label(abut_root,text='Stem Base Width')
+                l_stembase=tk.Label(abut_root,text='Stem Base Width(m)')
                 canvas_abut.create_window(100, 425, window=l_stembase)
                 e19 = tk.Entry(abut_root)
                 canvas_abut.create_window(250, 425, window=e19)
 
-                l_abuwdt=tk.Label(abut_root,text='Abutment Width')
+                l_abuwdt=tk.Label(abut_root,text='Abutment Width(m)')
                 canvas_abut.create_window(100, 450, window=l_abuwdt)
                 e20 = tk.Entry(abut_root)
                 canvas_abut.create_window(250, 450, window=e20)
 
-                l_toe=tk.Label(abut_root,text='Foundation Toe Length')
+                l_toe=tk.Label(abut_root,text='Foundation Toe Length(m)')
                 canvas_abut.create_window(100, 475, window=l_toe)
                 e21 = tk.Entry(abut_root)
                 canvas_abut.create_window(250, 475, window=e21)
 
-                l_heel=tk.Label(abut_root,text='Foundation Heel Length')
+                l_heel=tk.Label(abut_root,text='Foundation Heel Length(m)')
                 canvas_abut.create_window(100, 500, window=l_heel)
                 e22 = tk.Entry(abut_root)
                 canvas_abut.create_window(250, 500, window=e22)
 
-                l_thk=tk.Label(abut_root,text='Foundation Thickness')
+                l_thk=tk.Label(abut_root,text='Foundation Thickness(m)')
                 canvas_abut.create_window(100, 525, window=l_thk)
                 e23 = tk.Entry(abut_root)
                 canvas_abut.create_window(250, 525, window=e23)
 
-                l_wid=tk.Label(abut_root,text='Foundation Width')
+                l_wid=tk.Label(abut_root,text='Foundation Width(m)')
                 canvas_abut.create_window(100, 550, window=l_wid)
                 e24 = tk.Entry(abut_root)
                 canvas_abut.create_window(250, 550, window=e24)
