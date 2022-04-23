@@ -383,7 +383,7 @@ def all_input():
 
                 abut_root = tk.Toplevel(abutment_root)
 
-                canvas_abut = tk.Canvas(abut_root, width=1000, height=650)
+                canvas_abut = tk.Canvas(abut_root, width=1025, height=650)
                 canvas_abut.pack()
                 abut_root.title("Abutment Input")
 
@@ -391,7 +391,7 @@ def all_input():
                 # logo=ImageTk.PhotoImage(file="Images\logo.png")
                 # root.iconphoto(False,logo)
 
-                canvas_abut.create_image(700,325,image=img)
+                canvas_abut.create_image(700,225,image=img)
 
                 l1 = tk.Label(abut_root, text='Width(m)→')
                 canvas_abut.create_window(160, 75, window=l1)
@@ -510,7 +510,7 @@ def all_input():
                 
                     length.extend([w1,l1,w2,l2,w3,l3])
                     df=pd.DataFrame(length)
-                    df.to_excel('data/abutment2.xlsx',encoding='utf-8',index_label='Columns',index=)
+                    df.to_excel('data/abutment2.xlsx',encoding='utf-8',index_label='Columns',index=None)
                     # abut_root.quit()
                 
                 def entry():
@@ -539,21 +539,103 @@ def all_input():
                     df=pd.DataFrame(length,height).T
                     df.to_excel('data/abutment2.xlsx',encoding='utf-8',index_label='Columns',index=False)
                     # abut_root.quit()
+
+
+                mat_label=tk.Label(abut_root,text='Material Inputs',font='Calibri')
+                canvas_abut.create_window(500,500,window=mat_label)
+
+
+                l1_mat = tk.Label(abut_root, text='fck(MPa)')
+                canvas_abut.create_window(450, 525, window=l1_mat)
+
+                e1_mat = tk.Entry(abut_root)
+                canvas_abut.create_window(600, 525, window=e1_mat)
+
+                l2_mat = tk.Label(abut_root, text='fy(MPa)')
+                canvas_abut.create_window(450, 550, window=l2_mat)
+
+                e2_mat = tk.Entry(abut_root)
+                canvas_abut.create_window(600, 550, window=e2_mat)
+
+
+                def entry_mat():
+                    s1_mat=float(e1_mat.get())
+                    s2_mat=float(e2_mat.get())
+                    df=pd.DataFrame({s1_mat,s2_mat}).T
+                    df.to_excel('data/material_abut.xlsx',encoding='utf-8',index_label='Columns',index=False)
+
+                l1_cov = tk.Label(abut_root, text='Cover(mm)')
+                canvas_abut.create_window(775, 525, window=l1_cov)
+
+                e1_cov = tk.Entry(abut_root)
+                canvas_abut.create_window(935, 525, window=e1_cov)
+
+                l2_dia = tk.Label(abut_root, text='Diameter of bars used(mm)')
+                canvas_abut.create_window(785, 550, window=l2_dia)
+
+                e2_dia = tk.Entry(abut_root)
+                canvas_abut.create_window(935, 550, window=e2_dia)
+
                 
+                def entry_cov():
+                    s1_cov=float(e1_cov.get())
+                    s2_dia=float(e2_dia.get())
+                    df=pd.DataFrame({s1_cov,s2_dia}).T
+                    df.to_excel('data/covers_abut.xlsx',encoding='utf-8',index_label='Columns',index=False)
+                    
                 button4 = tk.Button(abut_root,text='Input', command=entry)
                 button5 = tk.Button(abut_root,text='Input', command=entry2)
+                button6 = tk.Button(abut_root,text='Input', command=entry_mat)
+                button7 = tk.Button(abut_root,text='Input', command=entry_cov)
                 canvas_abut.create_window(200, 335, window=button4)
                 canvas_abut.create_window(200, 600, window=button5)
+                canvas_abut.create_window(600, 600, window=button6)
+                canvas_abut.create_window(850, 600, window=button7)
                 canvas_abut.create_rectangle(15,15,375,375)
                 canvas_abut.create_rectangle(15,390,375,625)
+                canvas_abut.create_rectangle(385,475,700,625)
+                canvas_abut.create_rectangle(705,475,1010,625)
 
 
                 abut_root.mainloop()
                
             def abutment_output():
-                pass
+                
+                output_root = tk.Toplevel(abutment_root)
+
+                out_canvas_abut = tk.Canvas(output_root, width=500, height=500)
+                out_canvas_abut.pack()
+                output_root.title("Abutment Output")
+                out_canvas_abut.create_rectangle(15,15,485,485)
+
+                
+                l1_xu = tk.Label(output_root, text='Neutral axis Xu(mm)')
+                out_canvas_abut.create_window(125, 50, window=l1_xu)
+
+                e1_xu = tk.Entry(output_root)
+                out_canvas_abut.create_window(275, 50, window=e1_xu)
+
+                l2_spac = tk.Label(output_root, text='Spacing(mm)')
+                out_canvas_abut.create_window(125, 100, window=l2_spac)
+
+                e2_spac = tk.Entry(output_root)
+                out_canvas_abut.create_window(275, 100, window=e2_spac)
+
+                
+                
+                def out_calc():
+                    s1_out=float(e1_xu.get())
+                    s2_out=float(e2_spac.get())
+                    df=pd.DataFrame({s1_out,s2_out}).T
+                    df.to_excel('data/xu_abut.xlsx',encoding='utf-8',index_label='Columns',index=False)
+                    l2_output = tk.Label(output_root, text='Checks',font='Calibri')
+                    out_canvas_abut.create_window(75, 200, window=l2_output)
 
 
+                button4_out = tk.Button(output_root,text='Run', command=out_calc)
+                
+                out_canvas_abut.create_window(200, 150, window=button4_out)
+      
             def quit_abut():
                 abutment_root.destroy()
 
