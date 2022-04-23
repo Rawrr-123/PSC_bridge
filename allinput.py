@@ -510,7 +510,7 @@ def all_input():
                 
                     length.extend([w1,l1,w2,l2,w3,l3])
                     df=pd.DataFrame(length)
-                    df.to_excel('data/abutment2.xlsx',encoding='utf-8',index_label='Columns',index=False)
+                    df.to_excel('data/abutment2.xlsx',encoding='utf-8',index_label='Columns',index=)
                     # abut_root.quit()
                 
                 def entry():
