@@ -34,7 +34,7 @@ span = int(df1.iloc[1,0])
 no = 9
 
 """"distance form left of 9 divisions of section"""
-sc=[(j)/(no-1)*50 for j in range(no)]
+sc=[(j)/(no-1)*span for j in range(no)]
 
 ###############################################################################################
 """FOR DEAD LOAD MOMENTS INPUTS"""
@@ -104,6 +104,5 @@ for i in range(len(sc)):
 excel_loads(PDL,ODL,PEDL,SIDL,sc,span)
 
 
-    
 
 

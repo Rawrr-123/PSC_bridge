@@ -1,6 +1,7 @@
 import pandas as pd
 import tkinter as tk
 from PIL import Image,ImageTk
+import os
 
 def all_input():    
 
@@ -14,9 +15,12 @@ def all_input():
             ss_out_canvas = tk.Canvas(ss_out_root, width=425, height=500)
             ss_out_canvas.pack()
             ss_out_root.title("Superstructure Outputs")
-            import dead_loads
-            import rating_curve as rc
-            print(rc.pd)
+            import dead_loads,liveloads
+
+            def 
+            Logs_button=tk.Button(ss_out_root,text='Logs',command=run)
+            ss_out_canvas.create_window(50,50,window=Logs_button)
+           
 
 
         def ss_input():
