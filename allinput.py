@@ -116,12 +116,7 @@ def all_input():
                 canvas1.create_window(300, 325, window=e20)
 
 
-                # l13 = tk.Label(root, text='Section 11')
-                # canvas1.create_window(50, 350, window=l13)
-                # e21 = tk.Entry(root)
-                # canvas1.create_window(160, 350, window=e21)
-                # e22 = tk.Entry(root)
-                # canvas1.create_window(300, 350, window=e22)
+               
 
 
                 l14 = tk.Label(root, text='Section 11')
@@ -139,13 +134,20 @@ def all_input():
                 e26 = tk.Entry(root)
                 canvas1.create_window(300, 375, window=e26)
 
+                l13 = tk.Label(root, text='Section 13')
+                canvas1.create_window(50, 400, window=l13)
+                e21 = tk.Entry(root)
+                canvas1.create_window(160, 400, window=e21)
+                e22 = tk.Entry(root)
+                canvas1.create_window(300, 400, window=e22)
 
-                # l16 = tk.Label(root, text='Section 14')
-                # canvas1.create_window(50, 425, window=l16)
-                # e27 = tk.Entry(root)
-                # canvas1.create_window(160, 425, window=e27)
-                # e28 = tk.Entry(root)
-                # canvas1.create_window(300, 425, window=e28)
+
+                l16 = tk.Label(root, text='Section 14')
+                canvas1.create_window(50, 425, window=l16)
+                e27 = tk.Entry(root)
+                canvas1.create_window(160, 425, window=e27)
+                e28 = tk.Entry(root)
+                canvas1.create_window(300, 425, window=e28)
 
 
                 def entry():
@@ -169,18 +171,20 @@ def all_input():
                     l9=float(e18.get())
                     w10=float(e19.get())
                     l10=float(e20.get())
-                    # w11=float(e21.get())
-                    # l11=float(e22.get())
+                    w11=float(e21.get())
+                    l11=float(e22.get())
                     w12=float(e23.get())
                     l12=float(e24.get())
                     w13=float(e25.get())
                     l13=float(e26.get())
-                    # w14=float(e27.get())
-                    # l14=float(e28.get())
+                    w14=float(e27.get())
+                    l14=float(e28.get())
                     length.extend([w1,w2,w3,w4,w10,w13,w9,w12,w5,w6,w7,w8])
                     height.extend([l1,l2,l3,l4,l10,l13,l9,l12,l5,l6,l7,l8])
                     df=pd.DataFrame(length,height).T
                     df.to_excel('data/box.xlsx',encoding='utf-8',index_label='Columns',index=False)
+                    df1=pd.DataFrame({w11,w14,l11,l14})
+                    df1.to_excel('data/kerbs.xlsx',encoding='utf-8',index_label='Columns',index=False)
                     root.destroy()
                 button4 = tk.Button(root,text='Input', command=entry)
                 canvas1.create_window(225, 475, window=button4)
@@ -284,41 +288,40 @@ def all_input():
 
            
             def entry_dis():
-                s1=float(e1_mat.get())
-                s2=float(e2_mat.get())
-                df=pd.DataFrame({s1,s2})
+                s1_dis=float(e_dis.get())
+                # s2=float(e_dis.get())
+                df=pd.DataFrame({s1_dis})
                 df.to_excel('data/discharge.xlsx',encoding='utf-8',index_label='Columns',index=False)
 
             def entry_bearing():
-                s1=float(e_bear_len.get())
-                s2=float(e_bear_wid.get())
-                s3=float(e_bear_dist.get())
-                df=pd.DataFrame({s1,s2,s3})
+                s1_bear=float(e_bear_len.get())
+                s2_bear=float(e_bear_wid.get())
+                s3_bear=float(e_bear_dist.get())
+                df=pd.DataFrame({s1_bear,s2_bear,s3_bear})
                 df.to_excel('data/bearing.xlsx',encoding='utf-8',index_label='Columns',index=False)
 
             def entry_span():
-                s1=float(e_span.get())
-                df=pd.DataFrame({s1})
+                s1_span=float(e_span.get())
+                df=pd.DataFrame({s1_span})
                 df.to_excel('data/span.xlsx',encoding='utf-8',index_label='Columns',index=False)
 
             def entry_mat():
-                s1=float(e1_mat.get())
-                s2=float(e1_mat.get())
-                df=pd.DataFrame({s1,s2})
+                s1_mat=float(e1_mat.get())
+                s2_mat=float(e2_mat.get())
+                df=pd.DataFrame({s1_mat,s2_mat})
                 df.to_excel('data/material.xlsx',encoding='utf-8',index_label='Columns',index=False)
 
             
             def entry_cable():
-                s1=float(e1_mat.get())
-                s2=float(e1_mat.get())
-                df=pd.DataFrame({s1,s2})
+                s1_cable=float(e1_cable.get())
+                df=pd.DataFrame({s1_cable})
                 df.to_excel('data/cable_nos.xlsx',encoding='utf-8',index_label='Columns',index=False)
 
             
             def entry_cable2():
-                s1=clicked.get()
+                s1_cable2=clicked.get()
                 
-                df=pd.DataFrame({s1})
+                df=pd.DataFrame({s1_cable2})
                 df.to_excel('data/cable_type.xlsx',encoding='utf-8',index_label='Columns',index=False)
 
 
@@ -327,10 +330,10 @@ def all_input():
 
             button_quit11 = tk.Button(ss_root,text='Exit',command=quit11)
             button11 = tk.Button(ss_root,text='Permanent Cross Section Inputs', command=boxinput)    
-            button22 = tk.Button(ss_root,text='Input', command=entry_dis)
+            button22 = tk.Button(ss_root,text='Input', command=entry_span)
             button33 = tk.Button(ss_root,text='Input', command=entry_bearing)
-            button44 = tk.Button(ss_root,text='Input', command=entry_span)
-            button55= tk.Button(ss_root,text='Input',command=entry_mat)
+            button44 = tk.Button(ss_root,text='Input', command=entry_mat)
+            button55= tk.Button(ss_root,text='Input',command=entry_dis)
             button66= tk.Button(ss_root,text='Input',command=entry_cable)
             button77= tk.Button(ss_root,text='Input',command=entry_cable2)
 
@@ -380,7 +383,7 @@ def all_input():
 
                 abut_root = tk.Toplevel(abutment_root)
 
-                canvas_abut = tk.Canvas(abut_root, width=1000, height=500)
+                canvas_abut = tk.Canvas(abut_root, width=1000, height=650)
                 canvas_abut.pack()
                 abut_root.title("Abutment Input")
 
@@ -388,7 +391,7 @@ def all_input():
                 # logo=ImageTk.PhotoImage(file="Images\logo.png")
                 # root.iconphoto(False,logo)
 
-                canvas_abut.create_image(700,250,image=img)
+                canvas_abut.create_image(700,325,image=img)
 
                 l1 = tk.Label(abut_root, text='Width(m)→')
                 canvas_abut.create_window(160, 75, window=l1)
@@ -449,7 +452,67 @@ def all_input():
                 e14 = tk.Entry(abut_root)
                 canvas_abut.create_window(300, 250, window=e14)
 
+                
+                l10 = tk.Label(abut_root, text='Section 8')
+                canvas_abut.create_window(50, 275, window=l10)
+                e15 = tk.Entry(abut_root)
+                canvas_abut.create_window(160, 275, window=e15)
+                e16 = tk.Entry(abut_root)
+                canvas_abut.create_window(300, 275, window=e16)
 
+                
+                l11 = tk.Label(abut_root, text='Section 9')
+                canvas_abut.create_window(50, 300, window=l11)
+                e17 = tk.Entry(abut_root)
+                canvas_abut.create_window(160, 300, window=e17)
+                e18 = tk.Entry(abut_root)
+                canvas_abut.create_window(300, 300, window=e18)
+
+
+                l_stembase=tk.Label(abut_root,text='Stem Base Width')
+                canvas_abut.create_window(100, 425, window=l_stembase)
+                e19 = tk.Entry(abut_root)
+                canvas_abut.create_window(250, 425, window=e19)
+
+                l_abuwdt=tk.Label(abut_root,text='Abutment Width')
+                canvas_abut.create_window(100, 450, window=l_abuwdt)
+                e20 = tk.Entry(abut_root)
+                canvas_abut.create_window(250, 450, window=e20)
+
+                l_toe=tk.Label(abut_root,text='Foundation Toe Length')
+                canvas_abut.create_window(100, 475, window=l_toe)
+                e21 = tk.Entry(abut_root)
+                canvas_abut.create_window(250, 475, window=e21)
+
+                l_heel=tk.Label(abut_root,text='Foundation Heel Length')
+                canvas_abut.create_window(100, 500, window=l_heel)
+                e22 = tk.Entry(abut_root)
+                canvas_abut.create_window(250, 500, window=e22)
+
+                l_thk=tk.Label(abut_root,text='Foundation Thickness')
+                canvas_abut.create_window(100, 525, window=l_thk)
+                e23 = tk.Entry(abut_root)
+                canvas_abut.create_window(250, 525, window=e23)
+
+                l_wid=tk.Label(abut_root,text='Foundation Width')
+                canvas_abut.create_window(100, 550, window=l_wid)
+                e24 = tk.Entry(abut_root)
+                canvas_abut.create_window(250, 550, window=e24)
+
+                def entry2():
+                    w1=float(e19.get())
+                    l1=float(e20.get())
+                    w2=float(e21.get())
+                    l2=float(e22.get())
+                    w3=float(e23.get())
+                    l3=float(e24.get())
+                    
+                
+                    length.extend([w1,l1,w2,l2,w3,l3])
+                    df=pd.DataFrame(length)
+                    df.to_excel('data/abutment2.xlsx',encoding='utf-8',index_label='Columns',index=False)
+                    # abut_root.quit()
+                
                 def entry():
                     w1=float(e1.get())
                     l1=float(e2.get())
@@ -465,37 +528,53 @@ def all_input():
                     l6=float(e12.get())
                     w7=float(e13.get())
                     l7=float(e14.get())
+                    w8=float(e15.get())
+                    l8=float(e16.get())
+                    w9=float(e17.get())
+                    l9=float(e18.get())
+                  
                 
-                    length.extend([w1,w2,w3,w4,w5,w6,w7])
-                    height.extend([l1,l2,l3,l4,l9,l5,l6,l7])
-                    abut_root.quit()
+                    length.extend([w1,w2,w3,w4,w5,w6,w7,w8,w9])
+                    height.extend([l1,l2,l3,l4,l5,l6,l7,l8,l9])
+                    df=pd.DataFrame(length,height).T
+                    df.to_excel('data/abutment2.xlsx',encoding='utf-8',index_label='Columns',index=False)
+                    # abut_root.quit()
+                
                 button4 = tk.Button(abut_root,text='Input', command=entry)
-                canvas_abut.create_window(225, 300, window=button4)
+                button5 = tk.Button(abut_root,text='Input', command=entry2)
+                canvas_abut.create_window(200, 335, window=button4)
+                canvas_abut.create_window(200, 600, window=button5)
+                canvas_abut.create_rectangle(15,15,375,375)
+                canvas_abut.create_rectangle(15,390,375,625)
+
 
                 abut_root.mainloop()
-                df=pd.DataFrame(length,height).T
-                df.to_excel('data/abutment.xlsx',encoding='utf-8',index_label='Columns',index=False)
+               
+            def abutment_output():
+                pass
 
 
             def quit_abut():
                 abutment_root.destroy()
 
             abutment_root = tk.Toplevel(sub_root)
-            abutment_canvas = tk.Canvas(abutment_root, width=200, height=200)
+            abutment_canvas = tk.Canvas(abutment_root, width=200, height=250)
             abutment_canvas.pack()
             abutment_root.title("Substructure Design")
 
             button_quit_abut = tk.Button(abutment_root,text='Exit',command=quit_abut)
-            button1_abut = tk.Button(abutment_root,text='Abutment Inputs', command=abutmentinput)    
+            button1_abut = tk.Button(abutment_root,text='Abutment Section Inputs', command=abutmentinput)    
+            button2_abut=tk.Button(abutment_root,text='Abutment Outputs',command=abutment_output)
             # button2 = tk.Button(sub_root,text='Span and Number of Sections Input', command=spaninput)
             # button3 = tk.Button(sub_root,text='Discharge Input', command=dischargeinput)
             # button4 = tk.Button(sub_root,text='Bearing Input', command=bearinginput)
 
             abutment_canvas.create_window(100, 50, window=button1_abut)
+            abutment_canvas.create_window(100, 100, window=button2_abut)
             # sub_canvas.create_window(150, 100, window=button2)
             # sub_canvas.create_window(150, 150, window=button3)
             # sub_canvas.create_window(150, 200, window=button4)
-            abutment_canvas.create_window(100, 100, window=button_quit_abut)
+            abutment_canvas.create_window(100, 150, window=button_quit_abut)
 
 
 
