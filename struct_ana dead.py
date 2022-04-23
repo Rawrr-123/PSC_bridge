@@ -1,6 +1,7 @@
 from anastruct import SystemElements
 import pandas as pd
 from inspect import currentframe
+import matplotlib.pyplot as plt
 # import openpyxl
 
 # def get_linenn():
@@ -80,6 +81,7 @@ no=2
 g=no-1
 gauge=1
 def class_A(g):
+    
     global s
     s=0
     if (df.iloc[1,4]+0)<l_kerblen+0.4:
@@ -123,20 +125,24 @@ def SeventyR_W():
         ss.insert_node(element_id=3, location=[0+l_kerblen+1.2+1.93+0.42, 3])
         ss.point_load(node_id=[2, 4], Fy=-85/dist_len("70R_W"))
 
-def dead():
-    ss.q_load(element_id=[1,2,3,4,5,6],q=12)
 
+def dead():
+    ss.q_load(element_id=[1,2,3],q=-25*d)
 # class_A(g)
 dead()
 # SeventyR_T()
-ss.add_support_fixed(node_id=5+2+2*s)
-ss.add_support_fixed(node_id=6+2+2*s)
+ss.add_support_fixed(node_id=5+2*s)
+ss.add_support_fixed(node_id=6+2*s)
 
 
 
 
 ss.solve()
-# ss.show_structure()
-# ss.show_bending_moment()
+ss.show_structure(show=False)
+plt.savefig('outputs/Dead Load Arrangement.png')
+ss.show_bending_moment(show=False)
+plt.savefig('outputs/Dead Load BM.png')
+
 # ss.show_displacement()
-ss.show_results()
+# ss.show_results()
+# print(ss.get_node_results_system(node_id=2)['T'])
