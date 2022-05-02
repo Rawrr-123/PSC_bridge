@@ -323,7 +323,7 @@ class Arrangement(Carriageway):
     def plot_signal(self):
         if self.get_position_index == 0:
             Arrangement.get_position(self)
-        f, ax = plt.subplots(figsize=(7, 3))
+        f, ax = plt.subplots(figsize=(12, 5))
         plt.subplots_adjust(bottom=0.25)
         ax.plot()
         ax.set_xlim(-0.1, self.width)
@@ -337,13 +337,15 @@ class Arrangement(Carriageway):
             ticks.extend([round(left_wheel, 2), round(self.position[_index], 2), round(right_wheel, 2)])
             ax.arrow(self.position[_index], 0.01, 0, -0.010, length_includes_head=True, head_width=0.1,
                      head_length=0.005)
+            ax.arrow(self.position[_index], 0.01, 0, -0.010, length_includes_head=True, head_width=0.1,
+                     head_length=0.005)
             ax.hlines(y=0, xmax=right_wheel, xmin=left_wheel)
             ax.text(self.position[_index], -0.01, f'{self.veh_name[_index]}', ha='center')
             ax.text(self.position[_index], 0.015, f'{self.veh_weight[_index]}', ha='center')
         ticks.append(self.width)
         ax.set_xticks(ticks)
-        ax.set_xticklabels(ticks, rotation=45, fontsize=7)
-        ax.set_xlabel('Distance from left kerb in metres')
+        ax.set_xticklabels(ticks, rotation=45, fontsize=10)
+        ax.set_xlabel('Distance from left kerb in metres', fontsize = 10)
         ax.set_yticks([])
         return ax
 
