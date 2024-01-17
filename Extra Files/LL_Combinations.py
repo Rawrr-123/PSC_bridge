@@ -14,6 +14,7 @@ def ll_combinations(lane_no):
     # return combination based on lane_no
     pcomb = []
     comb = []
+   
     for i in range((lane_no)+1):
         k=2
         while k>=1:
