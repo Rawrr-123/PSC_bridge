@@ -25,6 +25,7 @@ loads = [classA_pair, class70R, class70RT]
 # %% [markdown]
 # #### maxBM, maxSF at equal intervals
 # when each vehicle from the list of vehicles travels along the span, max reactions (BM and SF+/-) at equally divided intervals are calculated and stored in maxBMs, maxSFs_plus, maxSFs_minus.
+# liveloads along the span
 
 # %%
 #input
