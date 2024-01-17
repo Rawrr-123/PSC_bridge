@@ -64,6 +64,8 @@ DIMENSIONS=[LENGTH,HEIGHT] FOR RECTANGLES AND TRIANGLES AND
             RADIUS FOR CIRCLES   
 POS=[X-POSITION.Y-POSITION] """
 
+################################################################################################
+
 def calc_centroid(object, dimensions,pos):
     if object == 'rectangle':
         return [round(round(pos[0]+dimensions[0]/2,4),5),round(round(pos[1]+dimensions[1]/2,4),5)]
